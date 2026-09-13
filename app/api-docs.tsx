@@ -633,15 +633,12 @@ export function ApiDocs() {
   const selected = filtered.find(x => x.id === item) ?? filtered[0];
 
   // Grouping for endpoints and guides
-  const groupedList = useMemo(() => {
-    const map: Record<string, Json[]> = {};
-    for (const item of filtered) {
-      const g = item.group || 'Geral';
-      if (!map[g]) map[g] = [];
-      map[g].push(item);
-    }
-    return map;
-  }, [filtered]);
+  const groupedList: Record<string, Json[]> = {};
+  for (const item of filtered) {
+    const g = item.group || 'Geral';
+    if (!groupedList[g]) groupedList[g] = [];
+    groupedList[g].push(item);
+  }
 
   const toggleGroup = (groupName: string) => {
     setCollapsedGroups(prev => ({...prev, [groupName]: !prev[groupName]}));
