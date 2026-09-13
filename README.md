@@ -33,8 +33,6 @@ O script `scripts/migrate-api-docs.py` recebe, nesta ordem, o OpenAPI exportado,
 
 `npm run sync:api` baixa o Swagger público (`scripts/fetch-openapi.mjs`), roda a migração em modo preservado e valida o resultado. O workflow `.github/workflows/api-sync.yml` executa essa rotina semanalmente (e sob demanda via *workflow_dispatch*); se o `public/api-data/` ou o `.cache/openapi.json` mudarem, ele valida o build, commita e publica, disparamando o deploy na Vercel.
 
-Os componentes `Photo` do guia Sankhya ainda indicam capturas a incluir; os guias da API já incluem as imagens migradas.
-
 As permissões são documentação, sem conexão ativa com o ERP. O site não coleta credenciais e não executa alterações no Sankhya. Não há login separado para o tópico de integração.
 
 A configuração Sites está registrada, mas esta entrega foi colocada localmente na pasta solicitada e ainda não foi publicada.
