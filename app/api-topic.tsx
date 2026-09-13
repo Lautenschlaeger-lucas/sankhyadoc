@@ -1,4 +1,5 @@
 import {ArrowUpRight, ArrowRight, Code2} from 'lucide-react';
+import {SuggestedDevelopment} from './suggested-development';
 
 const guide = '#api/api-docs?view=guides&item=apjw4t1q0jms3';
 const reference = '#api/api-docs?view=reference';
@@ -85,12 +86,7 @@ export function ApiTopic({id,selectedStage=0,onNavigate}:{id:string;selectedStag
       <h2>Envio da nota e local de expedição</h2><Endpoints rows={[endpoints[5]]}/><p>Envie o XML completo da NF-e no corpo da chamada e informe <code>releaseOrder</code> na URL, de acordo com o fluxo escolhido.</p>
       <div className="two-col"><div className="panel"><h2>Expedição no ERP / WMS</h2><p><code>releaseOrder=true</code></p><p>O pedido avança para <code>billed</code> e a NF-e é enviada ao canal de venda. Consulte o pedido para obter as etiquetas disponibilizadas em <code>tags[]</code>.</p></div><div className="panel"><h2>Expedição no Magis5</h2><p><code>releaseOrder=false</code></p><p>O pedido permanece em <code>ready_to_print</code> para ser expedido no módulo de Expedição do Magis5.</p></div></div>
       <h2>Liberação e acompanhamento</h2><p>Como roteiro de implantação, valide os cenários com os responsáveis pelo ERP, faturamento e expedição. Após a liberação, acompanhe pedidos pendentes, divergências de estoque e falhas nas chamadas.</p><Source href={guide}>Fluxo oficial de faturamento</Source>
-    </>:<>
-      <p>Mapeie os campos do seu sistema para os contratos da API pública. As tabelas e os campos adicionais de cada ERP devem ser tratados na implementação da integração.</p>
-      <h2>Identificadores e controle</h2><div className="table-wrap"><table><thead><tr><th>Campo</th><th>Uso na integração</th></tr></thead><tbody>{[['Produto: id','Código / SKU enviado no cadastro do produto.'],['Pedido: id','Código do pedido no Magis5; use-o para manter a correspondência no ERP.'],['Pedido: externalId','Código do pedido no marketplace.'],['Pedido: queueStatus','Controle livre de integração; o guia usa INTEGRADO após criar o pedido no ERP.'],['Pedido: storeId','Identificador da filial para mapear operações com múltiplas empresas.'],['Pedido: channel e channelName','Identificação da loja / canal da venda.'],['Pedido: order_items[].item.seller_custom_field','SKU do item vendido.']].map(([field,desc])=><tr key={field}><td><code>{field}</code></td><td>{desc}</td></tr>)}</tbody></table></div>
-      <h2>Dados do pedido</h2><p>O guia de desenvolvimento descreve comprador, endereço de entrega, itens, frete, descontos, comissão, notas fiscais e etiquetas. Use esse mapeamento junto ao schema atualizado para definir a gravação no seu ERP.</p>
-      <h2>Planeje as customizações</h2><ol className="numbered"><li>Defina o sistema responsável por cada dado e a correspondência entre seus identificadores.</li><li>Confira se o campo e a operação estão previstos no endpoint utilizado.</li><li>Valide campos opcionais, valores ausentes e regras de cada canal.</li><li>Documente a transformação dos dados e teste as regras antes da ativação.</li></ol><div className="callout">Campos adicionais específicos do Sankhya, como os de TGFCAB, estão na aba Sankhya. Na API pública, envie os campos definidos pelo contrato de cada endpoint.</div>
-    </>}
+    </>:<SuggestedDevelopment />}
     <div className="api-library-cta"><div><strong>Documentação completa da API</strong><p>45 operações, 132 schemas, 51 exemplos Postman e todos os guias de integração.</p></div><button className="docs-button" onClick={()=>onNavigate('api-docs')}>Abrir documentação <ArrowRight size={17}/></button></div><Sources/>
   </div>;
 }
