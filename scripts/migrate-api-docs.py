@@ -6,9 +6,18 @@ import sys, json, re, hashlib, shutil
 from pathlib import Path
 from urllib.parse import urlsplit, parse_qsl, urlencode, unquote
 
-spec_path, collection_path, guides_dir, assets_manifest = map(Path, sys.argv[1:])
+args = [Path(a) for a in sys.argv[1:]]
+if not args:
+    raise SystemExit('Usage: migrate-api-docs.py OPENAPI [COLLECTION GUIDES_DIR ASSETS_MANIFEST]\nWith only OPENAPI, requests and guides are preserved from the previous catalog.')
+preserve = len(args) == 1
+spec_path = args[0]
 out = Path('public/api-data'); out.mkdir(parents=True, exist_ok=True)
-spec = json.loads(spec_path.read_text()); collection = json.loads(collection_path.read_text())
+prev = json.loads((out/'catalog.json').read_text()) if preserve and (out/'catalog.json').exists() else {'requests': [], 'guides': []}
+spec = json.loads(spec_path.read_text())
+collection = None
+if not preserve:
+    _, collection_path, guides_dir, assets_manifest = args
+    collection = json.loads(collection_path.read_text())
 HTTP = {'get','post','put','patch','delete','head','options'}
 variables = {'url':'https://app.magis5.com.br','apiKey':'','completeOrderNumber':'PEDIDO_EXEMPLO','sku':'SKU_EXEMPLO','channel':'CANAL_EXEMPLO','start':'20260101','end':'20260131','userEmail':'usuario@example.com','invoiceXml':'COLE_AQUI_O_XML_COMPLETO_DA_NFE'}
 secrets = set()
@@ -115,54 +124,72 @@ def convert(items,groups=[]):
   requests.append({'id':idx,'name':item['name'],'group':' / '.join(groups),'method':r['method'],'path':path,'url':url,'query':queries,'headers':headers,'body':cleanbody['raw'] if cleanbody else None,'language':cleanbody.get('options',{}).get('raw',{}).get('language') if cleanbody else None,'note':body_note,'operationId':matching})
   result.append({'name':item['name'],'request':request,'response':[]})
  return result
-clean_collection={'info':{'name':'Magis5 API 1.0 — Exemplos públicos','schema':collection['info']['schema'],'description':'Collection com 51 exemplos. Configure apiKey e os identificadores antes de usar. Documentos fiscais e dados de clientes foram substituídos por exemplos. Requisições de escrita alteram o ambiente configurado.'},'item':convert(collection['item'])}
-clean_collection['variable']=[{'key':k,'value':v,'type':'string'} for k,v in variables.items()]
+if preserve:
+    requests = prev['requests']
+    for r in requests:
+        canonical=re.sub(r'\{\{([^}]+)\}\}',r'{\1}',r['path'])
+        r['operationId']=next((o['id'] for o in operations if o['method']==r['method'] and o['path']==canonical),None)
+    clean_collection = None
+else:
+    clean_collection={'info':{'name':'Magis5 API 1.0 — Exemplos públicos','schema':collection['info']['schema'],'description':'Collection com 51 exemplos. Configure apiKey e os identificadores antes de usar. Documentos fiscais e dados de clientes foram substituídos por exemplos. Requisições de escrita alteram o ambiente configurado.'},'item':convert(collection['item'])}
+    clean_collection['variable']=[{'key':k,'value':v,'type':'string'} for k,v in variables.items()]
 
 # Import all articles and keep their source content, with local links and assets.
-guides=[json.loads(p.read_text()) for p in sorted(guides_dir.glob('*.json'))]
-guide_ids={d['id'] for d in guides}
-assets=json.loads(assets_manifest.read_text());asset_map={u:'/api-assets/'+n for u,n,size in assets}
-assets=[entry for entry in assets if entry[1]!='image-8.png']
-Path('public/api-assets/image-8.png').unlink(missing_ok=True)
-for u,n,size in assets:shutil.copyfile(Path('/tmp/magis-assets')/n,Path('public/api-assets')/n)
-# Stable old slugs are mapped by operation titles as well as known historical IDs.
-known={
- 'fohcqqiqzsf7l':None,'12dab89109ded':None,
- '8ed05ic3qcxqe':'post-products','hr60m7vrgo4ym':'post-products','d3i32i42dt76v':'patch-products-sku',
- 'mmw8t015lptvf':'post-invoices-completeordernumber','8kc8kcrjhqix4':'get-orders-completeordernumber','utz7lcfn735u2':'put-callbacks-stocks',
-}
-def local_link(url):
- url=url.strip('<>');segment=urlsplit(url).path.rsplit('/',1)[-1];node=segment.split('-')[0]
- if node in guide_ids:return '#api/api-docs?view=guides&item='+node
- for op in operations:
-  title=slug(op.get('summary',''))
-  # Accent-insensitive matching happens in the UI link resolver; common historical links here.
-  if segment.endswith(title) or slug(segment.split('-',1)[-1])==title:return '#api/api-docs?view=reference&item='+op['id']
- mapping=[('atualizar-preco','put-ads-prices-sku'),('atualizar-o-preco','put-ads-prices-sku'),('obter-lista-de-anuncios','get-ads-sku'),('callback-de-estoque','put-callbacks-stocks'),('atualizar-alguns-campos-do-produto','patch-products-sku'),('criar-um-produto','post-products'),('informar-lista-de-pedidos-que-ja-foram-consumidos','post-invoices-queues-read'),('informar-que-o-pedido','post-invoices-queues-read-completeordernumber'),('obter-lista-de-pedidos-que-possuem','get-invoices-queues')]
- opid=known.get(node)
- for word,value in mapping:
-  if word in segment:opid=value
- return '#api/api-docs?view=reference'+('&item='+opid if opid else '')
-articles=[]
-for d in guides:
- md=re.sub(r'^---\s*\n.*?\n---\s*\n','',d['data'],flags=re.S)
- for remote,local in asset_map.items():md=md.replace(remote,local)
- md=re.sub(r'https://(?:developers\.magis5\.com\.br|magis5\.stoplight\.io)/docs/[^\s)<>]+',lambda m:local_link(m[0]),md)
- md=re.sub(r'!\[[^\]]*\]\(/api-assets/image-8\.png\)', '> Na aba Integração, selecione **Integração via API**, confira a opção **ERP principal** e use o token da sua conta. A captura que exibia um token foi substituída por esta orientação.', md)
- if d['id'] in {'0tuseuqodyu2x','i87zr6s470z28'}:md='> **Método atual de envio da NF-e:** use `POST /v1/invoices/{completeOrderNumber}`. O diagrama original abaixo contém rótulos antigos (PUT / XML); consulte o contrato local para a implementação.\n\n'+md
- md=md.replace('https://developers.magis5.com.br', '#api/api-docs?view=guides')
- if d['id']=='qcp542xdwv194':md=md.replace('[products/{sku}](#api/api-docs?view=reference&item=post-products)', '[products/{sku}](#api/api-docs?view=reference&item=get-products-sku)')
- md=md.replace('https://app.magis5.com.br/v1/ui/index.html','#api/api-docs?view=reference')
- # Strip Stoplight formatting metadata; code remains escaped by the Markdown renderer.
- md=re.sub(r'<!--.*?-->','',md,flags=re.S)
- # PII in the original development guide's commented payload becomes illustrative.
- if d['id']=='apjw4t1q0jms3':
-  md=re.sub(r'"(full_name|nickname|address_line|street_name|street_number|zip_code|comment|salesName|channel|storeId|externalId|key|urlXml|defaultPicture|url|name|id|doc_number|salesDocument|number)"\s*:\s*"[^"\n]*"',lambda m:'"'+m[1]+'": "'+('Cliente Exemplo' if m[1] in {'name','full_name'} else 'EXEMPLO')+'"',md)
-  md=re.sub(r'https?://(?:storage\.googleapis\.com|bling\.com\.br|mlb-s1-p\.mlstatic\.com)/[^\s"<>]+','https://example.com/arquivo-exemplo',md)
- articles.append({'id':d['id'],'title':d['navTitle'],'heading':d['title'],'group':d['group'],'content':md,'sourceSlug':d['slug']})
+if preserve:
+    articles = prev['guides']
+    assets = []
+else:
+    guides=[json.loads(p.read_text()) for p in sorted(guides_dir.glob('*.json'))]
+    guide_ids={d['id'] for d in guides}
+    assets=json.loads(assets_manifest.read_text());asset_map={u:'/api-assets/'+n for u,n,size in assets}
+    assets=[entry for entry in assets if entry[1]!='image-8.png']
+    Path('public/api-assets/image-8.png').unlink(missing_ok=True)
+    for u,n,size in assets:shutil.copyfile(Path('/tmp/magis-assets')/n,Path('public/api-assets')/n)
+    # Stable old slugs are mapped by operation titles as well as known historical IDs.
+    known={
+     'fohcqqiqzsf7l':None,'12dab89109ded':None,
+     '8ed05ic3qcxqe':'post-products','hr60m7vrgo4ym':'post-products','d3i32i42dt76v':'patch-products-sku',
+     'mmw8t015lptvf':'post-invoices-completeordernumber','8kc8kcrjhqix4':'get-orders-completeordernumber','utz7lcfn735u2':'put-callbacks-stocks',
+    }
+    def local_link(url):
+     url=url.strip('<>');segment=urlsplit(url).path.rsplit('/',1)[-1];node=segment.split('-')[0]
+     if node in guide_ids:return '#api/api-docs?view=guides&item='+node
+     for op in operations:
+      title=slug(op.get('summary',''))
+      # Accent-insensitive matching happens in the UI link resolver; common historical links here.
+      if segment.endswith(title) or slug(segment.split('-',1)[-1])==title:return '#api/api-docs?view=reference&item='+op['id']
+     mapping=[('atualizar-preco','put-ads-prices-sku'),('atualizar-o-preco','put-ads-prices-sku'),('obter-lista-de-anuncios','get-ads-sku'),('callback-de-estoque','put-callbacks-stocks'),('atualizar-alguns-campos-do-produto','patch-products-sku'),('criar-um-produto','post-products'),('informar-lista-de-pedidos-que-ja-foram-consumidos','post-invoices-queues-read'),('informar-que-o-pedido','post-invoices-queues-read-completeordernumber'),('obter-lista-de-pedidos-que-possuem','get-invoices-queues')]
+     opid=known.get(node)
+     for word,value in mapping:
+      if word in segment:opid=value
+     return '#api/api-docs?view=reference'+('&item='+opid if opid else '')
+    articles=[]
+    for d in guides:
+     md=re.sub(r'^---\s*\n.*?\n---\s*\n','',d['data'],flags=re.S)
+     for remote,local in asset_map.items():md=md.replace(remote,local)
+     md=re.sub(r'https://(?:developers\.magis5\.com\.br|magis5\.stoplight\.io)/docs/[^\s)<>]+',lambda m:local_link(m[0]),md)
+     md=re.sub(r'!\[[^\]]*\]\(/api-assets/image-8\.png\)', '> Na aba Integração, selecione **Integração via API**, confira a opção **ERP principal** e use o token da sua conta. A captura que exibia um token foi substituída por esta orientação.', md)
+     if d['id'] in {'0tuseuqodyu2x','i87zr6s470z28'}:md='> **Método atual de envio da NF-e:** use `POST /v1/invoices/{completeOrderNumber}`. O diagrama original abaixo contém rótulos antigos (PUT / XML); consulte o contrato local para a implementação.\n\n'+md
+     md=md.replace('https://developers.magis5.com.br', '#api/api-docs?view=guides')
+     if d['id']=='qcp542xdwv194':md=md.replace('[products/{sku}](#api/api-docs?view=reference&item=post-products)', '[products/{sku}](#api/api-docs?view=reference&item=get-products-sku)')
+     md=md.replace('https://app.magis5.com.br/v1/ui/index.html','#api/api-docs?view=reference')
+     # Strip Stoplight formatting metadata; code remains escaped by the Markdown renderer.
+     md=re.sub(r'<!--.*?-->','',md,flags=re.S)
+     # PII in the original development guide's commented payload becomes illustrative.
+     if d['id']=='apjw4t1q0jms3':
+      md=re.sub(r'"(full_name|nickname|address_line|street_name|street_number|zip_code|comment|salesName|channel|storeId|externalId|key|urlXml|defaultPicture|url|name|id|doc_number|salesDocument|number)"\s*:\s*"[^"\n]*"',lambda m:'"'+m[1]+'": "'+('Cliente Exemplo' if m[1] in {'name','full_name'} else 'EXEMPLO')+'"',md)
+      md=re.sub(r'https?://(?:storage\.googleapis\.com|bling\.com\.br|mlb-s1-p\.mlstatic\.com)/[^\s"<>]+','https://example.com/arquivo-exemplo',md)
+     articles.append({'id':d['id'],'title':d['navTitle'],'heading':d['title'],'group':d['group'],'content':md,'sourceSlug':d['slug']})
 
-report={'operations':len(operations),'schemas':len(spec['components']['schemas']),'postmanRequests':len(requests),'guides':len(articles),'assets':len(assets),'credentialScreenshotReplaced':1,'collectionOnly':[{ 'id':r['id'],'name':r['name'],'path':r['path']} for r in requests if not r['operationId']], 'sources':{'openapiSha256':hashlib.sha256(spec_path.read_bytes()).hexdigest(),'collectionSha256':hashlib.sha256(collection_path.read_bytes()).hexdigest()},'credentialsReplaced':len(secrets),'notes':['Respostas e schemas vêm da especificação OpenAPI. A collection original não possui respostas salvas.','Dados de clientes, tokens e XMLs reais da collection foram substituídos por exemplos.','Links internos dos guias foram migrados para a navegação local.']}
-artifacts={'openapi.json':spec,'magis5.postman_collection.json':clean_collection,'catalog.json':{'operations':operations,'schemas':spec['components']['schemas'],'securitySchemes':spec['components'].get('securitySchemes',{}),'requests':requests,'guides':articles,'report':report},'migration-report.json':report}
+report={'operations':len(operations),'schemas':len(spec['components']['schemas']),'postmanRequests':len(requests),'guides':len(articles),'assets':len(assets),'credentialScreenshotReplaced':0 if preserve else 1,'collectionOnly':[{ 'id':r['id'],'name':r['name'],'path':r['path']} for r in requests if not r['operationId']]}
+report['sources']={'openapiSha256':hashlib.sha256(spec_path.read_bytes()).hexdigest()}
+if not preserve:
+    report['sources']['collectionSha256']=hashlib.sha256(collection_path.read_bytes()).hexdigest()
+report['credentialsReplaced']=len(secrets)
+report['notes']=(['Requisições e guias preservados do catálogo anterior; apenas o OpenAPI foi atualizado.'] if preserve else ['Respostas e schemas vêm da especificação OpenAPI. A collection original não possui respostas salvas.','Dados de clientes, tokens e XMLs reais da collection foram substituídos por exemplos.','Links internos dos guias foram migrados para a navegação local.'])
+artifacts={'openapi.json':spec,'catalog.json':{'operations':operations,'schemas':spec['components']['schemas'],'securitySchemes':spec['components'].get('securitySchemes',{}),'requests':requests,'guides':articles,'report':report},'migration-report.json':report}
+if not preserve:
+    artifacts['magis5.postman_collection.json']=clean_collection
 for filename,data in artifacts.items():
  text=json.dumps(data,ensure_ascii=False,indent=2)
  assert not any(secret in text for secret in secrets if len(secret)>8), 'Credential leak in '+filename

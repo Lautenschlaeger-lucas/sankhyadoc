@@ -1,25 +1,16 @@
 {
-  "operations": 45,
-  "schemas": 132,
+  "operations": 49,
+  "schemas": 142,
   "postmanRequests": 51,
   "guides": 14,
-  "assets": 14,
-  "credentialScreenshotReplaced": 1,
-  "collectionOnly": [
-    {
-      "id": "postman-29",
-      "name": "Criar produto Com Variação",
-      "path": "/v1/variations"
-    }
-  ],
+  "assets": 0,
+  "credentialScreenshotReplaced": 0,
+  "collectionOnly": [],
   "sources": {
-    "openapiSha256": "8df187129030f2993b255b7581b690ca2959f697d56d9c81d5b0437d8abde6e9",
-    "collectionSha256": "ef00bf5b1be3a36d0e4c3f66b368de3440fa7221aabcc723c916b0ad8af419dc"
+    "openapiSha256": "92a5f6bc7dbac38c2983370e1670e7c5857ee60372c0b93172e3648f2a7a94aa"
   },
-  "credentialsReplaced": 1,
+  "credentialsReplaced": 0,
   "notes": [
-    "Respostas e schemas vêm da especificação OpenAPI. A collection original não possui respostas salvas.",
-    "Dados de clientes, tokens e XMLs reais da collection foram substituídos por exemplos.",
-    "Links internos dos guias foram migrados para a navegação local."
+    "Requisições e guias preservados do catálogo anterior; apenas o OpenAPI foi atualizado."
   ]
 }

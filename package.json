@@ -11,7 +11,8 @@
     "start": "wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint",
     "format": "oxfmt",
-    "build:vercel": "vite build --config vite.vercel.config.ts"
+    "build:vercel": "vite build --config vite.vercel.config.ts",
+    "sync:api": "node scripts/fetch-openapi.mjs && python3 scripts/migrate-api-docs.py .cache/openapi.json && node scripts/verify-api-docs.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

@@ -1,0 +1,37 @@
+name: api-sync
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Synchronize catalog with live Swagger
+        run: node scripts/fetch-openapi.mjs && python3 scripts/migrate-api-docs.py .cache/openapi.json && node scripts/verify-api-docs.mjs
+      - name: Validate build
+        run: npx tsc --noEmit && npm run build:vercel
+      - name: Commit and push changes
+        run: |
+          if git diff --quiet public/api-data .cache; then
+            echo 'No API changes detected.'
+          else
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add public/api-data .cache
+            git commit -m 'Sincroniza catálogo com o Swagger público da Magis5'
+            git push
+          fi

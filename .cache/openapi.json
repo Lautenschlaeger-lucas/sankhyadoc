@@ -211,13 +211,13 @@
                 "Atualização completa fictícia": {
                   "description": "Atualização completa fictícia",
                   "value": {
-                    "sku": "SKU_EXEMPLO",
-                    "title": "Produto de exemplo",
+                    "sku": "EXAMPLE-PARENT",
+                    "title": "Produto de exemplo atualizado",
                     "price": 89.9,
                     "condition": "NEW",
-                    "brand": "Marca exemplo",
-                    "model": "Modelo exemplo",
-                    "description": "Descrição de exemplo",
+                    "brand": "Marca Exemplo",
+                    "model": "Modelo Exemplo",
+                    "description": "Produto fictício atualizado para demonstrar a substituição completa",
                     "dimension": {
                       "height": 2,
                       "width": 20,
@@ -231,64 +231,64 @@
                     "attributes": [],
                     "variations": [
                       {
-                        "id": 1001,
-                        "sku": "SKU_EXEMPLO",
+                        "id": 98765,
+                        "sku": "EXAMPLE-BLUE",
                         "ean": 2001234567893,
                         "price": 89.9,
                         "stock": 15,
                         "active": true,
                         "attributes": [
                           {
-                            "id": "ID_EXEMPLO",
-                            "name": "Exemplo",
-                            "valueId": "exemplo",
-                            "valueName": "exemplo"
+                            "id": "COLOR",
+                            "name": "Cor",
+                            "valueId": "BLUE",
+                            "valueName": "Azul"
                           }
                         ]
                       },
                       {
-                        "sku": "SKU_EXEMPLO",
+                        "sku": "EXAMPLE-GREEN",
                         "ean": 2001234567916,
                         "price": 89.9,
                         "stock": 8,
                         "active": true,
                         "attributes": [
                           {
-                            "id": "ID_EXEMPLO",
-                            "name": "Exemplo",
-                            "valueId": "exemplo",
-                            "valueName": "exemplo"
+                            "id": "COLOR",
+                            "name": "Cor",
+                            "valueId": "GREEN",
+                            "valueName": "Verde"
                           }
                         ]
                       }
                     ],
                     "images": [
                       {
-                        "id": 1001,
-                        "image": "https://example.com/arquivo-exemplo",
+                        "id": 456,
+                        "image": "https://example.com/images/example-blue-product.jpg",
                         "order": 0,
-                        "action": "exemplo",
+                        "action": "MOVE",
                         "attribute": {
-                          "name": "Exemplo",
-                          "valueName": "exemplo"
+                          "name": "Cor",
+                          "valueName": "Azul"
                         }
                       },
                       {
-                        "image": "exemplo",
+                        "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9ZQmcAAAAASUVORK5CYII=",
                         "order": 1,
-                        "action": "exemplo",
+                        "action": "NEW",
                         "attribute": {
-                          "name": "Exemplo",
-                          "valueName": "exemplo"
+                          "name": "Cor",
+                          "valueName": "Verde"
                         }
                       },
                       {
-                        "image": "https://example.com/arquivo-exemplo",
+                        "image": "https://example.com/images/example-green-product.jpg",
                         "order": 2,
-                        "action": "exemplo",
+                        "action": "IMPORTED",
                         "attribute": {
-                          "name": "Exemplo",
-                          "valueName": "exemplo"
+                          "name": "Cor",
+                          "valueName": "Verde"
                         }
                       }
                     ]
@@ -914,12 +914,12 @@
                   "description": "Atualizar rastreio e etiqueta",
                   "value": {
                     "shipping": {
-                      "shipping_number": "exemplo",
-                      "shipping_url": "https://example.com/arquivo-exemplo"
+                      "shipping_number": "36b8097942d",
+                      "shipping_url": "https://tracking.example/36b8097942d"
                     },
                     "tags": [
                       {
-                        "url": "https://example.com/arquivo-exemplo",
+                        "url": "https://example.com/shipping-label.pdf",
                         "type": "pdf"
                       }
                     ]
@@ -1110,12 +1110,12 @@
                   "description": "Atualizar rastreio e etiqueta",
                   "value": {
                     "shipping": {
-                      "shipping_number": "exemplo",
-                      "shipping_url": "https://example.com/arquivo-exemplo"
+                      "shipping_number": "36b8097942d",
+                      "shipping_url": "https://tracking.example/36b8097942d"
                     },
                     "tags": [
                       {
-                        "url": "https://example.com/arquivo-exemplo",
+                        "url": "https://example.com/shipping-label.pdf",
                         "type": "pdf"
                       }
                     ]
@@ -1420,9 +1420,9 @@
                   "value": {
                     "ads": [
                       {
-                        "channel": "exemplo",
-                        "channelId": "exemplo",
-                        "variationId": "exemplo",
+                        "channel": "string",
+                        "channelId": "string",
+                        "variationId": "string",
                         "price": 0
                       }
                     ]
@@ -1626,13 +1626,13 @@
                 "Produto fictício com cores": {
                   "description": "Produto fictício com cores",
                   "value": {
-                    "sku": "SKU_EXEMPLO",
-                    "title": "Produto de exemplo",
+                    "sku": "EXAMPLE-PARENT",
+                    "title": "Produto de exemplo com variações de cor",
                     "price": 79.9,
                     "condition": "NEW",
-                    "brand": "Marca exemplo",
-                    "model": "Modelo exemplo",
-                    "description": "Descrição de exemplo",
+                    "brand": "Marca Exemplo",
+                    "model": "Modelo Exemplo",
+                    "description": "Produto fictício utilizado somente para demonstrar o formato da integração",
                     "dimension": {
                       "height": 2,
                       "width": 20,
@@ -1646,64 +1646,64 @@
                     "attributes": [],
                     "variations": [
                       {
-                        "sku": "SKU_EXEMPLO",
+                        "sku": "EXAMPLE-BLUE",
                         "ean": 2001234567893,
                         "price": 79.9,
                         "stock": 10,
                         "active": true,
                         "attributes": [
                           {
-                            "id": "ID_EXEMPLO",
-                            "name": "Exemplo",
-                            "valueId": "exemplo",
-                            "valueName": "exemplo"
+                            "id": "COLOR",
+                            "name": "Cor",
+                            "valueId": "BLUE",
+                            "valueName": "Azul"
                           }
                         ]
                       },
                       {
-                        "sku": "SKU_EXEMPLO",
+                        "sku": "EXAMPLE-BLACK",
                         "ean": 2001234567909,
                         "price": 79.9,
                         "stock": 10,
                         "active": true,
                         "attributes": [
                           {
-                            "id": "ID_EXEMPLO",
-                            "name": "Exemplo",
-                            "valueId": "exemplo",
-                            "valueName": "exemplo"
+                            "id": "COLOR",
+                            "name": "Cor",
+                            "valueId": "BLACK",
+                            "valueName": "Preto"
                           }
                         ]
                       },
                       {
-                        "sku": "SKU_EXEMPLO",
+                        "sku": "EXAMPLE-WHITE",
                         "ean": 2001234567916,
                         "price": 79.9,
                         "stock": 10,
                         "active": true,
                         "attributes": [
                           {
-                            "id": "ID_EXEMPLO",
-                            "name": "Exemplo",
-                            "valueId": "exemplo",
-                            "valueName": "exemplo"
+                            "id": "COLOR",
+                            "name": "Cor",
+                            "valueId": "WHITE",
+                            "valueName": "Branco"
                           }
                         ]
                       }
                     ],
                     "images": [
                       {
-                        "image": "exemplo",
+                        "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9ZQmcAAAAASUVORK5CYII=",
                         "order": 0,
-                        "action": "exemplo"
+                        "action": "NEW"
                       },
                       {
-                        "image": "https://example.com/arquivo-exemplo",
+                        "image": "https://example.com/images/example-black-product.jpg",
                         "order": 1,
-                        "action": "exemplo",
+                        "action": "IMPORTED",
                         "attribute": {
-                          "name": "Exemplo",
-                          "valueName": "exemplo"
+                          "name": "Cor",
+                          "valueName": "Preto"
                         }
                       }
                     ]
@@ -1724,7 +1724,7 @@
                 },
                 "example": {
                   "status": "OK",
-                  "id": 1001
+                  "id": 12345
                 }
               }
             }
@@ -1976,94 +1976,94 @@
                     "summary": "Schema -> StructureType = complete",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "products": [
                         {
-                          "id": "ID_EXEMPLO",
-                          "externalId": "ID_EXEMPLO",
-                          "url": "exemplo",
-                          "title": "Produto de exemplo",
+                          "id": "string",
+                          "externalId": "string",
+                          "url": "string",
+                          "title": "string",
                           "condition": "string",
                           "stock": 0,
                           "cost": 0,
                           "currency": "string",
-                          "description": "Descrição de exemplo",
-                          "technicalSpecification": "Especificação de exemplo",
-                          "additionalInformation": "exemplo",
+                          "description": "string",
+                          "technicalSpecification": "string",
+                          "additionalInformation": "string",
                           "pictures": [
                             {
-                              "size": "exemplo",
-                              "secure_url": "exemplo",
-                              "id": "ID_EXEMPLO",
-                              "url": "exemplo",
-                              "max_size": "exemplo",
-                              "quality": "exemplo",
-                              "name": "Exemplo",
-                              "externalId": "ID_EXEMPLO"
+                              "size": "string",
+                              "secure_url": "string",
+                              "id": "string",
+                              "url": "string",
+                              "max_size": "string",
+                              "quality": "string",
+                              "name": "string",
+                              "externalId": "string"
                             }
                           ],
                           "price": 0,
                           "warranty": "string",
-                          "business": "Fornecedor exemplo",
-                          "ean": "0000000000000",
-                          "eanInvoice": "0000000000000",
+                          "business": "string",
+                          "ean": "string",
+                          "eanInvoice": "string",
                           "height": 0,
                           "weight": 0,
                           "weightGross": 0,
                           "depth": 0,
                           "width": 0,
-                          "brand": "Marca exemplo",
-                          "model": "Modelo exemplo",
+                          "brand": "string",
+                          "model": "string",
                           "ncm": "string",
                           "cest": "string",
                           "origin": 0,
-                          "unit": "exemplo",
+                          "unit": "string",
                           "customerId": 0,
                           "updateStock": true,
-                          "channel": "exemplo",
+                          "channel": "string",
                           "integrationType": "string",
                           "deadlineCrossdocking": 0,
                           "productsBusinessUnit": [
                             {
-                              "id": "ID_EXEMPLO",
-                              "name": "Exemplo",
-                              "city": "exemplo",
-                              "state": "exemplo",
+                              "id": "string",
+                              "name": "string",
+                              "city": "string",
+                              "state": "string",
                               "stock": 0,
                               "stockWithReservation": 0,
                               "reserved": 0,
                               "price": 0,
                               "currency": "string",
-                              "unconsidered": "exemplo",
-                              "caller": "exemplo"
+                              "unconsidered": "string",
+                              "caller": "string"
                             }
                           ],
                           "isImportProduct": true,
-                          "note": "exemplo",
-                          "youtubeId": "exemplo",
-                          "location": "A1",
-                          "productType": "exemplo",
+                          "note": "string",
+                          "youtubeId": "string",
+                          "location": "string",
+                          "productType": "string",
                           "isVariation": true,
                           "status": "string",
                           "productsComposition": [
                             {
-                              "id": 1001,
+                              "id": 0,
                               "productId": 0,
-                              "title": "Produto de exemplo",
-                              "sku": "SKU_EXEMPLO",
+                              "title": "string",
+                              "sku": "string",
                               "pictures": [
                                 {
-                                  "size": "exemplo",
-                                  "secure_url": "exemplo",
-                                  "id": "ID_EXEMPLO",
-                                  "url": "exemplo",
-                                  "max_size": "exemplo",
-                                  "quality": "exemplo",
-                                  "name": "Exemplo",
-                                  "externalId": "ID_EXEMPLO"
+                                  "size": "string",
+                                  "secure_url": "string",
+                                  "id": "string",
+                                  "url": "string",
+                                  "max_size": "string",
+                                  "quality": "string",
+                                  "name": "string",
+                                  "externalId": "string"
                                 }
                               ],
-                              "brand": "Marca exemplo",
+                              "brand": "string",
                               "quantity": 0,
                               "unitValue": 0,
                               "stock": 0,
@@ -2072,7 +2072,7 @@
                           ],
                           "warrantyProvider": "string",
                           "quantityItemsSamePackaging": 0,
-                          "erpId": "ID_EXEMPLO",
+                          "erpId": "string",
                           "stockFixed": 0,
                           "stockMinimum": 0,
                           "stockProvider": 0,
@@ -2081,29 +2081,29 @@
                           "usePicturesFromFatherVariation": true,
                           "productsCategory": [
                             {
-                              "id": 1001,
+                              "id": 0,
                               "parentId": 0,
                               "getpId": 0,
-                              "categoryDescription": "exemplo",
+                              "categoryDescription": "string",
                               "level": 0,
                               "isNew": true,
                               "isEdited": true,
-                              "categoryId": "exemplo",
+                              "categoryId": "string",
                               "productId": 0,
-                              "productDescription": "exemplo"
+                              "productDescription": "string"
                             }
                           ],
                           "variations": [
                             {
-                              "id": "ID_EXEMPLO",
+                              "id": "string",
                               "attribute_combinations": [
                                 {
-                                  "id": "ID_EXEMPLO",
-                                  "attribute_group_id": "exemplo",
-                                  "name": "Exemplo",
-                                  "attribute_group_name": "exemplo",
-                                  "value_name": "exemplo",
-                                  "value_id": "exemplo",
+                                  "id": "string",
+                                  "attribute_group_id": "string",
+                                  "name": "string",
+                                  "attribute_group_name": "string",
+                                  "value_name": "string",
+                                  "value_id": "string",
                                   "tags": {
                                     "allow_variations": true,
                                     "defines_picture": true,
@@ -2115,49 +2115,49 @@
                                     "grid_template_required": true
                                   },
                                   "attribute_send": true,
-                                  "hierarchy": "exemplo",
+                                  "hierarchy": "string",
                                   "relevance": 0,
-                                  "value_type": "exemplo",
+                                  "value_type": "string",
                                   "value_max_length": 0,
                                   "values": [
                                     {
-                                      "id": "ID_EXEMPLO",
-                                      "name": "Exemplo",
+                                      "id": "string",
+                                      "name": "string",
                                       "attributes": [
                                         {
-                                          "id": 1001,
+                                          "id": 0,
                                           "value": 0
                                         }
                                       ],
                                       "brandList": [
                                         {
-                                          "id": 1001
+                                          "id": 0
                                         }
                                       ]
                                     }
                                   ],
                                   "allowed_units": [
                                     {
-                                      "id": "ID_EXEMPLO",
-                                      "name": "Exemplo"
+                                      "id": "string",
+                                      "name": "string"
                                     }
                                   ],
-                                  "descriptionUnit": "exemplo",
+                                  "descriptionUnit": "string",
                                   "required": true,
-                                  "translate_value_name": "exemplo",
+                                  "translate_value_name": "string",
                                   "field": {
-                                    "text_type": "exemplo"
+                                    "text_type": "string"
                                   }
                                 }
                               ],
                               "attributes": [
                                 {
-                                  "id": "ID_EXEMPLO",
-                                  "attribute_group_id": "exemplo",
-                                  "name": "Exemplo",
-                                  "attribute_group_name": "exemplo",
-                                  "value_name": "exemplo",
-                                  "value_id": "exemplo",
+                                  "id": "string",
+                                  "attribute_group_id": "string",
+                                  "name": "string",
+                                  "attribute_group_name": "string",
+                                  "value_name": "string",
+                                  "value_id": "string",
                                   "tags": {
                                     "allow_variations": true,
                                     "defines_picture": true,
@@ -2169,38 +2169,38 @@
                                     "grid_template_required": true
                                   },
                                   "attribute_send": true,
-                                  "hierarchy": "exemplo",
+                                  "hierarchy": "string",
                                   "relevance": 0,
-                                  "value_type": "exemplo",
+                                  "value_type": "string",
                                   "value_max_length": 0,
                                   "values": [
                                     {
-                                      "id": "ID_EXEMPLO",
-                                      "name": "Exemplo",
+                                      "id": "string",
+                                      "name": "string",
                                       "attributes": [
                                         {
-                                          "id": 1001,
+                                          "id": 0,
                                           "value": 0
                                         }
                                       ],
                                       "brandList": [
                                         {
-                                          "id": 1001
+                                          "id": 0
                                         }
                                       ]
                                     }
                                   ],
                                   "allowed_units": [
                                     {
-                                      "id": "ID_EXEMPLO",
-                                      "name": "Exemplo"
+                                      "id": "string",
+                                      "name": "string"
                                     }
                                   ],
-                                  "descriptionUnit": "exemplo",
+                                  "descriptionUnit": "string",
                                   "required": true,
-                                  "translate_value_name": "exemplo",
+                                  "translate_value_name": "string",
                                   "field": {
-                                    "text_type": "exemplo"
+                                    "text_type": "string"
                                   }
                                 }
                               ],
@@ -2208,106 +2208,106 @@
                               "changeAvailableQuantity": true,
                               "price": 0,
                               "sold_quantity": 0,
-                              "seller_custom_field": "SKU_EXEMPLO",
-                              "catalog_product_id": "exemplo",
+                              "seller_custom_field": "string",
+                              "catalog_product_id": "string",
                               "picture_ids": [
-                                "exemplo"
+                                "string"
                               ],
                               "promotionalPrice": 0,
-                              "title": "Produto de exemplo",
-                              "categoryId": "exemplo",
-                              "inventory_id": "exemplo"
+                              "title": "string",
+                              "categoryId": "string",
+                              "inventory_id": "string"
                             }
                           ],
                           "productsCode": [
                             {
-                              "id": 1001,
+                              "id": 0,
                               "product": {
-                                "id": "ID_EXEMPLO",
-                                "externalId": "ID_EXEMPLO",
-                                "url": "exemplo",
-                                "title": "Produto de exemplo",
+                                "id": "string",
+                                "externalId": "string",
+                                "url": "string",
+                                "title": "string",
                                 "condition": "string",
                                 "stock": 0,
                                 "cost": 0,
                                 "currency": "string",
-                                "description": "Descrição de exemplo",
-                                "technicalSpecification": "Especificação de exemplo",
-                                "additionalInformation": "exemplo",
+                                "description": "string",
+                                "technicalSpecification": "string",
+                                "additionalInformation": "string",
                                 "pictures": [
                                   {
-                                    "size": "exemplo",
-                                    "secure_url": "exemplo",
-                                    "id": "ID_EXEMPLO",
-                                    "url": "exemplo",
-                                    "max_size": "exemplo",
-                                    "quality": "exemplo",
-                                    "name": "Exemplo",
-                                    "externalId": "ID_EXEMPLO"
+                                    "size": "string",
+                                    "secure_url": "string",
+                                    "id": "string",
+                                    "url": "string",
+                                    "max_size": "string",
+                                    "quality": "string",
+                                    "name": "string",
+                                    "externalId": "string"
                                   }
                                 ],
                                 "price": 0,
                                 "warranty": "string",
-                                "business": "Fornecedor exemplo",
-                                "ean": "0000000000000",
-                                "eanInvoice": "0000000000000",
+                                "business": "string",
+                                "ean": "string",
+                                "eanInvoice": "string",
                                 "height": 0,
                                 "weight": 0,
                                 "weightGross": 0,
                                 "depth": 0,
                                 "width": 0,
-                                "brand": "Marca exemplo",
-                                "model": "Modelo exemplo",
+                                "brand": "string",
+                                "model": "string",
                                 "ncm": "string",
                                 "cest": "string",
                                 "origin": 0,
-                                "unit": "exemplo",
+                                "unit": "string",
                                 "customerId": 0,
                                 "updateStock": true,
-                                "channel": "exemplo",
+                                "channel": "string",
                                 "integrationType": "string",
                                 "deadlineCrossdocking": 0,
                                 "productsBusinessUnit": [
                                   {
-                                    "id": "ID_EXEMPLO",
-                                    "name": "Exemplo",
-                                    "city": "exemplo",
-                                    "state": "exemplo",
+                                    "id": "string",
+                                    "name": "string",
+                                    "city": "string",
+                                    "state": "string",
                                     "stock": 0,
                                     "stockWithReservation": 0,
                                     "reserved": 0,
                                     "price": 0,
                                     "currency": "string",
-                                    "unconsidered": "exemplo",
-                                    "caller": "exemplo"
+                                    "unconsidered": "string",
+                                    "caller": "string"
                                   }
                                 ],
                                 "isImportProduct": true,
-                                "note": "exemplo",
-                                "youtubeId": "exemplo",
-                                "location": "A1",
-                                "productType": "exemplo",
+                                "note": "string",
+                                "youtubeId": "string",
+                                "location": "string",
+                                "productType": "string",
                                 "isVariation": true,
                                 "status": "string",
                                 "productsComposition": [
                                   {
-                                    "id": 1001,
+                                    "id": 0,
                                     "productId": 0,
-                                    "title": "Produto de exemplo",
-                                    "sku": "SKU_EXEMPLO",
+                                    "title": "string",
+                                    "sku": "string",
                                     "pictures": [
                                       {
-                                        "size": "exemplo",
-                                        "secure_url": "exemplo",
-                                        "id": "ID_EXEMPLO",
-                                        "url": "exemplo",
-                                        "max_size": "exemplo",
-                                        "quality": "exemplo",
-                                        "name": "Exemplo",
-                                        "externalId": "ID_EXEMPLO"
+                                        "size": "string",
+                                        "secure_url": "string",
+                                        "id": "string",
+                                        "url": "string",
+                                        "max_size": "string",
+                                        "quality": "string",
+                                        "name": "string",
+                                        "externalId": "string"
                                       }
                                     ],
-                                    "brand": "Marca exemplo",
+                                    "brand": "string",
                                     "quantity": 0,
                                     "unitValue": 0,
                                     "stock": 0,
@@ -2316,7 +2316,7 @@
                                 ],
                                 "warrantyProvider": "string",
                                 "quantityItemsSamePackaging": 0,
-                                "erpId": "ID_EXEMPLO",
+                                "erpId": "string",
                                 "stockFixed": 0,
                                 "stockMinimum": 0,
                                 "stockProvider": 0,
@@ -2325,29 +2325,29 @@
                                 "usePicturesFromFatherVariation": true,
                                 "productsCategory": [
                                   {
-                                    "id": 1001,
+                                    "id": 0,
                                     "parentId": 0,
                                     "getpId": 0,
-                                    "categoryDescription": "exemplo",
+                                    "categoryDescription": "string",
                                     "level": 0,
                                     "isNew": true,
                                     "isEdited": true,
-                                    "categoryId": "exemplo",
+                                    "categoryId": "string",
                                     "productId": 0,
-                                    "productDescription": "exemplo"
+                                    "productDescription": "string"
                                   }
                                 ],
                                 "variations": [
                                   {
-                                    "id": "ID_EXEMPLO",
+                                    "id": "string",
                                     "attribute_combinations": [
                                       {
-                                        "id": "ID_EXEMPLO",
-                                        "attribute_group_id": "exemplo",
-                                        "name": "Exemplo",
-                                        "attribute_group_name": "exemplo",
-                                        "value_name": "exemplo",
-                                        "value_id": "exemplo",
+                                        "id": "string",
+                                        "attribute_group_id": "string",
+                                        "name": "string",
+                                        "attribute_group_name": "string",
+                                        "value_name": "string",
+                                        "value_id": "string",
                                         "tags": {
                                           "allow_variations": true,
                                           "defines_picture": true,
@@ -2359,49 +2359,49 @@
                                           "grid_template_required": true
                                         },
                                         "attribute_send": true,
-                                        "hierarchy": "exemplo",
+                                        "hierarchy": "string",
                                         "relevance": 0,
-                                        "value_type": "exemplo",
+                                        "value_type": "string",
                                         "value_max_length": 0,
                                         "values": [
                                           {
-                                            "id": "ID_EXEMPLO",
-                                            "name": "Exemplo",
+                                            "id": "string",
+                                            "name": "string",
                                             "attributes": [
                                               {
-                                                "id": 1001,
+                                                "id": 0,
                                                 "value": 0
                                               }
                                             ],
                                             "brandList": [
                                               {
-                                                "id": 1001
+                                                "id": 0
                                               }
                                             ]
                                           }
                                         ],
                                         "allowed_units": [
                                           {
-                                            "id": "ID_EXEMPLO",
-                                            "name": "Exemplo"
+                                            "id": "string",
+                                            "name": "string"
                                           }
                                         ],
-                                        "descriptionUnit": "exemplo",
+                                        "descriptionUnit": "string",
                                         "required": true,
-                                        "translate_value_name": "exemplo",
+                                        "translate_value_name": "string",
                                         "field": {
-                                          "text_type": "exemplo"
+                                          "text_type": "string"
                                         }
                                       }
                                     ],
                                     "attributes": [
                                       {
-                                        "id": "ID_EXEMPLO",
-                                        "attribute_group_id": "exemplo",
-                                        "name": "Exemplo",
-                                        "attribute_group_name": "exemplo",
-                                        "value_name": "exemplo",
-                                        "value_id": "exemplo",
+                                        "id": "string",
+                                        "attribute_group_id": "string",
+                                        "name": "string",
+                                        "attribute_group_name": "string",
+                                        "value_name": "string",
+                                        "value_id": "string",
                                         "tags": {
                                           "allow_variations": true,
                                           "defines_picture": true,
@@ -2413,38 +2413,38 @@
                                           "grid_template_required": true
                                         },
                                         "attribute_send": true,
-                                        "hierarchy": "exemplo",
+                                        "hierarchy": "string",
                                         "relevance": 0,
-                                        "value_type": "exemplo",
+                                        "value_type": "string",
                                         "value_max_length": 0,
                                         "values": [
                                           {
-                                            "id": "ID_EXEMPLO",
-                                            "name": "Exemplo",
+                                            "id": "string",
+                                            "name": "string",
                                             "attributes": [
                                               {
-                                                "id": 1001,
+                                                "id": 0,
                                                 "value": 0
                                               }
                                             ],
                                             "brandList": [
                                               {
-                                                "id": 1001
+                                                "id": 0
                                               }
                                             ]
                                           }
                                         ],
                                         "allowed_units": [
                                           {
-                                            "id": "ID_EXEMPLO",
-                                            "name": "Exemplo"
+                                            "id": "string",
+                                            "name": "string"
                                           }
                                         ],
-                                        "descriptionUnit": "exemplo",
+                                        "descriptionUnit": "string",
                                         "required": true,
-                                        "translate_value_name": "exemplo",
+                                        "translate_value_name": "string",
                                         "field": {
-                                          "text_type": "exemplo"
+                                          "text_type": "string"
                                         }
                                       }
                                     ],
@@ -2452,29 +2452,29 @@
                                     "changeAvailableQuantity": true,
                                     "price": 0,
                                     "sold_quantity": 0,
-                                    "seller_custom_field": "SKU_EXEMPLO",
-                                    "catalog_product_id": "exemplo",
+                                    "seller_custom_field": "string",
+                                    "catalog_product_id": "string",
                                     "picture_ids": [
-                                      "exemplo"
+                                      "string"
                                     ],
                                     "promotionalPrice": 0,
-                                    "title": "Produto de exemplo",
-                                    "categoryId": "exemplo",
-                                    "inventory_id": "exemplo"
+                                    "title": "string",
+                                    "categoryId": "string",
+                                    "inventory_id": "string"
                                   }
                                 ],
                                 "productsRootCharacteristic": [
                                   {
-                                    "id": 1001,
-                                    "key": "00000000000000000000000000000000000000000000",
-                                    "name": "Exemplo",
+                                    "id": 0,
+                                    "key": "string",
+                                    "name": "string",
                                     "showInExpedition": true,
                                     "addInvoiceNote": true,
                                     "specifications": [
                                       {
-                                        "id": 1001,
-                                        "key": "00000000000000000000000000000000000000000000",
-                                        "value": "exemplo",
+                                        "id": 0,
+                                        "key": "string",
+                                        "value": "string",
                                         "status": "string"
                                       }
                                     ],
@@ -2483,23 +2483,23 @@
                                 ],
                                 "categories": [
                                   {
-                                    "id": "ID_EXEMPLO",
-                                    "parentId": "exemplo",
-                                    "parId": "exemplo",
-                                    "getpId": "exemplo",
-                                    "name": "Exemplo",
+                                    "id": "string",
+                                    "parentId": "string",
+                                    "parId": "string",
+                                    "getpId": "string",
+                                    "name": "string",
                                     "lastLevel": true,
                                     "isNew": true,
                                     "isEdited": true,
                                     "commission": 0,
                                     "attributes": [
                                       {
-                                        "id": "ID_EXEMPLO",
-                                        "attribute_group_id": "exemplo",
-                                        "name": "Exemplo",
-                                        "attribute_group_name": "exemplo",
-                                        "value_name": "exemplo",
-                                        "value_id": "exemplo",
+                                        "id": "string",
+                                        "attribute_group_id": "string",
+                                        "name": "string",
+                                        "attribute_group_name": "string",
+                                        "value_name": "string",
+                                        "value_id": "string",
                                         "tags": {
                                           "allow_variations": true,
                                           "defines_picture": true,
@@ -2511,74 +2511,74 @@
                                           "grid_template_required": true
                                         },
                                         "attribute_send": true,
-                                        "hierarchy": "exemplo",
+                                        "hierarchy": "string",
                                         "relevance": 0,
-                                        "value_type": "exemplo",
+                                        "value_type": "string",
                                         "value_max_length": 0,
                                         "values": [
                                           {
-                                            "id": "ID_EXEMPLO",
-                                            "name": "Exemplo",
+                                            "id": "string",
+                                            "name": "string",
                                             "attributes": [
                                               {
-                                                "id": 1001,
+                                                "id": 0,
                                                 "value": 0
                                               }
                                             ],
                                             "brandList": [
                                               {
-                                                "id": 1001
+                                                "id": 0
                                               }
                                             ]
                                           }
                                         ],
                                         "allowed_units": [
                                           {
-                                            "id": "ID_EXEMPLO",
-                                            "name": "Exemplo"
+                                            "id": "string",
+                                            "name": "string"
                                           }
                                         ],
-                                        "descriptionUnit": "exemplo",
+                                        "descriptionUnit": "string",
                                         "required": true,
-                                        "translate_value_name": "exemplo",
+                                        "translate_value_name": "string",
                                         "field": {
-                                          "text_type": "exemplo"
+                                          "text_type": "string"
                                         }
                                       }
                                     ],
                                     "settings": {
                                       "max_pictures_per_item": 0,
                                       "max_pictures_per_item_var": 0,
-                                      "catalog_domain": "exemplo"
+                                      "catalog_domain": "string"
                                     },
-                                    "domainId": "exemplo"
+                                    "domainId": "string"
                                   }
                                 ],
                                 "dateCreated": "string",
                                 "dateLastUpdated": "string",
-                                "plainTextDescription": "Descrição de exemplo"
+                                "plainTextDescription": "string"
                               },
                               "customer": {
-                                "id": "ID_EXEMPLO",
-                                "codigo": "exemplo",
-                                "descricao": "exemplo"
+                                "id": "string",
+                                "codigo": "string",
+                                "descricao": "string"
                               },
-                              "created": "exemplo",
-                              "code": "exemplo"
+                              "created": "string",
+                              "code": "string"
                             }
                           ],
                           "productsRootCharacteristic": [
                             {
-                              "id": 1001,
-                              "key": "00000000000000000000000000000000000000000000",
-                              "name": "Exemplo",
+                              "id": 0,
+                              "key": "string",
+                              "name": "string",
                               "showInExpedition": true,
                               "addInvoiceNote": true,
                               "specifications": [
                                 {
-                                  "id": 1001,
-                                  "key": "00000000000000000000000000000000000000000000",
-                                  "value": "exemplo",
+                                  "id": 0,
+                                  "key": "string",
+                                  "value": "string",
                                   "status": "string"
                                 }
                               ],
@@ -2587,23 +2587,23 @@
                           ],
                           "categories": [
                             {
-                              "id": "ID_EXEMPLO",
-                              "parentId": "exemplo",
-                              "parId": "exemplo",
-                              "getpId": "exemplo",
-                              "name": "Exemplo",
+                              "id": "string",
+                              "parentId": "string",
+                              "parId": "string",
+                              "getpId": "string",
+                              "name": "string",
                               "lastLevel": true,
                               "isNew": true,
                               "isEdited": true,
                               "commission": 0,
                               "attributes": [
                                 {
-                                  "id": "ID_EXEMPLO",
-                                  "attribute_group_id": "exemplo",
-                                  "name": "Exemplo",
-                                  "attribute_group_name": "exemplo",
-                                  "value_name": "exemplo",
-                                  "value_id": "exemplo",
+                                  "id": "string",
+                                  "attribute_group_id": "string",
+                                  "name": "string",
+                                  "attribute_group_name": "string",
+                                  "value_name": "string",
+                                  "value_id": "string",
                                   "tags": {
                                     "allow_variations": true,
                                     "defines_picture": true,
@@ -2615,59 +2615,59 @@
                                     "grid_template_required": true
                                   },
                                   "attribute_send": true,
-                                  "hierarchy": "exemplo",
+                                  "hierarchy": "string",
                                   "relevance": 0,
-                                  "value_type": "exemplo",
+                                  "value_type": "string",
                                   "value_max_length": 0,
                                   "values": [
                                     {
-                                      "id": "ID_EXEMPLO",
-                                      "name": "Exemplo",
+                                      "id": "string",
+                                      "name": "string",
                                       "attributes": [
                                         {
-                                          "id": 1001,
+                                          "id": 0,
                                           "value": 0
                                         }
                                       ],
                                       "brandList": [
                                         {
-                                          "id": 1001
+                                          "id": 0
                                         }
                                       ]
                                     }
                                   ],
                                   "allowed_units": [
                                     {
-                                      "id": "ID_EXEMPLO",
-                                      "name": "Exemplo"
+                                      "id": "string",
+                                      "name": "string"
                                     }
                                   ],
-                                  "descriptionUnit": "exemplo",
+                                  "descriptionUnit": "string",
                                   "required": true,
-                                  "translate_value_name": "exemplo",
+                                  "translate_value_name": "string",
                                   "field": {
-                                    "text_type": "exemplo"
+                                    "text_type": "string"
                                   }
                                 }
                               ],
                               "settings": {
                                 "max_pictures_per_item": 0,
                                 "max_pictures_per_item_var": 0,
-                                "catalog_domain": "exemplo"
+                                "catalog_domain": "string"
                               },
-                              "domainId": "exemplo"
+                              "domainId": "string"
                             }
                           ],
                           "dateCreated": "string",
                           "dateLastUpdated": "string",
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ],
-                          "plainTextDescription": "Descrição de exemplo"
+                          "plainTextDescription": "string"
                         }
                       ]
                     }
@@ -2676,15 +2676,15 @@
                     "summary": "Schema -> StructureType = simple",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'simple'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "products": [
                         {
-                          "sku": "SKU_EXEMPLO",
+                          "sku": "string",
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ]
                         }
@@ -3005,38 +3005,38 @@
                     "summary": "Schema -> StructureType = complete",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "orders": [
                         {
-                          "id": "ID_EXEMPLO",
+                          "id": "string",
                           "buyer": {
-                            "nickname": "cliente_exemplo",
-                            "last_name": "exemplo",
-                            "id": 1001,
-                            "first_name": "exemplo",
-                            "email": "usuario@example.com",
-                            "full_name": "Cliente Exemplo",
+                            "nickname": "string",
+                            "last_name": "string",
+                            "id": 0,
+                            "first_name": "string",
+                            "email": "string",
+                            "full_name": "string",
                             "billing_info": {
-                              "doc_number": "00000000000",
+                              "doc_number": "string",
                               "doc_type": "string",
-                              "ie": "0000000000000"
+                              "ie": "string"
                             },
                             "phone": {
-                              "number": "exemplo",
-                              "extension": "exemplo",
-                              "area_code": "exemplo"
+                              "number": "string",
+                              "extension": "string",
+                              "area_code": "string"
                             },
                             "alternative_phone": {
-                              "number": "exemplo",
-                              "extension": "exemplo",
-                              "area_code": "exemplo"
+                              "number": "string",
+                              "extension": "string",
+                              "area_code": "string"
                             }
                           },
                           "intermediary": {
-                            "salesDocument": "00000000000000",
-                            "salesName": "Canal exemplo",
-                            "paymentDocument": "exemplo",
-                            "paymentName": "exemplo",
+                            "salesDocument": "string",
+                            "salesName": "string",
+                            "paymentDocument": "string",
+                            "paymentName": "string",
                             "fillIntermediarySales": true,
                             "fillIntermediaryPayment": true
                           },
@@ -3044,110 +3044,110 @@
                             "local_pick_up": true,
                             "free_shipping": true,
                             "receiver_address": {
-                              "address_line": "Rua Exemplo, 100",
+                              "address_line": "string",
                               "latitude": 0,
                               "longitude": 0,
-                              "street_number": "100",
-                              "id": 1001,
-                              "zip_code": "00000000",
-                              "street_name": "Rua Exemplo",
-                              "comment": "Complemento exemplo",
+                              "street_number": "string",
+                              "id": 0,
+                              "zip_code": "string",
+                              "street_name": "string",
+                              "comment": "string",
                               "neighborhood": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "country": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "city": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO",
+                                "name": "string",
+                                "id": "string",
                                 "codeIbge": 0
                               },
                               "state": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
-                              "name": "Exemplo"
+                              "name": "string"
                             },
                             "sender_address": {
-                              "address_line": "Rua Exemplo, 100",
+                              "address_line": "string",
                               "latitude": 0,
                               "longitude": 0,
-                              "street_number": "100",
-                              "id": 1001,
-                              "zip_code": "00000000",
-                              "street_name": "Rua Exemplo",
-                              "comment": "Complemento exemplo",
+                              "street_number": "string",
+                              "id": 0,
+                              "zip_code": "string",
+                              "street_name": "string",
+                              "comment": "string",
                               "neighborhood": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "country": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "city": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO",
+                                "name": "string",
+                                "id": "string",
                                 "codeIbge": 0
                               },
                               "state": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
-                              "name": "Exemplo"
+                              "name": "string"
                             },
                             "cost": 0,
-                            "substatus": "exemplo",
+                            "substatus": "string",
                             "date_created": "string",
                             "date_first_printed": "string",
                             "sender_id": 0,
                             "shipping_mode": "string",
                             "service_id": 0,
-                            "id": "ID_EXEMPLO",
-                            "picking_type": "exemplo",
+                            "id": "string",
+                            "picking_type": "string",
                             "currency_id": "string",
                             "status": "string",
                             "shipment_type": "string",
-                            "shipping_number": "exemplo",
+                            "shipping_number": "string",
                             "logistic_type": "string",
-                            "mode": "exemplo",
+                            "mode": "string",
                             "logistic": {
-                              "id": 1001,
-                              "logisticId": "exemplo",
-                              "name": "Exemplo",
-                              "freightType": "exemplo",
-                              "vehiclePlate": "exemplo",
-                              "vehicleState": "exemplo",
-                              "rntc": "exemplo",
-                              "document": "0000000000000",
-                              "ie": "0000000000000",
-                              "address": "exemplo",
-                              "city": "exemplo",
-                              "state": "exemplo",
-                              "trackingUrl": "exemplo",
-                              "trackingKey": "exemplo",
-                              "trackingMethod": "exemplo",
-                              "emailInvoice": "usuario@example.com",
-                              "number": "exemplo",
-                              "complement": "exemplo",
-                              "neighborhood": "exemplo",
-                              "zipCode": "00000000",
+                              "id": 0,
+                              "logisticId": "string",
+                              "name": "string",
+                              "freightType": "string",
+                              "vehiclePlate": "string",
+                              "vehicleState": "string",
+                              "rntc": "string",
+                              "document": "string",
+                              "ie": "string",
+                              "address": "string",
+                              "city": "string",
+                              "state": "string",
+                              "trackingUrl": "string",
+                              "trackingKey": "string",
+                              "trackingMethod": "string",
+                              "emailInvoice": "string",
+                              "number": "string",
+                              "complement": "string",
+                              "neighborhood": "string",
+                              "zipCode": "string",
                               "logisticType": "string",
-                              "phone": "exemplo",
-                              "email": "usuario@example.com",
-                              "urlLogo": "exemplo",
-                              "urlZebra": "exemplo"
+                              "phone": "string",
+                              "email": "string",
+                              "urlLogo": "string",
+                              "urlZebra": "string"
                             },
                             "shipping_option": {
                               "list_cost": 0,
                               "cost": 0,
                               "comission": 0
                             },
-                            "customerLogoZpl": "exemplo",
-                            "deposit_type": "exemplo",
+                            "customerLogoZpl": "string",
+                            "deposit_type": "string",
                             "statusHistory": {
                               "date_cancelled": "string",
                               "date_delivered": "string",
@@ -3159,21 +3159,21 @@
                               "date_returned": "string"
                             },
                             "additionalServiceCode": [
-                              "exemplo"
+                              "string"
                             ],
                             "insurancePrice": 0,
                             "tags": [
-                              "exemplo"
+                              "string"
                             ],
                             "costs": [
                               {
-                                "description": "Descrição de exemplo",
-                                "cost": "exemplo"
+                                "description": "string",
+                                "cost": "string"
                               }
                             ],
                             "deliveryMethodId": 0,
-                            "deliveryMethodName": "exemplo",
-                            "carrierImageZpl": "exemplo",
+                            "deliveryMethodName": "string",
+                            "carrierImageZpl": "string",
                             "receiver_id": 0
                           },
                           "quantityPackage": 0,
@@ -3188,183 +3188,183 @@
                               "cost": 0,
                               "discount": 0,
                               "item": {
-                                "seller_custom_field": "SKU_EXEMPLO",
-                                "category_id": "exemplo",
-                                "variation_id": "exemplo",
-                                "id": "ID_EXEMPLO",
-                                "title": "Produto de exemplo",
+                                "seller_custom_field": "string",
+                                "category_id": "string",
+                                "variation_id": "string",
+                                "id": "string",
+                                "title": "string",
                                 "origin": "string",
-                                "uniTOfMeasurement": "exemplo",
+                                "uniTOfMeasurement": "string",
                                 "kitQuantity": 0,
-                                "tempId": "exemplo",
+                                "tempId": "string",
                                 "weight": 0,
-                                "ean": "0000000000000",
-                                "eanInvoice": "0000000000000",
-                                "eanChild": "exemplo",
-                                "defaultPicture": "exemplo",
-                                "location": "A1",
-                                "externalId": "ID_EXEMPLO",
-                                "cfop": "exemplo",
+                                "ean": "string",
+                                "eanInvoice": "string",
+                                "eanChild": "string",
+                                "defaultPicture": "string",
+                                "location": "string",
+                                "externalId": "string",
+                                "cfop": "string",
                                 "ncm": "string",
                                 "cest": "string"
                               },
                               "orderSpecifications": [
                                 {
-                                  "name": "Exemplo",
-                                  "value": "exemplo"
+                                  "name": "string",
+                                  "value": "string"
                                 }
                               ],
                               "quantityBarCodeValidated": 0,
                               "unitMeasurement": "string",
-                              "cfop": "exemplo"
+                              "cfop": "string"
                             }
                           ],
                           "payments": [
                             {
-                              "id": "ID_EXEMPLO",
+                              "id": "string",
                               "status": "string",
-                              "payment_type": "exemplo",
-                              "payment_type_channel": "exemplo",
+                              "payment_type": "string",
+                              "payment_type_channel": "string",
                               "installments": 0,
-                              "installment_id": "exemplo",
-                              "payment_method_id": "exemplo",
-                              "payment_method_id_channel": "exemplo",
+                              "installment_id": "string",
+                              "payment_method_id": "string",
+                              "payment_method_id_channel": "string",
                               "installment_amount": 0,
                               "shipping_cost": 0,
                               "total_paid_amount": 0,
                               "transaction_amount": 0,
                               "installment_transaction_amount": 0,
-                              "channel": "exemplo",
-                              "digitable_line": "exemplo",
-                              "url_slip": "exemplo",
-                              "url_slip_pdf": "exemplo",
+                              "channel": "string",
+                              "digitable_line": "string",
+                              "url_slip": "string",
+                              "url_slip_pdf": "string",
                               "dueDate": "2023-02-07T20:49:33.945Z",
-                              "authorization_code": "exemplo"
+                              "authorization_code": "string"
                             }
                           ],
                           "invoices": [
                             {
-                              "id": "ID_EXEMPLO",
-                              "key": "00000000000000000000000000000000000000000000",
-                              "number": "exemplo",
-                              "line": "exemplo",
+                              "id": "string",
+                              "key": "string",
+                              "number": "string",
+                              "line": "string",
                               "issue_date": "string",
                               "status": "string",
-                              "reason": "exemplo",
+                              "reason": "string",
                               "totalValue": 0,
-                              "externalId": "ID_EXEMPLO",
+                              "externalId": "string",
                               "logistic": {
-                                "id": 1001,
-                                "logisticId": "exemplo",
-                                "name": "Exemplo",
-                                "freightType": "exemplo",
-                                "vehiclePlate": "exemplo",
-                                "vehicleState": "exemplo",
-                                "rntc": "exemplo",
-                                "document": "0000000000000",
-                                "ie": "0000000000000",
-                                "address": "exemplo",
-                                "city": "exemplo",
-                                "state": "exemplo",
-                                "trackingUrl": "exemplo",
-                                "trackingKey": "exemplo",
-                                "trackingMethod": "exemplo",
-                                "emailInvoice": "usuario@example.com",
-                                "number": "exemplo",
-                                "complement": "exemplo",
-                                "neighborhood": "exemplo",
-                                "zipCode": "00000000",
+                                "id": 0,
+                                "logisticId": "string",
+                                "name": "string",
+                                "freightType": "string",
+                                "vehiclePlate": "string",
+                                "vehicleState": "string",
+                                "rntc": "string",
+                                "document": "string",
+                                "ie": "string",
+                                "address": "string",
+                                "city": "string",
+                                "state": "string",
+                                "trackingUrl": "string",
+                                "trackingKey": "string",
+                                "trackingMethod": "string",
+                                "emailInvoice": "string",
+                                "number": "string",
+                                "complement": "string",
+                                "neighborhood": "string",
+                                "zipCode": "string",
                                 "logisticType": "string",
-                                "phone": "exemplo",
-                                "email": "usuario@example.com",
-                                "urlLogo": "exemplo",
-                                "urlZebra": "exemplo"
+                                "phone": "string",
+                                "email": "string",
+                                "urlLogo": "string",
+                                "urlZebra": "string"
                               },
-                              "urlXml": "exemplo",
-                              "urlPdf": "exemplo",
+                              "urlXml": "string",
+                              "urlPdf": "string",
                               "buyer": {
-                                "nickname": "cliente_exemplo",
-                                "last_name": "exemplo",
-                                "id": 1001,
-                                "first_name": "exemplo",
-                                "email": "usuario@example.com",
-                                "full_name": "Cliente Exemplo",
+                                "nickname": "string",
+                                "last_name": "string",
+                                "id": 0,
+                                "first_name": "string",
+                                "email": "string",
+                                "full_name": "string",
                                 "billing_info": {
-                                  "doc_number": "00000000000",
+                                  "doc_number": "string",
                                   "doc_type": "string",
-                                  "ie": "0000000000000"
+                                  "ie": "string"
                                 },
                                 "phone": {
-                                  "number": "exemplo",
-                                  "extension": "exemplo",
-                                  "area_code": "exemplo"
+                                  "number": "string",
+                                  "extension": "string",
+                                  "area_code": "string"
                                 },
                                 "alternative_phone": {
-                                  "number": "exemplo",
-                                  "extension": "exemplo",
-                                  "area_code": "exemplo"
+                                  "number": "string",
+                                  "extension": "string",
+                                  "area_code": "string"
                                 }
                               },
                               "company": {
-                                "name": "Exemplo",
-                                "nameFantasy": "exemplo",
-                                "document": "0000000000000",
-                                "ie": "0000000000000",
+                                "name": "string",
+                                "nameFantasy": "string",
+                                "document": "string",
+                                "ie": "string",
                                 "senderAddress": {
-                                  "address_line": "Rua Exemplo, 100",
+                                  "address_line": "string",
                                   "latitude": 0,
                                   "longitude": 0,
-                                  "street_number": "100",
-                                  "id": 1001,
-                                  "zip_code": "00000000",
-                                  "street_name": "Rua Exemplo",
-                                  "comment": "Complemento exemplo",
+                                  "street_number": "string",
+                                  "id": 0,
+                                  "zip_code": "string",
+                                  "street_name": "string",
+                                  "comment": "string",
                                   "neighborhood": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO"
+                                    "name": "string",
+                                    "id": "string"
                                   },
                                   "country": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO"
+                                    "name": "string",
+                                    "id": "string"
                                   },
                                   "city": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO",
+                                    "name": "string",
+                                    "id": "string",
                                     "codeIbge": 0
                                   },
                                   "state": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO"
+                                    "name": "string",
+                                    "id": "string"
                                   },
-                                  "name": "Exemplo"
+                                  "name": "string"
                                 },
-                                "statusErp": "exemplo",
-                                "id": "ID_EXEMPLO",
-                                "responsiblePartner": "exemplo",
-                                "businessPhone": "exemplo",
-                                "taxRegime": "exemplo",
-                                "calculateInssTaxBasedOn": "exemplo",
-                                "revenueFromThePreviousYear": "exemplo",
-                                "monthlyAveragePayroll": "exemplo",
+                                "statusErp": "string",
+                                "id": "string",
+                                "responsiblePartner": "string",
+                                "businessPhone": "string",
+                                "taxRegime": "string",
+                                "calculateInssTaxBasedOn": "string",
+                                "revenueFromThePreviousYear": "string",
+                                "monthlyAveragePayroll": "string",
                                 "declarationForLegalPurposes": true,
                                 "infoAuthorization": true,
-                                "kindOfPerson": "exemplo",
-                                "mainActivity": "exemplo",
-                                "describeYourActivity": "exemplo",
+                                "kindOfPerson": "string",
+                                "mainActivity": "string",
+                                "describeYourActivity": "string",
                                 "commerce": true,
                                 "geteCommerce": true,
                                 "industry": true,
                                 "services": true,
                                 "free": true,
-                                "municipalRegistration": "exemplo",
-                                "cnae": "exemplo",
-                                "companySize": "exemplo",
-                                "numberOfEmployees": "exemplo",
-                                "contactPersons": "exemplo",
-                                "cellphone": "exemplo",
-                                "email": "usuario@example.com",
-                                "billingEmail": "usuario@example.com",
-                                "website": "exemplo"
+                                "municipalRegistration": "string",
+                                "cnae": "string",
+                                "companySize": "string",
+                                "numberOfEmployees": "string",
+                                "contactPersons": "string",
+                                "cellphone": "string",
+                                "email": "string",
+                                "billingEmail": "string",
+                                "website": "string"
                               },
                               "items": [
                                 {
@@ -3377,69 +3377,69 @@
                                   "cost": 0,
                                   "discount": 0,
                                   "item": {
-                                    "seller_custom_field": "SKU_EXEMPLO",
-                                    "category_id": "exemplo",
-                                    "variation_id": "exemplo",
-                                    "id": "ID_EXEMPLO",
-                                    "title": "Produto de exemplo",
+                                    "seller_custom_field": "string",
+                                    "category_id": "string",
+                                    "variation_id": "string",
+                                    "id": "string",
+                                    "title": "string",
                                     "origin": "string",
-                                    "uniTOfMeasurement": "exemplo",
+                                    "uniTOfMeasurement": "string",
                                     "kitQuantity": 0,
-                                    "tempId": "exemplo",
+                                    "tempId": "string",
                                     "weight": 0,
-                                    "ean": "0000000000000",
-                                    "eanInvoice": "0000000000000",
-                                    "eanChild": "exemplo",
-                                    "defaultPicture": "exemplo",
-                                    "location": "A1",
-                                    "externalId": "ID_EXEMPLO",
-                                    "cfop": "exemplo",
+                                    "ean": "string",
+                                    "eanInvoice": "string",
+                                    "eanChild": "string",
+                                    "defaultPicture": "string",
+                                    "location": "string",
+                                    "externalId": "string",
+                                    "cfop": "string",
                                     "ncm": "string",
                                     "cest": "string"
                                   },
                                   "orderSpecifications": [
                                     {
-                                      "name": "Exemplo",
-                                      "value": "exemplo"
+                                      "name": "string",
+                                      "value": "string"
                                     }
                                   ],
                                   "quantityBarCodeValidated": 0,
                                   "unitMeasurement": "string",
-                                  "cfop": "exemplo"
+                                  "cfop": "string"
                                 }
                               ],
-                              "keyReferenced": "exemplo",
-                              "typeReferenced": "exemplo",
+                              "keyReferenced": "string",
+                              "typeReferenced": "string",
                               "totalValueFreigth": 0,
                               "volume": 0
                             }
                           ],
                           "status": "string",
-                          "subStatus": "exemplo",
-                          "subStatusExpedition": "exemplo",
-                          "storeId": "exemplo",
-                          "externalId": "ID_EXEMPLO",
-                          "externalIdInvoice": "exemplo",
-                          "externalIdInvoiceDevolution": "exemplo",
-                          "externalIdErp": "exemplo",
+                          "subStatus": "string",
+                          "subStatusExpedition": "string",
+                          "storeId": "string",
+                          "externalId": "string",
+                          "externalIdInvoice": "string",
+                          "externalIdInvoiceDevolution": "string",
+                          "externalIdErp": "string",
                           "integrationType": "string",
                           "totalValue": 0,
-                          "channel": "exemplo",
-                          "channelName": "Loja exemplo",
+                          "channel": "string",
+                          "channelName": "string",
                           "customerId": 0,
                           "packId": 0,
-                          "advertisement": "exemplo",
+                          "advertisement": "string",
                           "discount": 0,
                           "discountMarketplace": 0,
                           "fulfilled": true,
                           "totalWeight": 0,
                           "queueId": 0,
                           "totalMetricCubic": 0,
-                          "expeditionBlock": "exemplo",
-                          "erpId": "ID_EXEMPLO",
+                          "expeditionBlock": "string",
+                          "erpId": "string",
                           "totalTax": 0,
                           "isMainErp": true,
-                          "expeditionLevel": "exemplo",
+                          "expeditionLevel": "string",
                           "hasStock": true,
                           "hasAccount": true,
                           "totalHeight": 0,
@@ -3451,7 +3451,7 @@
                           "dateApproved": "string",
                           "datePackingList": "string",
                           "dateClosed": "string",
-                          "additionalNoteInvoice": "Observação de exemplo",
+                          "additionalNoteInvoice": "string",
                           "statusHistory": {
                             "date_cancelled": "string",
                             "date_delivered": "string",
@@ -3468,7 +3468,7 @@
                           "escrowAmount": 0,
                           "tags": [
                             {
-                              "url": "exemplo"
+                              "url": "string"
                             }
                           ],
                           "orderConciliation": {
@@ -3490,16 +3490,16 @@
                             "percentageNet": 0
                           },
                           "queueStatus": "string",
-                          "sellerCommissionId": "exemplo",
-                          "warehouseId": "exemplo",
+                          "sellerCommissionId": "string",
+                          "warehouseId": "string",
                           "isOrderLocked": true,
                           "logisticQuoteId": 0,
-                          "logisticOrderId": "exemplo",
+                          "logisticOrderId": "string",
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ]
                         }
@@ -3510,15 +3510,15 @@
                     "summary": "Schema -> StructureType = simple",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'simple'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "orders": [
                         {
-                          "completeOrderNumber": "exemplo",
+                          "completeOrderNumber": "string",
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ]
                         }
@@ -3722,9 +3722,9 @@
                   "description": "Exemplo de JSON na requisição",
                   "value": {
                     "completeOrderNumbers": [
-                      "exemplo",
-                      "exemplo",
-                      "exemplo"
+                      "completeOrderNumber1",
+                      "completeOrderNumber2",
+                      "completeOrderNumber3"
                     ]
                   }
                 }
@@ -4495,9 +4495,9 @@
                 "description": "Objeto contendo um array de códigos de pedido",
                 "example": {
                   "completeOrderNumbers": [
-                    "exemplo",
-                    "exemplo",
-                    "exemplo"
+                    "orderNumber1",
+                    "orderNumber2",
+                    "orderNumber3"
                   ]
                 },
                 "default": "##default"
@@ -4508,9 +4508,9 @@
                   "description": "Exemplo de JSON na requisição",
                   "value": {
                     "completeOrderNumbers": [
-                      "exemplo",
-                      "exemplo",
-                      "exemplo"
+                      "orderNumber1",
+                      "orderNumber2",
+                      "orderNumber3"
                     ]
                   }
                 }
@@ -4821,9 +4821,9 @@
                   "description": "Exemplo de JSON na requisição",
                   "value": {
                     "completeOrderNumbers": [
-                      "exemplo",
-                      "exemplo",
-                      "exemplo"
+                      "orderNumber1",
+                      "orderNumber2",
+                      "orderNumber3"
                     ]
                   }
                 }
@@ -5353,21 +5353,21 @@
                     "summary": "Schema -> StructureType = complete",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "providers": [
                         {
-                          "id": 1001,
-                          "name": "Exemplo",
-                          "code": "exemplo",
-                          "email": "usuario@example.com",
+                          "id": 0,
+                          "name": "string",
+                          "code": "string",
+                          "email": "string",
                           "deadlineCrossdocking": 0,
                           "additionalPercentageCost": 0,
                           "additionalPercentage": 0,
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ]
                         }
@@ -5378,15 +5378,15 @@
                     "summary": "Schema -> StructureType = simple",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'simple'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "providers": [
                         {
-                          "id": "ID_EXEMPLO",
+                          "id": "string",
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ]
                         }
@@ -5531,38 +5531,38 @@
                     "summary": "Schema -> StructureType = complete",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "orders": [
                         {
-                          "id": "ID_EXEMPLO",
+                          "id": "string",
                           "buyer": {
-                            "nickname": "cliente_exemplo",
-                            "last_name": "exemplo",
-                            "id": 1001,
-                            "first_name": "exemplo",
-                            "email": "usuario@example.com",
-                            "full_name": "Cliente Exemplo",
+                            "nickname": "string",
+                            "last_name": "string",
+                            "id": 0,
+                            "first_name": "string",
+                            "email": "string",
+                            "full_name": "string",
                             "billing_info": {
-                              "doc_number": "00000000000",
+                              "doc_number": "string",
                               "doc_type": "string",
-                              "ie": "0000000000000"
+                              "ie": "string"
                             },
                             "phone": {
-                              "number": "exemplo",
-                              "extension": "exemplo",
-                              "area_code": "exemplo"
+                              "number": "string",
+                              "extension": "string",
+                              "area_code": "string"
                             },
                             "alternative_phone": {
-                              "number": "exemplo",
-                              "extension": "exemplo",
-                              "area_code": "exemplo"
+                              "number": "string",
+                              "extension": "string",
+                              "area_code": "string"
                             }
                           },
                           "intermediary": {
-                            "salesDocument": "00000000000000",
-                            "salesName": "Canal exemplo",
-                            "paymentDocument": "exemplo",
-                            "paymentName": "exemplo",
+                            "salesDocument": "string",
+                            "salesName": "string",
+                            "paymentDocument": "string",
+                            "paymentName": "string",
                             "fillIntermediarySales": true,
                             "fillIntermediaryPayment": true
                           },
@@ -5570,110 +5570,110 @@
                             "local_pick_up": true,
                             "free_shipping": true,
                             "receiver_address": {
-                              "address_line": "Rua Exemplo, 100",
+                              "address_line": "string",
                               "latitude": 0,
                               "longitude": 0,
-                              "street_number": "100",
-                              "id": 1001,
-                              "zip_code": "00000000",
-                              "street_name": "Rua Exemplo",
-                              "comment": "Complemento exemplo",
+                              "street_number": "string",
+                              "id": 0,
+                              "zip_code": "string",
+                              "street_name": "string",
+                              "comment": "string",
                               "neighborhood": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "country": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "city": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO",
+                                "name": "string",
+                                "id": "string",
                                 "codeIbge": 0
                               },
                               "state": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
-                              "name": "Exemplo"
+                              "name": "string"
                             },
                             "sender_address": {
-                              "address_line": "Rua Exemplo, 100",
+                              "address_line": "string",
                               "latitude": 0,
                               "longitude": 0,
-                              "street_number": "100",
-                              "id": 1001,
-                              "zip_code": "00000000",
-                              "street_name": "Rua Exemplo",
-                              "comment": "Complemento exemplo",
+                              "street_number": "string",
+                              "id": 0,
+                              "zip_code": "string",
+                              "street_name": "string",
+                              "comment": "string",
                               "neighborhood": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "country": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "city": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO",
+                                "name": "string",
+                                "id": "string",
                                 "codeIbge": 0
                               },
                               "state": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
-                              "name": "Exemplo"
+                              "name": "string"
                             },
                             "cost": 0,
-                            "substatus": "exemplo",
+                            "substatus": "string",
                             "date_created": "string",
                             "date_first_printed": "string",
                             "sender_id": 0,
                             "shipping_mode": "string",
                             "service_id": 0,
-                            "id": "ID_EXEMPLO",
-                            "picking_type": "exemplo",
+                            "id": "string",
+                            "picking_type": "string",
                             "currency_id": "string",
                             "status": "string",
                             "shipment_type": "string",
-                            "shipping_number": "exemplo",
+                            "shipping_number": "string",
                             "logistic_type": "string",
-                            "mode": "exemplo",
+                            "mode": "string",
                             "logistic": {
-                              "id": 1001,
-                              "logisticId": "exemplo",
-                              "name": "Exemplo",
-                              "freightType": "exemplo",
-                              "vehiclePlate": "exemplo",
-                              "vehicleState": "exemplo",
-                              "rntc": "exemplo",
-                              "document": "0000000000000",
-                              "ie": "0000000000000",
-                              "address": "exemplo",
-                              "city": "exemplo",
-                              "state": "exemplo",
-                              "trackingUrl": "exemplo",
-                              "trackingKey": "exemplo",
-                              "trackingMethod": "exemplo",
-                              "emailInvoice": "usuario@example.com",
-                              "number": "exemplo",
-                              "complement": "exemplo",
-                              "neighborhood": "exemplo",
-                              "zipCode": "00000000",
+                              "id": 0,
+                              "logisticId": "string",
+                              "name": "string",
+                              "freightType": "string",
+                              "vehiclePlate": "string",
+                              "vehicleState": "string",
+                              "rntc": "string",
+                              "document": "string",
+                              "ie": "string",
+                              "address": "string",
+                              "city": "string",
+                              "state": "string",
+                              "trackingUrl": "string",
+                              "trackingKey": "string",
+                              "trackingMethod": "string",
+                              "emailInvoice": "string",
+                              "number": "string",
+                              "complement": "string",
+                              "neighborhood": "string",
+                              "zipCode": "string",
                               "logisticType": "string",
-                              "phone": "exemplo",
-                              "email": "usuario@example.com",
-                              "urlLogo": "exemplo",
-                              "urlZebra": "exemplo"
+                              "phone": "string",
+                              "email": "string",
+                              "urlLogo": "string",
+                              "urlZebra": "string"
                             },
                             "shipping_option": {
                               "list_cost": 0,
                               "cost": 0,
                               "comission": 0
                             },
-                            "customerLogoZpl": "exemplo",
-                            "deposit_type": "exemplo",
+                            "customerLogoZpl": "string",
+                            "deposit_type": "string",
                             "statusHistory": {
                               "date_cancelled": "string",
                               "date_delivered": "string",
@@ -5685,21 +5685,21 @@
                               "date_returned": "string"
                             },
                             "additionalServiceCode": [
-                              "exemplo"
+                              "string"
                             ],
                             "insurancePrice": 0,
                             "tags": [
-                              "exemplo"
+                              "string"
                             ],
                             "costs": [
                               {
-                                "description": "Descrição de exemplo",
-                                "cost": "exemplo"
+                                "description": "string",
+                                "cost": "string"
                               }
                             ],
                             "deliveryMethodId": 0,
-                            "deliveryMethodName": "exemplo",
-                            "carrierImageZpl": "exemplo",
+                            "deliveryMethodName": "string",
+                            "carrierImageZpl": "string",
                             "receiver_id": 0
                           },
                           "quantityPackage": 0,
@@ -5714,183 +5714,183 @@
                               "cost": 0,
                               "discount": 0,
                               "item": {
-                                "seller_custom_field": "SKU_EXEMPLO",
-                                "category_id": "exemplo",
-                                "variation_id": "exemplo",
-                                "id": "ID_EXEMPLO",
-                                "title": "Produto de exemplo",
+                                "seller_custom_field": "string",
+                                "category_id": "string",
+                                "variation_id": "string",
+                                "id": "string",
+                                "title": "string",
                                 "origin": "string",
-                                "uniTOfMeasurement": "exemplo",
+                                "uniTOfMeasurement": "string",
                                 "kitQuantity": 0,
-                                "tempId": "exemplo",
+                                "tempId": "string",
                                 "weight": 0,
-                                "ean": "0000000000000",
-                                "eanInvoice": "0000000000000",
-                                "eanChild": "exemplo",
-                                "defaultPicture": "exemplo",
-                                "location": "A1",
-                                "externalId": "ID_EXEMPLO",
-                                "cfop": "exemplo",
+                                "ean": "string",
+                                "eanInvoice": "string",
+                                "eanChild": "string",
+                                "defaultPicture": "string",
+                                "location": "string",
+                                "externalId": "string",
+                                "cfop": "string",
                                 "ncm": "string",
                                 "cest": "string"
                               },
                               "orderSpecifications": [
                                 {
-                                  "name": "Exemplo",
-                                  "value": "exemplo"
+                                  "name": "string",
+                                  "value": "string"
                                 }
                               ],
                               "quantityBarCodeValidated": 0,
                               "unitMeasurement": "string",
-                              "cfop": "exemplo"
+                              "cfop": "string"
                             }
                           ],
                           "payments": [
                             {
-                              "id": "ID_EXEMPLO",
+                              "id": "string",
                               "status": "string",
-                              "payment_type": "exemplo",
-                              "payment_type_channel": "exemplo",
+                              "payment_type": "string",
+                              "payment_type_channel": "string",
                               "installments": 0,
-                              "installment_id": "exemplo",
-                              "payment_method_id": "exemplo",
-                              "payment_method_id_channel": "exemplo",
+                              "installment_id": "string",
+                              "payment_method_id": "string",
+                              "payment_method_id_channel": "string",
                               "installment_amount": 0,
                               "shipping_cost": 0,
                               "total_paid_amount": 0,
                               "transaction_amount": 0,
                               "installment_transaction_amount": 0,
-                              "channel": "exemplo",
-                              "digitable_line": "exemplo",
-                              "url_slip": "exemplo",
-                              "url_slip_pdf": "exemplo",
+                              "channel": "string",
+                              "digitable_line": "string",
+                              "url_slip": "string",
+                              "url_slip_pdf": "string",
                               "dueDate": "2023-02-07T20:49:33.945Z",
-                              "authorization_code": "exemplo"
+                              "authorization_code": "string"
                             }
                           ],
                           "invoices": [
                             {
-                              "id": "ID_EXEMPLO",
-                              "key": "00000000000000000000000000000000000000000000",
-                              "number": "exemplo",
-                              "line": "exemplo",
+                              "id": "string",
+                              "key": "string",
+                              "number": "string",
+                              "line": "string",
                               "issue_date": "string",
                               "status": "string",
-                              "reason": "exemplo",
+                              "reason": "string",
                               "totalValue": 0,
-                              "externalId": "ID_EXEMPLO",
+                              "externalId": "string",
                               "logistic": {
-                                "id": 1001,
-                                "logisticId": "exemplo",
-                                "name": "Exemplo",
-                                "freightType": "exemplo",
-                                "vehiclePlate": "exemplo",
-                                "vehicleState": "exemplo",
-                                "rntc": "exemplo",
-                                "document": "0000000000000",
-                                "ie": "0000000000000",
-                                "address": "exemplo",
-                                "city": "exemplo",
-                                "state": "exemplo",
-                                "trackingUrl": "exemplo",
-                                "trackingKey": "exemplo",
-                                "trackingMethod": "exemplo",
-                                "emailInvoice": "usuario@example.com",
-                                "number": "exemplo",
-                                "complement": "exemplo",
-                                "neighborhood": "exemplo",
-                                "zipCode": "00000000",
+                                "id": 0,
+                                "logisticId": "string",
+                                "name": "string",
+                                "freightType": "string",
+                                "vehiclePlate": "string",
+                                "vehicleState": "string",
+                                "rntc": "string",
+                                "document": "string",
+                                "ie": "string",
+                                "address": "string",
+                                "city": "string",
+                                "state": "string",
+                                "trackingUrl": "string",
+                                "trackingKey": "string",
+                                "trackingMethod": "string",
+                                "emailInvoice": "string",
+                                "number": "string",
+                                "complement": "string",
+                                "neighborhood": "string",
+                                "zipCode": "string",
                                 "logisticType": "string",
-                                "phone": "exemplo",
-                                "email": "usuario@example.com",
-                                "urlLogo": "exemplo",
-                                "urlZebra": "exemplo"
+                                "phone": "string",
+                                "email": "string",
+                                "urlLogo": "string",
+                                "urlZebra": "string"
                               },
-                              "urlXml": "exemplo",
-                              "urlPdf": "exemplo",
+                              "urlXml": "string",
+                              "urlPdf": "string",
                               "buyer": {
-                                "nickname": "cliente_exemplo",
-                                "last_name": "exemplo",
-                                "id": 1001,
-                                "first_name": "exemplo",
-                                "email": "usuario@example.com",
-                                "full_name": "Cliente Exemplo",
+                                "nickname": "string",
+                                "last_name": "string",
+                                "id": 0,
+                                "first_name": "string",
+                                "email": "string",
+                                "full_name": "string",
                                 "billing_info": {
-                                  "doc_number": "00000000000",
+                                  "doc_number": "string",
                                   "doc_type": "string",
-                                  "ie": "0000000000000"
+                                  "ie": "string"
                                 },
                                 "phone": {
-                                  "number": "exemplo",
-                                  "extension": "exemplo",
-                                  "area_code": "exemplo"
+                                  "number": "string",
+                                  "extension": "string",
+                                  "area_code": "string"
                                 },
                                 "alternative_phone": {
-                                  "number": "exemplo",
-                                  "extension": "exemplo",
-                                  "area_code": "exemplo"
+                                  "number": "string",
+                                  "extension": "string",
+                                  "area_code": "string"
                                 }
                               },
                               "company": {
-                                "name": "Exemplo",
-                                "nameFantasy": "exemplo",
-                                "document": "0000000000000",
-                                "ie": "0000000000000",
+                                "name": "string",
+                                "nameFantasy": "string",
+                                "document": "string",
+                                "ie": "string",
                                 "senderAddress": {
-                                  "address_line": "Rua Exemplo, 100",
+                                  "address_line": "string",
                                   "latitude": 0,
                                   "longitude": 0,
-                                  "street_number": "100",
-                                  "id": 1001,
-                                  "zip_code": "00000000",
-                                  "street_name": "Rua Exemplo",
-                                  "comment": "Complemento exemplo",
+                                  "street_number": "string",
+                                  "id": 0,
+                                  "zip_code": "string",
+                                  "street_name": "string",
+                                  "comment": "string",
                                   "neighborhood": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO"
+                                    "name": "string",
+                                    "id": "string"
                                   },
                                   "country": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO"
+                                    "name": "string",
+                                    "id": "string"
                                   },
                                   "city": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO",
+                                    "name": "string",
+                                    "id": "string",
                                     "codeIbge": 0
                                   },
                                   "state": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO"
+                                    "name": "string",
+                                    "id": "string"
                                   },
-                                  "name": "Exemplo"
+                                  "name": "string"
                                 },
-                                "statusErp": "exemplo",
-                                "id": "ID_EXEMPLO",
-                                "responsiblePartner": "exemplo",
-                                "businessPhone": "exemplo",
-                                "taxRegime": "exemplo",
-                                "calculateInssTaxBasedOn": "exemplo",
-                                "revenueFromThePreviousYear": "exemplo",
-                                "monthlyAveragePayroll": "exemplo",
+                                "statusErp": "string",
+                                "id": "string",
+                                "responsiblePartner": "string",
+                                "businessPhone": "string",
+                                "taxRegime": "string",
+                                "calculateInssTaxBasedOn": "string",
+                                "revenueFromThePreviousYear": "string",
+                                "monthlyAveragePayroll": "string",
                                 "declarationForLegalPurposes": true,
                                 "infoAuthorization": true,
-                                "kindOfPerson": "exemplo",
-                                "mainActivity": "exemplo",
-                                "describeYourActivity": "exemplo",
+                                "kindOfPerson": "string",
+                                "mainActivity": "string",
+                                "describeYourActivity": "string",
                                 "commerce": true,
                                 "geteCommerce": true,
                                 "industry": true,
                                 "services": true,
                                 "free": true,
-                                "municipalRegistration": "exemplo",
-                                "cnae": "exemplo",
-                                "companySize": "exemplo",
-                                "numberOfEmployees": "exemplo",
-                                "contactPersons": "exemplo",
-                                "cellphone": "exemplo",
-                                "email": "usuario@example.com",
-                                "billingEmail": "usuario@example.com",
-                                "website": "exemplo"
+                                "municipalRegistration": "string",
+                                "cnae": "string",
+                                "companySize": "string",
+                                "numberOfEmployees": "string",
+                                "contactPersons": "string",
+                                "cellphone": "string",
+                                "email": "string",
+                                "billingEmail": "string",
+                                "website": "string"
                               },
                               "items": [
                                 {
@@ -5903,69 +5903,69 @@
                                   "cost": 0,
                                   "discount": 0,
                                   "item": {
-                                    "seller_custom_field": "SKU_EXEMPLO",
-                                    "category_id": "exemplo",
-                                    "variation_id": "exemplo",
-                                    "id": "ID_EXEMPLO",
-                                    "title": "Produto de exemplo",
+                                    "seller_custom_field": "string",
+                                    "category_id": "string",
+                                    "variation_id": "string",
+                                    "id": "string",
+                                    "title": "string",
                                     "origin": "string",
-                                    "uniTOfMeasurement": "exemplo",
+                                    "uniTOfMeasurement": "string",
                                     "kitQuantity": 0,
-                                    "tempId": "exemplo",
+                                    "tempId": "string",
                                     "weight": 0,
-                                    "ean": "0000000000000",
-                                    "eanInvoice": "0000000000000",
-                                    "eanChild": "exemplo",
-                                    "defaultPicture": "exemplo",
-                                    "location": "A1",
-                                    "externalId": "ID_EXEMPLO",
-                                    "cfop": "exemplo",
+                                    "ean": "string",
+                                    "eanInvoice": "string",
+                                    "eanChild": "string",
+                                    "defaultPicture": "string",
+                                    "location": "string",
+                                    "externalId": "string",
+                                    "cfop": "string",
                                     "ncm": "string",
                                     "cest": "string"
                                   },
                                   "orderSpecifications": [
                                     {
-                                      "name": "Exemplo",
-                                      "value": "exemplo"
+                                      "name": "string",
+                                      "value": "string"
                                     }
                                   ],
                                   "quantityBarCodeValidated": 0,
                                   "unitMeasurement": "string",
-                                  "cfop": "exemplo"
+                                  "cfop": "string"
                                 }
                               ],
-                              "keyReferenced": "exemplo",
-                              "typeReferenced": "exemplo",
+                              "keyReferenced": "string",
+                              "typeReferenced": "string",
                               "totalValueFreigth": 0,
                               "volume": 0
                             }
                           ],
                           "status": "string",
-                          "subStatus": "exemplo",
-                          "subStatusExpedition": "exemplo",
-                          "storeId": "exemplo",
-                          "externalId": "ID_EXEMPLO",
-                          "externalIdInvoice": "exemplo",
-                          "externalIdInvoiceDevolution": "exemplo",
-                          "externalIdErp": "exemplo",
+                          "subStatus": "string",
+                          "subStatusExpedition": "string",
+                          "storeId": "string",
+                          "externalId": "string",
+                          "externalIdInvoice": "string",
+                          "externalIdInvoiceDevolution": "string",
+                          "externalIdErp": "string",
                           "integrationType": "string",
                           "totalValue": 0,
-                          "channel": "exemplo",
-                          "channelName": "Loja exemplo",
+                          "channel": "string",
+                          "channelName": "string",
                           "customerId": 0,
                           "packId": 0,
-                          "advertisement": "exemplo",
+                          "advertisement": "string",
                           "discount": 0,
                           "discountMarketplace": 0,
                           "fulfilled": true,
                           "totalWeight": 0,
                           "queueId": 0,
                           "totalMetricCubic": 0,
-                          "expeditionBlock": "exemplo",
-                          "erpId": "ID_EXEMPLO",
+                          "expeditionBlock": "string",
+                          "erpId": "string",
                           "totalTax": 0,
                           "isMainErp": true,
-                          "expeditionLevel": "exemplo",
+                          "expeditionLevel": "string",
                           "hasStock": true,
                           "hasAccount": true,
                           "totalHeight": 0,
@@ -5977,7 +5977,7 @@
                           "dateApproved": "string",
                           "datePackingList": "string",
                           "dateClosed": "string",
-                          "additionalNoteInvoice": "Observação de exemplo",
+                          "additionalNoteInvoice": "string",
                           "statusHistory": {
                             "date_cancelled": "string",
                             "date_delivered": "string",
@@ -5994,7 +5994,7 @@
                           "escrowAmount": 0,
                           "tags": [
                             {
-                              "url": "exemplo"
+                              "url": "string"
                             }
                           ],
                           "orderConciliation": {
@@ -6016,16 +6016,16 @@
                             "percentageNet": 0
                           },
                           "queueStatus": "string",
-                          "sellerCommissionId": "exemplo",
-                          "warehouseId": "exemplo",
+                          "sellerCommissionId": "string",
+                          "warehouseId": "string",
                           "isOrderLocked": true,
                           "logisticQuoteId": 0,
-                          "logisticOrderId": "exemplo",
+                          "logisticOrderId": "string",
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ]
                         }
@@ -6036,15 +6036,15 @@
                     "summary": "Schema -> StructureType = simple",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'simple'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "orders": [
                         {
-                          "completeOrderNumber": "exemplo",
+                          "completeOrderNumber": "string",
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ]
                         }
@@ -7024,130 +7024,130 @@
                     "summary": "Schema -> StructureType = complete",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "invoices": [
                         {
-                          "id": "ID_EXEMPLO",
-                          "key": "00000000000000000000000000000000000000000000",
-                          "number": "exemplo",
-                          "line": "exemplo",
+                          "id": "string",
+                          "key": "string",
+                          "number": "string",
+                          "line": "string",
                           "issue_date": "string",
                           "status": "string",
-                          "reason": "exemplo",
+                          "reason": "string",
                           "totalValue": 0,
-                          "externalId": "ID_EXEMPLO",
+                          "externalId": "string",
                           "logistic": {
-                            "id": 1001,
-                            "logisticId": "exemplo",
-                            "name": "Exemplo",
-                            "freightType": "exemplo",
-                            "vehiclePlate": "exemplo",
-                            "vehicleState": "exemplo",
-                            "rntc": "exemplo",
-                            "document": "0000000000000",
-                            "ie": "0000000000000",
-                            "address": "exemplo",
-                            "city": "exemplo",
-                            "state": "exemplo",
-                            "trackingUrl": "exemplo",
-                            "trackingKey": "exemplo",
-                            "trackingMethod": "exemplo",
-                            "emailInvoice": "usuario@example.com",
-                            "number": "exemplo",
-                            "complement": "exemplo",
-                            "neighborhood": "exemplo",
-                            "zipCode": "00000000",
+                            "id": 0,
+                            "logisticId": "string",
+                            "name": "string",
+                            "freightType": "string",
+                            "vehiclePlate": "string",
+                            "vehicleState": "string",
+                            "rntc": "string",
+                            "document": "string",
+                            "ie": "string",
+                            "address": "string",
+                            "city": "string",
+                            "state": "string",
+                            "trackingUrl": "string",
+                            "trackingKey": "string",
+                            "trackingMethod": "string",
+                            "emailInvoice": "string",
+                            "number": "string",
+                            "complement": "string",
+                            "neighborhood": "string",
+                            "zipCode": "string",
                             "logisticType": "string",
-                            "phone": "exemplo",
-                            "email": "usuario@example.com",
-                            "urlLogo": "exemplo",
-                            "urlZebra": "exemplo"
+                            "phone": "string",
+                            "email": "string",
+                            "urlLogo": "string",
+                            "urlZebra": "string"
                           },
-                          "urlXml": "exemplo",
-                          "urlPdf": "exemplo",
+                          "urlXml": "string",
+                          "urlPdf": "string",
                           "buyer": {
-                            "nickname": "cliente_exemplo",
-                            "last_name": "exemplo",
-                            "id": 1001,
-                            "first_name": "exemplo",
-                            "email": "usuario@example.com",
-                            "full_name": "Cliente Exemplo",
+                            "nickname": "string",
+                            "last_name": "string",
+                            "id": 0,
+                            "first_name": "string",
+                            "email": "string",
+                            "full_name": "string",
                             "billing_info": {
-                              "doc_number": "00000000000",
+                              "doc_number": "string",
                               "doc_type": "string",
-                              "ie": "0000000000000"
+                              "ie": "string"
                             },
                             "phone": {
-                              "number": "exemplo",
-                              "extension": "exemplo",
-                              "area_code": "exemplo"
+                              "number": "string",
+                              "extension": "string",
+                              "area_code": "string"
                             },
                             "alternative_phone": {
-                              "number": "exemplo",
-                              "extension": "exemplo",
-                              "area_code": "exemplo"
+                              "number": "string",
+                              "extension": "string",
+                              "area_code": "string"
                             }
                           },
                           "company": {
-                            "name": "Exemplo",
-                            "nameFantasy": "exemplo",
-                            "document": "0000000000000",
-                            "ie": "0000000000000",
+                            "name": "string",
+                            "nameFantasy": "string",
+                            "document": "string",
+                            "ie": "string",
                             "senderAddress": {
-                              "address_line": "Rua Exemplo, 100",
+                              "address_line": "string",
                               "latitude": 0,
                               "longitude": 0,
-                              "street_number": "100",
-                              "id": 1001,
-                              "zip_code": "00000000",
-                              "street_name": "Rua Exemplo",
-                              "comment": "Complemento exemplo",
+                              "street_number": "string",
+                              "id": 0,
+                              "zip_code": "string",
+                              "street_name": "string",
+                              "comment": "string",
                               "neighborhood": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "country": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "city": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO",
+                                "name": "string",
+                                "id": "string",
                                 "codeIbge": 0
                               },
                               "state": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
-                              "name": "Exemplo"
+                              "name": "string"
                             },
-                            "statusErp": "exemplo",
-                            "id": "ID_EXEMPLO",
-                            "responsiblePartner": "exemplo",
-                            "businessPhone": "exemplo",
-                            "taxRegime": "exemplo",
-                            "calculateInssTaxBasedOn": "exemplo",
-                            "revenueFromThePreviousYear": "exemplo",
-                            "monthlyAveragePayroll": "exemplo",
+                            "statusErp": "string",
+                            "id": "string",
+                            "responsiblePartner": "string",
+                            "businessPhone": "string",
+                            "taxRegime": "string",
+                            "calculateInssTaxBasedOn": "string",
+                            "revenueFromThePreviousYear": "string",
+                            "monthlyAveragePayroll": "string",
                             "declarationForLegalPurposes": true,
                             "infoAuthorization": true,
-                            "kindOfPerson": "exemplo",
-                            "mainActivity": "exemplo",
-                            "describeYourActivity": "exemplo",
+                            "kindOfPerson": "string",
+                            "mainActivity": "string",
+                            "describeYourActivity": "string",
                             "commerce": true,
                             "geteCommerce": true,
                             "industry": true,
                             "services": true,
                             "free": true,
-                            "municipalRegistration": "exemplo",
-                            "cnae": "exemplo",
-                            "companySize": "exemplo",
-                            "numberOfEmployees": "exemplo",
-                            "contactPersons": "exemplo",
-                            "cellphone": "exemplo",
-                            "email": "usuario@example.com",
-                            "billingEmail": "usuario@example.com",
-                            "website": "exemplo"
+                            "municipalRegistration": "string",
+                            "cnae": "string",
+                            "companySize": "string",
+                            "numberOfEmployees": "string",
+                            "contactPersons": "string",
+                            "cellphone": "string",
+                            "email": "string",
+                            "billingEmail": "string",
+                            "website": "string"
                           },
                           "items": [
                             {
@@ -7160,46 +7160,46 @@
                               "cost": 0,
                               "discount": 0,
                               "item": {
-                                "seller_custom_field": "SKU_EXEMPLO",
-                                "category_id": "exemplo",
-                                "variation_id": "exemplo",
-                                "id": "ID_EXEMPLO",
-                                "title": "Produto de exemplo",
+                                "seller_custom_field": "string",
+                                "category_id": "string",
+                                "variation_id": "string",
+                                "id": "string",
+                                "title": "string",
                                 "origin": "string",
-                                "uniTOfMeasurement": "exemplo",
+                                "uniTOfMeasurement": "string",
                                 "kitQuantity": 0,
-                                "tempId": "exemplo",
+                                "tempId": "string",
                                 "weight": 0,
-                                "ean": "0000000000000",
-                                "eanInvoice": "0000000000000",
-                                "eanChild": "exemplo",
-                                "defaultPicture": "exemplo",
-                                "location": "A1",
-                                "externalId": "ID_EXEMPLO",
-                                "cfop": "exemplo",
+                                "ean": "string",
+                                "eanInvoice": "string",
+                                "eanChild": "string",
+                                "defaultPicture": "string",
+                                "location": "string",
+                                "externalId": "string",
+                                "cfop": "string",
                                 "ncm": "string",
                                 "cest": "string"
                               },
                               "orderSpecifications": [
                                 {
-                                  "name": "Exemplo",
-                                  "value": "exemplo"
+                                  "name": "string",
+                                  "value": "string"
                                 }
                               ],
                               "quantityBarCodeValidated": 0,
                               "unitMeasurement": "string",
-                              "cfop": "exemplo"
+                              "cfop": "string"
                             }
                           ],
-                          "keyReferenced": "exemplo",
-                          "typeReferenced": "exemplo",
+                          "keyReferenced": "string",
+                          "typeReferenced": "string",
                           "totalValueFreigth": 0,
                           "volume": 0,
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ]
                         }
@@ -7210,15 +7210,15 @@
                     "summary": "Schema -> StructureType = simple",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'simple'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "invoices": [
                         {
-                          "completeOrderNumber": "exemplo",
+                          "completeOrderNumber": "string",
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ]
                         }
@@ -7756,38 +7756,38 @@
                     "summary": "Schema -> StructureType = complete",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "orders": [
                         {
-                          "id": "ID_EXEMPLO",
+                          "id": "string",
                           "buyer": {
-                            "nickname": "cliente_exemplo",
-                            "last_name": "exemplo",
-                            "id": 1001,
-                            "first_name": "exemplo",
-                            "email": "usuario@example.com",
-                            "full_name": "Cliente Exemplo",
+                            "nickname": "string",
+                            "last_name": "string",
+                            "id": 0,
+                            "first_name": "string",
+                            "email": "string",
+                            "full_name": "string",
                             "billing_info": {
-                              "doc_number": "00000000000",
+                              "doc_number": "string",
                               "doc_type": "string",
-                              "ie": "0000000000000"
+                              "ie": "string"
                             },
                             "phone": {
-                              "number": "exemplo",
-                              "extension": "exemplo",
-                              "area_code": "exemplo"
+                              "number": "string",
+                              "extension": "string",
+                              "area_code": "string"
                             },
                             "alternative_phone": {
-                              "number": "exemplo",
-                              "extension": "exemplo",
-                              "area_code": "exemplo"
+                              "number": "string",
+                              "extension": "string",
+                              "area_code": "string"
                             }
                           },
                           "intermediary": {
-                            "salesDocument": "00000000000000",
-                            "salesName": "Canal exemplo",
-                            "paymentDocument": "exemplo",
-                            "paymentName": "exemplo",
+                            "salesDocument": "string",
+                            "salesName": "string",
+                            "paymentDocument": "string",
+                            "paymentName": "string",
                             "fillIntermediarySales": true,
                             "fillIntermediaryPayment": true
                           },
@@ -7795,110 +7795,110 @@
                             "local_pick_up": true,
                             "free_shipping": true,
                             "receiver_address": {
-                              "address_line": "Rua Exemplo, 100",
+                              "address_line": "string",
                               "latitude": 0,
                               "longitude": 0,
-                              "street_number": "100",
-                              "id": 1001,
-                              "zip_code": "00000000",
-                              "street_name": "Rua Exemplo",
-                              "comment": "Complemento exemplo",
+                              "street_number": "string",
+                              "id": 0,
+                              "zip_code": "string",
+                              "street_name": "string",
+                              "comment": "string",
                               "neighborhood": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "country": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "city": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO",
+                                "name": "string",
+                                "id": "string",
                                 "codeIbge": 0
                               },
                               "state": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
-                              "name": "Exemplo"
+                              "name": "string"
                             },
                             "sender_address": {
-                              "address_line": "Rua Exemplo, 100",
+                              "address_line": "string",
                               "latitude": 0,
                               "longitude": 0,
-                              "street_number": "100",
-                              "id": 1001,
-                              "zip_code": "00000000",
-                              "street_name": "Rua Exemplo",
-                              "comment": "Complemento exemplo",
+                              "street_number": "string",
+                              "id": 0,
+                              "zip_code": "string",
+                              "street_name": "string",
+                              "comment": "string",
                               "neighborhood": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "country": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
                               "city": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO",
+                                "name": "string",
+                                "id": "string",
                                 "codeIbge": 0
                               },
                               "state": {
-                                "name": "Exemplo",
-                                "id": "ID_EXEMPLO"
+                                "name": "string",
+                                "id": "string"
                               },
-                              "name": "Exemplo"
+                              "name": "string"
                             },
                             "cost": 0,
-                            "substatus": "exemplo",
+                            "substatus": "string",
                             "date_created": "string",
                             "date_first_printed": "string",
                             "sender_id": 0,
                             "shipping_mode": "string",
                             "service_id": 0,
-                            "id": "ID_EXEMPLO",
-                            "picking_type": "exemplo",
+                            "id": "string",
+                            "picking_type": "string",
                             "currency_id": "string",
                             "status": "string",
                             "shipment_type": "string",
-                            "shipping_number": "exemplo",
+                            "shipping_number": "string",
                             "logistic_type": "string",
-                            "mode": "exemplo",
+                            "mode": "string",
                             "logistic": {
-                              "id": 1001,
-                              "logisticId": "exemplo",
-                              "name": "Exemplo",
-                              "freightType": "exemplo",
-                              "vehiclePlate": "exemplo",
-                              "vehicleState": "exemplo",
-                              "rntc": "exemplo",
-                              "document": "0000000000000",
-                              "ie": "0000000000000",
-                              "address": "exemplo",
-                              "city": "exemplo",
-                              "state": "exemplo",
-                              "trackingUrl": "exemplo",
-                              "trackingKey": "exemplo",
-                              "trackingMethod": "exemplo",
-                              "emailInvoice": "usuario@example.com",
-                              "number": "exemplo",
-                              "complement": "exemplo",
-                              "neighborhood": "exemplo",
-                              "zipCode": "00000000",
+                              "id": 0,
+                              "logisticId": "string",
+                              "name": "string",
+                              "freightType": "string",
+                              "vehiclePlate": "string",
+                              "vehicleState": "string",
+                              "rntc": "string",
+                              "document": "string",
+                              "ie": "string",
+                              "address": "string",
+                              "city": "string",
+                              "state": "string",
+                              "trackingUrl": "string",
+                              "trackingKey": "string",
+                              "trackingMethod": "string",
+                              "emailInvoice": "string",
+                              "number": "string",
+                              "complement": "string",
+                              "neighborhood": "string",
+                              "zipCode": "string",
                               "logisticType": "string",
-                              "phone": "exemplo",
-                              "email": "usuario@example.com",
-                              "urlLogo": "exemplo",
-                              "urlZebra": "exemplo"
+                              "phone": "string",
+                              "email": "string",
+                              "urlLogo": "string",
+                              "urlZebra": "string"
                             },
                             "shipping_option": {
                               "list_cost": 0,
                               "cost": 0,
                               "comission": 0
                             },
-                            "customerLogoZpl": "exemplo",
-                            "deposit_type": "exemplo",
+                            "customerLogoZpl": "string",
+                            "deposit_type": "string",
                             "statusHistory": {
                               "date_cancelled": "string",
                               "date_delivered": "string",
@@ -7910,21 +7910,21 @@
                               "date_returned": "string"
                             },
                             "additionalServiceCode": [
-                              "exemplo"
+                              "string"
                             ],
                             "insurancePrice": 0,
                             "tags": [
-                              "exemplo"
+                              "string"
                             ],
                             "costs": [
                               {
-                                "description": "Descrição de exemplo",
-                                "cost": "exemplo"
+                                "description": "string",
+                                "cost": "string"
                               }
                             ],
                             "deliveryMethodId": 0,
-                            "deliveryMethodName": "exemplo",
-                            "carrierImageZpl": "exemplo",
+                            "deliveryMethodName": "string",
+                            "carrierImageZpl": "string",
                             "receiver_id": 0
                           },
                           "quantityPackage": 0,
@@ -7939,183 +7939,183 @@
                               "cost": 0,
                               "discount": 0,
                               "item": {
-                                "seller_custom_field": "SKU_EXEMPLO",
-                                "category_id": "exemplo",
-                                "variation_id": "exemplo",
-                                "id": "ID_EXEMPLO",
-                                "title": "Produto de exemplo",
+                                "seller_custom_field": "string",
+                                "category_id": "string",
+                                "variation_id": "string",
+                                "id": "string",
+                                "title": "string",
                                 "origin": "string",
-                                "uniTOfMeasurement": "exemplo",
+                                "uniTOfMeasurement": "string",
                                 "kitQuantity": 0,
-                                "tempId": "exemplo",
+                                "tempId": "string",
                                 "weight": 0,
-                                "ean": "0000000000000",
-                                "eanInvoice": "0000000000000",
-                                "eanChild": "exemplo",
-                                "defaultPicture": "exemplo",
-                                "location": "A1",
-                                "externalId": "ID_EXEMPLO",
-                                "cfop": "exemplo",
+                                "ean": "string",
+                                "eanInvoice": "string",
+                                "eanChild": "string",
+                                "defaultPicture": "string",
+                                "location": "string",
+                                "externalId": "string",
+                                "cfop": "string",
                                 "ncm": "string",
                                 "cest": "string"
                               },
                               "orderSpecifications": [
                                 {
-                                  "name": "Exemplo",
-                                  "value": "exemplo"
+                                  "name": "string",
+                                  "value": "string"
                                 }
                               ],
                               "quantityBarCodeValidated": 0,
                               "unitMeasurement": "string",
-                              "cfop": "exemplo"
+                              "cfop": "string"
                             }
                           ],
                           "payments": [
                             {
-                              "id": "ID_EXEMPLO",
+                              "id": "string",
                               "status": "string",
-                              "payment_type": "exemplo",
-                              "payment_type_channel": "exemplo",
+                              "payment_type": "string",
+                              "payment_type_channel": "string",
                               "installments": 0,
-                              "installment_id": "exemplo",
-                              "payment_method_id": "exemplo",
-                              "payment_method_id_channel": "exemplo",
+                              "installment_id": "string",
+                              "payment_method_id": "string",
+                              "payment_method_id_channel": "string",
                               "installment_amount": 0,
                               "shipping_cost": 0,
                               "total_paid_amount": 0,
                               "transaction_amount": 0,
                               "installment_transaction_amount": 0,
-                              "channel": "exemplo",
-                              "digitable_line": "exemplo",
-                              "url_slip": "exemplo",
-                              "url_slip_pdf": "exemplo",
+                              "channel": "string",
+                              "digitable_line": "string",
+                              "url_slip": "string",
+                              "url_slip_pdf": "string",
                               "dueDate": "2023-02-07T20:49:33.945Z",
-                              "authorization_code": "exemplo"
+                              "authorization_code": "string"
                             }
                           ],
                           "invoices": [
                             {
-                              "id": "ID_EXEMPLO",
-                              "key": "00000000000000000000000000000000000000000000",
-                              "number": "exemplo",
-                              "line": "exemplo",
+                              "id": "string",
+                              "key": "string",
+                              "number": "string",
+                              "line": "string",
                               "issue_date": "string",
                               "status": "string",
-                              "reason": "exemplo",
+                              "reason": "string",
                               "totalValue": 0,
-                              "externalId": "ID_EXEMPLO",
+                              "externalId": "string",
                               "logistic": {
-                                "id": 1001,
-                                "logisticId": "exemplo",
-                                "name": "Exemplo",
-                                "freightType": "exemplo",
-                                "vehiclePlate": "exemplo",
-                                "vehicleState": "exemplo",
-                                "rntc": "exemplo",
-                                "document": "0000000000000",
-                                "ie": "0000000000000",
-                                "address": "exemplo",
-                                "city": "exemplo",
-                                "state": "exemplo",
-                                "trackingUrl": "exemplo",
-                                "trackingKey": "exemplo",
-                                "trackingMethod": "exemplo",
-                                "emailInvoice": "usuario@example.com",
-                                "number": "exemplo",
-                                "complement": "exemplo",
-                                "neighborhood": "exemplo",
-                                "zipCode": "00000000",
+                                "id": 0,
+                                "logisticId": "string",
+                                "name": "string",
+                                "freightType": "string",
+                                "vehiclePlate": "string",
+                                "vehicleState": "string",
+                                "rntc": "string",
+                                "document": "string",
+                                "ie": "string",
+                                "address": "string",
+                                "city": "string",
+                                "state": "string",
+                                "trackingUrl": "string",
+                                "trackingKey": "string",
+                                "trackingMethod": "string",
+                                "emailInvoice": "string",
+                                "number": "string",
+                                "complement": "string",
+                                "neighborhood": "string",
+                                "zipCode": "string",
                                 "logisticType": "string",
-                                "phone": "exemplo",
-                                "email": "usuario@example.com",
-                                "urlLogo": "exemplo",
-                                "urlZebra": "exemplo"
+                                "phone": "string",
+                                "email": "string",
+                                "urlLogo": "string",
+                                "urlZebra": "string"
                               },
-                              "urlXml": "exemplo",
-                              "urlPdf": "exemplo",
+                              "urlXml": "string",
+                              "urlPdf": "string",
                               "buyer": {
-                                "nickname": "cliente_exemplo",
-                                "last_name": "exemplo",
-                                "id": 1001,
-                                "first_name": "exemplo",
-                                "email": "usuario@example.com",
-                                "full_name": "Cliente Exemplo",
+                                "nickname": "string",
+                                "last_name": "string",
+                                "id": 0,
+                                "first_name": "string",
+                                "email": "string",
+                                "full_name": "string",
                                 "billing_info": {
-                                  "doc_number": "00000000000",
+                                  "doc_number": "string",
                                   "doc_type": "string",
-                                  "ie": "0000000000000"
+                                  "ie": "string"
                                 },
                                 "phone": {
-                                  "number": "exemplo",
-                                  "extension": "exemplo",
-                                  "area_code": "exemplo"
+                                  "number": "string",
+                                  "extension": "string",
+                                  "area_code": "string"
                                 },
                                 "alternative_phone": {
-                                  "number": "exemplo",
-                                  "extension": "exemplo",
-                                  "area_code": "exemplo"
+                                  "number": "string",
+                                  "extension": "string",
+                                  "area_code": "string"
                                 }
                               },
                               "company": {
-                                "name": "Exemplo",
-                                "nameFantasy": "exemplo",
-                                "document": "0000000000000",
-                                "ie": "0000000000000",
+                                "name": "string",
+                                "nameFantasy": "string",
+                                "document": "string",
+                                "ie": "string",
                                 "senderAddress": {
-                                  "address_line": "Rua Exemplo, 100",
+                                  "address_line": "string",
                                   "latitude": 0,
                                   "longitude": 0,
-                                  "street_number": "100",
-                                  "id": 1001,
-                                  "zip_code": "00000000",
-                                  "street_name": "Rua Exemplo",
-                                  "comment": "Complemento exemplo",
+                                  "street_number": "string",
+                                  "id": 0,
+                                  "zip_code": "string",
+                                  "street_name": "string",
+                                  "comment": "string",
                                   "neighborhood": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO"
+                                    "name": "string",
+                                    "id": "string"
                                   },
                                   "country": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO"
+                                    "name": "string",
+                                    "id": "string"
                                   },
                                   "city": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO",
+                                    "name": "string",
+                                    "id": "string",
                                     "codeIbge": 0
                                   },
                                   "state": {
-                                    "name": "Exemplo",
-                                    "id": "ID_EXEMPLO"
+                                    "name": "string",
+                                    "id": "string"
                                   },
-                                  "name": "Exemplo"
+                                  "name": "string"
                                 },
-                                "statusErp": "exemplo",
-                                "id": "ID_EXEMPLO",
-                                "responsiblePartner": "exemplo",
-                                "businessPhone": "exemplo",
-                                "taxRegime": "exemplo",
-                                "calculateInssTaxBasedOn": "exemplo",
-                                "revenueFromThePreviousYear": "exemplo",
-                                "monthlyAveragePayroll": "exemplo",
+                                "statusErp": "string",
+                                "id": "string",
+                                "responsiblePartner": "string",
+                                "businessPhone": "string",
+                                "taxRegime": "string",
+                                "calculateInssTaxBasedOn": "string",
+                                "revenueFromThePreviousYear": "string",
+                                "monthlyAveragePayroll": "string",
                                 "declarationForLegalPurposes": true,
                                 "infoAuthorization": true,
-                                "kindOfPerson": "exemplo",
-                                "mainActivity": "exemplo",
-                                "describeYourActivity": "exemplo",
+                                "kindOfPerson": "string",
+                                "mainActivity": "string",
+                                "describeYourActivity": "string",
                                 "commerce": true,
                                 "geteCommerce": true,
                                 "industry": true,
                                 "services": true,
                                 "free": true,
-                                "municipalRegistration": "exemplo",
-                                "cnae": "exemplo",
-                                "companySize": "exemplo",
-                                "numberOfEmployees": "exemplo",
-                                "contactPersons": "exemplo",
-                                "cellphone": "exemplo",
-                                "email": "usuario@example.com",
-                                "billingEmail": "usuario@example.com",
-                                "website": "exemplo"
+                                "municipalRegistration": "string",
+                                "cnae": "string",
+                                "companySize": "string",
+                                "numberOfEmployees": "string",
+                                "contactPersons": "string",
+                                "cellphone": "string",
+                                "email": "string",
+                                "billingEmail": "string",
+                                "website": "string"
                               },
                               "items": [
                                 {
@@ -8128,69 +8128,69 @@
                                   "cost": 0,
                                   "discount": 0,
                                   "item": {
-                                    "seller_custom_field": "SKU_EXEMPLO",
-                                    "category_id": "exemplo",
-                                    "variation_id": "exemplo",
-                                    "id": "ID_EXEMPLO",
-                                    "title": "Produto de exemplo",
+                                    "seller_custom_field": "string",
+                                    "category_id": "string",
+                                    "variation_id": "string",
+                                    "id": "string",
+                                    "title": "string",
                                     "origin": "string",
-                                    "uniTOfMeasurement": "exemplo",
+                                    "uniTOfMeasurement": "string",
                                     "kitQuantity": 0,
-                                    "tempId": "exemplo",
+                                    "tempId": "string",
                                     "weight": 0,
-                                    "ean": "0000000000000",
-                                    "eanInvoice": "0000000000000",
-                                    "eanChild": "exemplo",
-                                    "defaultPicture": "exemplo",
-                                    "location": "A1",
-                                    "externalId": "ID_EXEMPLO",
-                                    "cfop": "exemplo",
+                                    "ean": "string",
+                                    "eanInvoice": "string",
+                                    "eanChild": "string",
+                                    "defaultPicture": "string",
+                                    "location": "string",
+                                    "externalId": "string",
+                                    "cfop": "string",
                                     "ncm": "string",
                                     "cest": "string"
                                   },
                                   "orderSpecifications": [
                                     {
-                                      "name": "Exemplo",
-                                      "value": "exemplo"
+                                      "name": "string",
+                                      "value": "string"
                                     }
                                   ],
                                   "quantityBarCodeValidated": 0,
                                   "unitMeasurement": "string",
-                                  "cfop": "exemplo"
+                                  "cfop": "string"
                                 }
                               ],
-                              "keyReferenced": "exemplo",
-                              "typeReferenced": "exemplo",
+                              "keyReferenced": "string",
+                              "typeReferenced": "string",
                               "totalValueFreigth": 0,
                               "volume": 0
                             }
                           ],
                           "status": "string",
-                          "subStatus": "exemplo",
-                          "subStatusExpedition": "exemplo",
-                          "storeId": "exemplo",
-                          "externalId": "ID_EXEMPLO",
-                          "externalIdInvoice": "exemplo",
-                          "externalIdInvoiceDevolution": "exemplo",
-                          "externalIdErp": "exemplo",
+                          "subStatus": "string",
+                          "subStatusExpedition": "string",
+                          "storeId": "string",
+                          "externalId": "string",
+                          "externalIdInvoice": "string",
+                          "externalIdInvoiceDevolution": "string",
+                          "externalIdErp": "string",
                           "integrationType": "string",
                           "totalValue": 0,
-                          "channel": "exemplo",
-                          "channelName": "Loja exemplo",
+                          "channel": "string",
+                          "channelName": "string",
                           "customerId": 0,
                           "packId": 0,
-                          "advertisement": "exemplo",
+                          "advertisement": "string",
                           "discount": 0,
                           "discountMarketplace": 0,
                           "fulfilled": true,
                           "totalWeight": 0,
                           "queueId": 0,
                           "totalMetricCubic": 0,
-                          "expeditionBlock": "exemplo",
-                          "erpId": "ID_EXEMPLO",
+                          "expeditionBlock": "string",
+                          "erpId": "string",
                           "totalTax": 0,
                           "isMainErp": true,
-                          "expeditionLevel": "exemplo",
+                          "expeditionLevel": "string",
                           "hasStock": true,
                           "hasAccount": true,
                           "totalHeight": 0,
@@ -8202,7 +8202,7 @@
                           "dateApproved": "string",
                           "datePackingList": "string",
                           "dateClosed": "string",
-                          "additionalNoteInvoice": "Observação de exemplo",
+                          "additionalNoteInvoice": "string",
                           "statusHistory": {
                             "date_cancelled": "string",
                             "date_delivered": "string",
@@ -8219,7 +8219,7 @@
                           "escrowAmount": 0,
                           "tags": [
                             {
-                              "url": "exemplo"
+                              "url": "string"
                             }
                           ],
                           "orderConciliation": {
@@ -8241,16 +8241,16 @@
                             "percentageNet": 0
                           },
                           "queueStatus": "string",
-                          "sellerCommissionId": "exemplo",
-                          "warehouseId": "exemplo",
+                          "sellerCommissionId": "string",
+                          "warehouseId": "string",
                           "isOrderLocked": true,
                           "logisticQuoteId": 0,
-                          "logisticOrderId": "exemplo",
+                          "logisticOrderId": "string",
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ]
                         }
@@ -8261,15 +8261,15 @@
                     "summary": "Schema -> StructureType = simple",
                     "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'simple'",
                     "value": {
-                      "next": "exemplo",
+                      "next": "string",
                       "orders": [
                         {
-                          "completeOrderNumber": "exemplo",
+                          "completeOrderNumber": "string",
                           "links": [
                             {
-                              "rel": "exemplo",
+                              "rel": "string",
                               "type": "string",
-                              "href": "exemplo"
+                              "href": "string"
                             }
                           ]
                         }

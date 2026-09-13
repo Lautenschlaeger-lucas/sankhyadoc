@@ -1,6 +1,299 @@
 {
   "operations": [
     {
+      "id": "get-variations-sku",
+      "method": "GET",
+      "path": "/v1/variations/{sku}",
+      "group": "Variations",
+      "tags": [
+        "Variations"
+      ],
+      "summary": "Consultar um produto com variações pelo SKU",
+      "description": "Retorna o produto principal, suas combinações de variação, imagens, categorias, atributos, marketplaces e situação de publicação para o SKU informado.",
+      "operationId": "getVariationProductBySku",
+      "parameters": [
+        {
+          "name": "sku",
+          "in": "path",
+          "description": "SKU do produto com variações. Para um SKU que contenha /, substitua a barra por @@@@@@@",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "EXAMPLE-PARENT"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Produto com variações encontrado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Product"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "O SKU informado é inválido",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "example": {
+                "error": "SKU não pode ser vazio"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "A autenticação não foi informada, é inválida ou o cliente está desativado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Produto não encontrado para o cliente autenticado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "example": {
+                "error": "Register not found"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Não foi possível concluir a solicitação devido a uma falha inesperada",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "O serviço necessário para concluir a consulta está temporariamente indisponível",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "put-variations-sku",
+      "method": "PUT",
+      "path": "/v1/variations/{sku}",
+      "group": "Variations",
+      "tags": [
+        "Variations"
+      ],
+      "summary": "Atualizar um produto com variações pelo SKU",
+      "description": "Substitui o produto e suas coleções pelo conteúdo completo enviado. Variações, categorias, atributos e imagens omitidos são removidos. Para preservar uma imagem existente, envie id, URL atual, order e action MOVE; para adicionar uma imagem, use NEW com Data URL Base64 ou IMPORTED com URL pública. O SKU da URL identifica o produto e é autoritativo. O sku no corpo é opcional, mas, quando informado, deve coincidir com o SKU da URL. O id no corpo também é opcional e, quando informado, deve pertencer ao produto localizado.",
+      "operationId": "updateVariationProductBySku",
+      "parameters": [
+        {
+          "name": "sku",
+          "in": "path",
+          "description": "SKU do produto com variações. Para um SKU que contenha /, substitua a barra por @@@@@@@",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "EXAMPLE-PARENT"
+          }
+        }
+      ],
+      "requestBody": {
+        "description": "Representação completa do produto, das variações e das imagens no formato da tela da Magis5. O sku e o id do produto principal podem ser omitidos",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductRequest"
+            },
+            "examples": {
+              "Atualização completa fictícia": {
+                "description": "Atualização completa fictícia",
+                "value": {
+                  "sku": "SKU_EXEMPLO",
+                  "title": "Produto de exemplo",
+                  "price": 89.9,
+                  "condition": "NEW",
+                  "brand": "Marca exemplo",
+                  "model": "Modelo exemplo",
+                  "description": "Descrição de exemplo",
+                  "dimension": {
+                    "height": 2,
+                    "width": 20,
+                    "length": 30,
+                    "weight": 0.3
+                  },
+                  "warranty": 90,
+                  "crossdocking": 0,
+                  "marketplaceIds": [],
+                  "categories": [],
+                  "attributes": [],
+                  "variations": [
+                    {
+                      "id": 1001,
+                      "sku": "SKU_EXEMPLO",
+                      "ean": 2001234567893,
+                      "price": 89.9,
+                      "stock": 15,
+                      "active": true,
+                      "attributes": [
+                        {
+                          "id": "ID_EXEMPLO",
+                          "name": "Exemplo",
+                          "valueId": "exemplo",
+                          "valueName": "exemplo"
+                        }
+                      ]
+                    },
+                    {
+                      "sku": "SKU_EXEMPLO",
+                      "ean": 2001234567916,
+                      "price": 89.9,
+                      "stock": 8,
+                      "active": true,
+                      "attributes": [
+                        {
+                          "id": "ID_EXEMPLO",
+                          "name": "Exemplo",
+                          "valueId": "exemplo",
+                          "valueName": "exemplo"
+                        }
+                      ]
+                    }
+                  ],
+                  "images": [
+                    {
+                      "id": 1001,
+                      "image": "https://example.com/arquivo-exemplo",
+                      "order": 0,
+                      "action": "exemplo",
+                      "attribute": {
+                        "name": "Exemplo",
+                        "valueName": "exemplo"
+                      }
+                    },
+                    {
+                      "image": "exemplo",
+                      "order": 1,
+                      "action": "exemplo",
+                      "attribute": {
+                        "name": "Exemplo",
+                        "valueName": "exemplo"
+                      }
+                    },
+                    {
+                      "image": "https://example.com/arquivo-exemplo",
+                      "order": 2,
+                      "action": "exemplo",
+                      "attribute": {
+                        "name": "Exemplo",
+                        "valueName": "exemplo"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Produto com variações atualizado com sucesso",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Product"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "O conteúdo enviado ou o SKU é inválido",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "example": {
+                "error": "Produto inválido."
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "A autenticação não foi informada, é inválida ou o cliente está desativado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Produto não encontrado para o cliente autenticado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "example": {
+                "error": "Register not found"
+              }
+            }
+          }
+        },
+        "415": {
+          "description": "O conteúdo deve ser enviado como application/json",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Não foi possível concluir a solicitação devido a uma falha inesperada",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "O serviço necessário para concluir a atualização está temporariamente indisponível",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
       "id": "get-products-sku",
       "method": "GET",
       "path": "/v1/products/{sku}",
@@ -13,20 +306,20 @@
       "operationId": "getProductBySku",
       "parameters": [
         {
-          "name": "enableLink",
-          "in": "query",
-          "description": "Retorna links",
-          "required": false,
+          "name": "sku",
+          "in": "path",
+          "description": "Sku do produto a ser pesquisado",
+          "required": true,
           "schema": {
             "type": "string",
             "default": "##default"
           }
         },
         {
-          "name": "sku",
-          "in": "path",
-          "description": "Sku do produto a ser pesquisado",
-          "required": true,
+          "name": "enableLink",
+          "in": "query",
+          "description": "Retorna links",
+          "required": false,
           "schema": {
             "type": "string",
             "default": "##default"
@@ -109,18 +402,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "put-products-sku",
@@ -147,14 +429,14 @@
       ],
       "requestBody": {
         "description": "Objeto para atualização de um produto",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/RequestEditProduct"
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -187,6 +469,9 @@
             "text/plain": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -264,18 +549,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "patch-products-sku",
@@ -302,14 +576,14 @@
       ],
       "requestBody": {
         "description": "Objeto para atualização de alguns campos do produto",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/RequestEditProduct"
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -342,6 +616,9 @@
             "text/plain": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -419,18 +696,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-orders-completeordernumber",
@@ -445,20 +711,20 @@
       "operationId": "getOrderByCompleteOrderNumber",
       "parameters": [
         {
-          "name": "enableLink",
-          "in": "query",
-          "description": "Retorna links",
-          "required": false,
+          "name": "completeOrderNumber",
+          "in": "path",
+          "description": "Código do pedido a ser pesquisado",
+          "required": true,
           "schema": {
             "type": "string",
             "default": "##default"
           }
         },
         {
-          "name": "completeOrderNumber",
-          "in": "path",
-          "description": "Código do pedido a ser pesquisado",
-          "required": true,
+          "name": "enableLink",
+          "in": "query",
+          "description": "Retorna links",
+          "required": false,
           "schema": {
             "type": "string",
             "default": "##default"
@@ -541,18 +807,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "put-orders-completeordernumber",
@@ -579,7 +834,6 @@
       ],
       "requestBody": {
         "description": "Objeto para atualização de um pedido. Rastreio e etiquetas podem ser enviados sem alterar o status. Para associar etiquetas, informe URLs HTTP/HTTPS; o formato PDF, ZPL ou TXT será identificado pelo conteúdo de cada arquivo. Quando a identificação não for possível, o campo type será usado como fallback.",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
@@ -604,7 +858,8 @@
               }
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -672,6 +927,9 @@
             "text/plain": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -749,18 +1007,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "patch-orders-completeordernumber",
@@ -787,7 +1034,6 @@
       ],
       "requestBody": {
         "description": "Objeto para atualização de alguns campos do pedido. Rastreio e etiquetas podem ser enviados sem alterar o status. Para associar etiquetas, informe URLs HTTP/HTTPS; o formato PDF, ZPL ou TXT será identificado pelo conteúdo de cada arquivo. Quando a identificação não for possível, o campo type será usado como fallback.",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
@@ -812,7 +1058,8 @@
               }
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -887,6 +1134,9 @@
             "text/plain": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -964,18 +1214,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "put-callbacks-stocks",
@@ -990,14 +1229,14 @@
       "operationId": "putCallbackStockByCustomer",
       "requestBody": {
         "description": "Objeto callback",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/RequestCallback"
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -1016,6 +1255,9 @@
             "text/plain": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -1075,17 +1317,6 @@
           }
         }
       },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ],
       "parameters": []
     },
     {
@@ -1113,11 +1344,13 @@
       ],
       "requestBody": {
         "description": "Objeto com o novo preço a ser aplicado por SKU",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "type": "string",
+              "additionalProperties": {
+                "default": "##default"
+              },
               "default": "##default"
             },
             "examples": {
@@ -1137,7 +1370,8 @@
               }
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -1156,6 +1390,9 @@
             "text/plain": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -1233,18 +1470,266 @@
             }
           }
         }
-      },
-      "security": [
+      }
+    },
+    {
+      "id": "get-variations",
+      "method": "GET",
+      "path": "/v1/variations",
+      "group": "Variations",
+      "tags": [
+        "Variations"
+      ],
+      "summary": "Listar produtos com variações",
+      "description": "Retorna os produtos com variações do cliente autenticado em páginas. Use page para avançar entre as páginas e limit para definir a quantidade de itens retornados.",
+      "operationId": "listVariationProducts",
+      "parameters": [
         {
-          "ApiKeyAuth": []
+          "name": "limit",
+          "in": "query",
+          "description": "Quantidade de produtos por página, limitada a 50",
+          "required": false,
+          "schema": {
+            "pattern": "^[0-9]+$",
+            "type": "string",
+            "default": "50"
+          }
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "description": "Número da página a ser retornada, iniciando em 1",
+          "required": false,
+          "schema": {
+            "pattern": "^[0-9]+$",
+            "type": "string",
+            "default": "1"
+          }
         }
       ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
+      "responses": {
+        "200": {
+          "description": "Lista paginada retornada com sucesso",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductsList"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "A autenticação não foi informada, é inválida ou o cliente está desativado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Não foi possível concluir a solicitação devido a uma falha inesperada",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "O serviço necessário para concluir a listagem está temporariamente indisponível",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
         }
-      ]
+      }
+    },
+    {
+      "id": "post-variations",
+      "method": "POST",
+      "path": "/v1/variations",
+      "group": "Variations",
+      "tags": [
+        "Variations"
+      ],
+      "summary": "Criar um produto com variações",
+      "description": "Envie os dados do produto principal e de cada combinação de variação. Imagens novas podem ser enviadas como Data URL Base64 e imagens já hospedadas como URL pública. A resposta informa o identificador criado para consultas e operações posteriores.",
+      "operationId": "createVariationProduct",
+      "requestBody": {
+        "description": "Produto principal, combinações de variação e imagens no mesmo formato usado pela tela da Magis5",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductRequest"
+            },
+            "examples": {
+              "Produto fictício com cores": {
+                "description": "Produto fictício com cores",
+                "value": {
+                  "sku": "SKU_EXEMPLO",
+                  "title": "Produto de exemplo",
+                  "price": 79.9,
+                  "condition": "NEW",
+                  "brand": "Marca exemplo",
+                  "model": "Modelo exemplo",
+                  "description": "Descrição de exemplo",
+                  "dimension": {
+                    "height": 2,
+                    "width": 20,
+                    "length": 30,
+                    "weight": 0.3
+                  },
+                  "warranty": 90,
+                  "crossdocking": 0,
+                  "marketplaceIds": [],
+                  "categories": [],
+                  "attributes": [],
+                  "variations": [
+                    {
+                      "sku": "SKU_EXEMPLO",
+                      "ean": 2001234567893,
+                      "price": 79.9,
+                      "stock": 10,
+                      "active": true,
+                      "attributes": [
+                        {
+                          "id": "ID_EXEMPLO",
+                          "name": "Exemplo",
+                          "valueId": "exemplo",
+                          "valueName": "exemplo"
+                        }
+                      ]
+                    },
+                    {
+                      "sku": "SKU_EXEMPLO",
+                      "ean": 2001234567909,
+                      "price": 79.9,
+                      "stock": 10,
+                      "active": true,
+                      "attributes": [
+                        {
+                          "id": "ID_EXEMPLO",
+                          "name": "Exemplo",
+                          "valueId": "exemplo",
+                          "valueName": "exemplo"
+                        }
+                      ]
+                    },
+                    {
+                      "sku": "SKU_EXEMPLO",
+                      "ean": 2001234567916,
+                      "price": 79.9,
+                      "stock": 10,
+                      "active": true,
+                      "attributes": [
+                        {
+                          "id": "ID_EXEMPLO",
+                          "name": "Exemplo",
+                          "valueId": "exemplo",
+                          "valueName": "exemplo"
+                        }
+                      ]
+                    }
+                  ],
+                  "images": [
+                    {
+                      "image": "exemplo",
+                      "order": 0,
+                      "action": "exemplo"
+                    },
+                    {
+                      "image": "https://example.com/arquivo-exemplo",
+                      "order": 1,
+                      "action": "exemplo",
+                      "attribute": {
+                        "name": "Exemplo",
+                        "valueName": "exemplo"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Produto com variações criado com sucesso",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VariationCreationResponse"
+              },
+              "example": {
+                "status": "OK",
+                "id": 1001
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "O conteúdo enviado é inválido",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "example": {
+                "error": "Produto inválido."
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "A autenticação não foi informada, é inválida ou o cliente está desativado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        },
+        "415": {
+          "description": "O conteúdo deve ser enviado como application/json",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Não foi possível concluir a solicitação devido a uma falha inesperada",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "O serviço necessário para concluir a criação está temporariamente indisponível",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
     },
     {
       "id": "post-users-login",
@@ -1259,14 +1744,14 @@
       "operationId": "getUserToken",
       "requestBody": {
         "description": "Objeto de Login que você precisa para autenticar",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/RequestLoginUser"
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -1333,17 +1818,6 @@
           }
         }
       },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ],
       "parameters": []
     },
     {
@@ -1439,7 +1913,6 @@
                 "additionalProperties": {
                   "default": "##default"
                 },
-                "default": "##default",
                 "oneOf": [
                   {
                     "$ref": "#/components/schemas/ResponsePaginationCompleteProductApi"
@@ -1447,7 +1920,8 @@
                   {
                     "$ref": "#/components/schemas/ResponsePaginationSimpleProductApi"
                   }
-                ]
+                ],
+                "default": "##default"
               },
               "examples": {
                 "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'": {
@@ -1552,6 +2026,7 @@
                         "quantityItemsSamePackaging": 0,
                         "erpId": "ID_EXEMPLO",
                         "stockFixed": 0,
+                        "stockMinimum": 0,
                         "stockProvider": 0,
                         "operationalCost": 0,
                         "percentageProfit": 0,
@@ -1795,6 +2270,7 @@
                               "quantityItemsSamePackaging": 0,
                               "erpId": "ID_EXEMPLO",
                               "stockFixed": 0,
+                              "stockMinimum": 0,
                               "stockProvider": 0,
                               "operationalCost": 0,
                               "percentageProfit": 0,
@@ -2217,18 +2693,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "post-products",
@@ -2243,14 +2708,14 @@
       "operationId": "postProduct",
       "requestBody": {
         "description": "Objeto para criação de um produto",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/RequestInsertProduct"
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "201": {
@@ -2297,6 +2762,9 @@
             "text/plain": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -2356,17 +2824,6 @@
           }
         }
       },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ],
       "parameters": []
     },
     {
@@ -2492,7 +2949,6 @@
                 "additionalProperties": {
                   "default": "##default"
                 },
-                "default": "##default",
                 "oneOf": [
                   {
                     "$ref": "#/components/schemas/ResponsePaginationCompleteOrderApi"
@@ -2500,7 +2956,8 @@
                   {
                     "$ref": "#/components/schemas/ResponsePaginationSimpleOrderApi"
                   }
-                ]
+                ],
+                "default": "##default"
               },
               "examples": {
                 "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'": {
@@ -3077,18 +3534,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "post-orders",
@@ -3103,14 +3549,14 @@
       "operationId": "postOrder",
       "requestBody": {
         "description": "Objeto para criação de um pedido",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/RequestInsertOrder"
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "201": {
@@ -3150,6 +3596,9 @@
             "text/plain": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -3209,17 +3658,6 @@
           }
         }
       },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ],
       "parameters": []
     },
     {
@@ -3235,11 +3673,13 @@
       "operationId": "postReleaseOrderByObjectOfCompleteOrderNumber",
       "requestBody": {
         "description": "Objeto com o número dos pedidos separados por vírgula",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "type": "string",
+              "additionalProperties": {
+                "default": "##default"
+              },
               "default": "##default"
             },
             "examples": {
@@ -3256,7 +3696,8 @@
               }
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -3335,17 +3776,6 @@
           }
         }
       },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ],
       "parameters": []
     },
     {
@@ -3361,20 +3791,20 @@
       "operationId": "postReleaseOrderByCompleteOrderNumber",
       "parameters": [
         {
-          "name": "userId",
-          "in": "query",
-          "description": "E-mail do usuário",
-          "required": false,
+          "name": "completeOrderNumber",
+          "in": "path",
+          "description": "Código do pedido",
+          "required": true,
           "schema": {
             "type": "string",
             "default": "##default"
           }
         },
         {
-          "name": "completeOrderNumber",
-          "in": "path",
-          "description": "Código do pedido",
-          "required": true,
+          "name": "userId",
+          "in": "query",
+          "description": "E-mail do usuário",
+          "required": false,
           "schema": {
             "type": "string",
             "default": "##default"
@@ -3457,18 +3887,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "post-orders-queues-read-completeordernumber",
@@ -3536,6 +3955,9 @@
             "application/json": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -3589,18 +4011,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "post-orders-details-required-queues-read-completeordernumber",
@@ -3627,14 +4038,14 @@
       ],
       "requestBody": {
         "description": "Objeto para preencher dados adicionais do pedido",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/OrderDetailRequiredDataDto"
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -3712,18 +4123,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "post-logistic-providers-queues-read-queueid",
@@ -3799,18 +4199,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "post-labels-queues-read-completeordernumber",
@@ -3911,18 +4300,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "post-invoices-completeordernumber",
@@ -3936,6 +4314,16 @@
       "description": "Enviar XML da NF pelo código do pedido",
       "operationId": "sendOrderXml",
       "parameters": [
+        {
+          "name": "completeOrderNumber",
+          "in": "path",
+          "description": "Código do pedido para envio do XML",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
         {
           "name": "releaseOrder",
           "in": "query",
@@ -3955,28 +4343,18 @@
             "type": "string",
             "default": "##default"
           }
-        },
-        {
-          "name": "completeOrderNumber",
-          "in": "path",
-          "description": "Código do pedido para envio do XML",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "default": "##default"
-          }
         }
       ],
       "requestBody": {
         "description": "Objeto XML da nota fiscal",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "type": "string"
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -4073,18 +4451,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "post-invoices-queues-read",
@@ -4099,34 +4466,24 @@
       "operationId": "postQueueInvoiceByObjectOfCompleteOrderNumber",
       "requestBody": {
         "description": "Objeto com a lista de códigos de pedido a serem marcados como consumidos",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
-              "description": "Objeto contendo um array de códigos de pedido",
               "additionalProperties": {
                 "default": "##default"
               },
-              "default": "##default",
+              "description": "Objeto contendo um array de códigos de pedido",
               "example": {
                 "completeOrderNumbers": [
                   "exemplo",
                   "exemplo",
                   "exemplo"
                 ]
-              }
+              },
+              "default": "##default"
             },
             "examples": {
-              "default": {
-                "value": {
-                  "completeOrderNumbers": [
-                    "exemplo",
-                    "exemplo",
-                    "exemplo"
-                  ]
-                }
-              },
               "Exemplo de JSON na requisição": {
                 "summary": "JSON válido",
                 "description": "Exemplo de JSON na requisição",
@@ -4140,7 +4497,8 @@
               }
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -4219,17 +4577,6 @@
           }
         }
       },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ],
       "parameters": []
     },
     {
@@ -4331,18 +4678,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "post-invoices-documents-queues-read-completeordernumber",
@@ -4443,18 +4779,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "post-fulfillments-queues-read",
@@ -4469,11 +4794,13 @@
       "operationId": "postQueueFulfillmentByObjectOfCompleteOrderNumber",
       "requestBody": {
         "description": "Objeto com o número dos pedidos separados por vírgula",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "type": "string",
+              "additionalProperties": {
+                "default": "##default"
+              },
               "default": "##default"
             },
             "examples": {
@@ -4490,7 +4817,8 @@
               }
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -4569,17 +4897,6 @@
           }
         }
       },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ],
       "parameters": []
     },
     {
@@ -4681,18 +4998,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "post-callbacks-stocks-maskid",
@@ -4719,14 +5025,14 @@
       ],
       "requestBody": {
         "description": "Objeto callback",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/Callback"
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -4745,6 +5051,9 @@
             "text/plain": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -4830,18 +5139,7 @@
           }
         }
       },
-      "deprecated": true,
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      "deprecated": true
     },
     {
       "id": "patch-products-fiscal-sku",
@@ -4868,14 +5166,14 @@
       ],
       "requestBody": {
         "description": "Objeto para atualização de dados fiscais do produto",
-        "required": true,
         "content": {
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/RequestProductFiscal"
             }
           }
-        }
+        },
+        "required": true
       },
       "responses": {
         "200": {
@@ -4972,18 +5270,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-providers",
@@ -5048,7 +5335,6 @@
                 "additionalProperties": {
                   "default": "##default"
                 },
-                "default": "##default",
                 "oneOf": [
                   {
                     "$ref": "#/components/schemas/ResponsePaginationCompleteProviderApi"
@@ -5056,7 +5342,8 @@
                   {
                     "$ref": "#/components/schemas/ResponsePaginationSimpleProviderApi"
                   }
-                ]
+                ],
+                "default": "##default"
               },
               "examples": {
                 "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'": {
@@ -5153,18 +5440,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-orders-queues",
@@ -5239,8 +5515,15 @@
                 "additionalProperties": {
                   "default": "##default"
                 },
-                "default": "##default",
-                "oneOf": []
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ResponsePaginationCompleteOrderApi"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ResponsePaginationSimpleOrderApi"
+                  }
+                ],
+                "default": "##default"
               },
               "examples": {
                 "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'": {
@@ -5803,6 +6086,9 @@
             "application/json": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -5837,18 +6123,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-orders-queues-completeordernumber",
@@ -5863,20 +6138,20 @@
       "operationId": "getQueueOrderByCompleteOrderNumber",
       "parameters": [
         {
-          "name": "enableLink",
-          "in": "query",
-          "description": "Retorna links",
-          "required": false,
+          "name": "completeOrderNumber",
+          "in": "path",
+          "description": "Código do pedido a ser pesquisado",
+          "required": true,
           "schema": {
             "type": "string",
             "default": "##default"
           }
         },
         {
-          "name": "completeOrderNumber",
-          "in": "path",
-          "description": "Código do pedido a ser pesquisado",
-          "required": true,
+          "name": "enableLink",
+          "in": "query",
+          "description": "Retorna links",
+          "required": false,
           "schema": {
             "type": "string",
             "default": "##default"
@@ -5926,6 +6201,9 @@
             "application/json": {
               "schema": {
                 "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
                 "default": "##default"
               },
               "examples": {
@@ -5979,18 +6257,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-orders-marketplaces-completeordernumber",
@@ -6005,20 +6272,20 @@
       "operationId": "getMarketplaceOrderByCompleteOrderNumber",
       "parameters": [
         {
-          "name": "enableLink",
-          "in": "query",
-          "description": "Retorna links",
-          "required": false,
+          "name": "completeOrderNumber",
+          "in": "path",
+          "description": "Código do pedido a ser pesquisado",
+          "required": true,
           "schema": {
             "type": "string",
             "default": "##default"
           }
         },
         {
-          "name": "completeOrderNumber",
-          "in": "path",
-          "description": "Código do pedido a ser pesquisado",
-          "required": true,
+          "name": "enableLink",
+          "in": "query",
+          "description": "Retorna links",
+          "required": false,
           "schema": {
             "type": "string",
             "default": "##default"
@@ -6106,12 +6373,6 @@
         {
           "ApiKeyAuth": []
         }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
       ]
     },
     {
@@ -6127,20 +6388,20 @@
       "operationId": "getByCompleteOrderNumber",
       "parameters": [
         {
-          "name": "enableLink",
-          "in": "query",
-          "description": "Retorna links",
-          "required": false,
+          "name": "completeOrderNumber",
+          "in": "path",
+          "description": "Código do pedido a ser pesquisado",
+          "required": true,
           "schema": {
             "type": "string",
             "default": "##default"
           }
         },
         {
-          "name": "completeOrderNumber",
-          "in": "path",
-          "description": "Código do pedido a ser pesquisado",
-          "required": true,
+          "name": "enableLink",
+          "in": "query",
+          "description": "Retorna links",
+          "required": false,
           "schema": {
             "type": "string",
             "default": "##default"
@@ -6223,18 +6484,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-orders-details-required-queues",
@@ -6309,7 +6559,6 @@
                 "additionalProperties": {
                   "default": "##default"
                 },
-                "default": "##default",
                 "oneOf": [
                   {
                     "$ref": "#/components/schemas/ResponsePaginationCompleteOrderRequiredDetailApi"
@@ -6317,7 +6566,8 @@
                   {
                     "$ref": "#/components/schemas/ResponsePaginationSimpleOrderDetailRequiredApi"
                   }
-                ]
+                ],
+                "default": "##default"
               }
             }
           }
@@ -6368,18 +6618,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-logistic-providers-queues",
@@ -6455,18 +6694,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-labels-completeordernumber",
@@ -6481,20 +6709,20 @@
       "operationId": "getLabelByCompleteOrderNumber",
       "parameters": [
         {
-          "name": "enableLink",
-          "in": "query",
-          "description": "Retorna links",
-          "required": false,
+          "name": "completeOrderNumber",
+          "in": "path",
+          "description": "Código do pedido a ser pesquisado",
+          "required": true,
           "schema": {
             "type": "string",
             "default": "##default"
           }
         },
         {
-          "name": "completeOrderNumber",
-          "in": "path",
-          "description": "Código do pedido a ser pesquisado",
-          "required": true,
+          "name": "enableLink",
+          "in": "query",
+          "description": "Retorna links",
+          "required": false,
           "schema": {
             "type": "string",
             "default": "##default"
@@ -6577,18 +6805,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-labels-queues",
@@ -6663,7 +6880,6 @@
                 "additionalProperties": {
                   "default": "##default"
                 },
-                "default": "##default",
                 "oneOf": [
                   {
                     "$ref": "#/components/schemas/ResponsePaginationCompleteOrderLabelApi"
@@ -6671,7 +6887,8 @@
                   {
                     "$ref": "#/components/schemas/ResponsePaginationSimpleOrderLabelApi"
                   }
-                ]
+                ],
+                "default": "##default"
               }
             }
           }
@@ -6722,18 +6939,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-invoices-queues",
@@ -6818,7 +7024,6 @@
                 "additionalProperties": {
                   "default": "##default"
                 },
-                "default": "##default",
                 "oneOf": [
                   {
                     "$ref": "#/components/schemas/ResponsePaginationCompleteInvoiceApi"
@@ -6826,7 +7031,8 @@
                   {
                     "$ref": "#/components/schemas/ResponsePaginationSimpleInvoiceApi"
                   }
-                ]
+                ],
+                "default": "##default"
               },
               "examples": {
                 "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'": {
@@ -7084,18 +7290,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-invoices-marketplaces-batch-channel-start-end",
@@ -7216,18 +7411,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-invoices-documents-queues",
@@ -7322,7 +7506,6 @@
                 "additionalProperties": {
                   "default": "##default"
                 },
-                "default": "##default",
                 "oneOf": [
                   {
                     "$ref": "#/components/schemas/ResponsePaginationCompleteInvoiceApi"
@@ -7330,7 +7513,8 @@
                   {
                     "$ref": "#/components/schemas/ResponsePaginationSimpleInvoiceApi"
                   }
-                ]
+                ],
+                "default": "##default"
               }
             }
           }
@@ -7381,18 +7565,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-invoices-documents-queues-invoicekey",
@@ -7406,6 +7579,15 @@
       "description": "Retorna todas as notas fiscais disponíveis para processamento vinculadas à chave de acesso informada. A resposta mantém o mesmo formato da consulta geral e pode conter mais de um registro para a mesma chave. Quando não houver documentos correspondentes, a lista de notas fiscais será retornada vazia.",
       "operationId": "listQueueInvoicesDocumentsByInvoiceKey",
       "parameters": [
+        {
+          "name": "invoiceKey",
+          "in": "path",
+          "description": "Chave de acesso da nota fiscal",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
         {
           "name": "structureType",
           "in": "query",
@@ -7428,15 +7610,6 @@
           "schema": {
             "type": "boolean",
             "default": true
-          }
-        },
-        {
-          "name": "invoiceKey",
-          "in": "path",
-          "description": "Chave de acesso da nota fiscal",
-          "required": true,
-          "schema": {
-            "type": "string"
           }
         }
       ],
@@ -7498,18 +7671,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-health",
@@ -7540,17 +7702,6 @@
           }
         }
       },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ],
       "parameters": []
     },
     {
@@ -7616,8 +7767,15 @@
                 "additionalProperties": {
                   "default": "##default"
                 },
-                "default": "##default",
-                "oneOf": []
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ResponsePaginationCompleteInvoiceApi"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ResponsePaginationSimpleInvoiceApi"
+                  }
+                ],
+                "default": "##default"
               },
               "examples": {
                 "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'": {
@@ -8194,18 +8352,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-channels",
@@ -8307,18 +8454,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-channels-channel",
@@ -8333,20 +8469,20 @@
       "operationId": "getChannelByChannelId",
       "parameters": [
         {
-          "name": "enableLink",
-          "in": "query",
-          "description": "Retorna links",
-          "required": false,
+          "name": "channel",
+          "in": "path",
+          "description": "Código do canal de venda a ser pesquisado",
+          "required": true,
           "schema": {
             "type": "string",
             "default": "##default"
           }
         },
         {
-          "name": "channel",
-          "in": "path",
-          "description": "Código do canal de venda a ser pesquisado",
-          "required": true,
+          "name": "enableLink",
+          "in": "query",
+          "description": "Retorna links",
+          "required": false,
           "schema": {
             "type": "string",
             "default": "##default"
@@ -8429,18 +8565,7 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     },
     {
       "id": "get-ads-sku",
@@ -8454,6 +8579,16 @@
       "description": "Obtenha lista de anúncios por SKU",
       "operationId": "getAllProductsOnChannelBySku",
       "parameters": [
+        {
+          "name": "sku",
+          "in": "path",
+          "description": "Sku do produto a ser pesquisado",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
         {
           "name": "limit",
           "in": "query",
@@ -8479,16 +8614,6 @@
           "in": "query",
           "description": "Retorna links",
           "required": false,
-          "schema": {
-            "type": "string",
-            "default": "##default"
-          }
-        },
-        {
-          "name": "sku",
-          "in": "path",
-          "description": "Sku do produto a ser pesquisado",
-          "required": true,
           "schema": {
             "type": "string",
             "default": "##default"
@@ -8571,517 +8696,357 @@
             }
           }
         }
-      },
-      "security": [
-        {
-          "ApiKeyAuth": []
-        }
-      ],
-      "servers": [
-        {
-          "url": "https://app.magis5.com.br/v1",
-          "description": "Produção"
-        }
-      ]
+      }
     }
   ],
   "schemas": {
-    "ResponseProductApi": {
+    "AttributeRequest": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "Identificador do atributo no marketplace",
+          "example": "COLOR"
         },
-        "externalId": {
-          "type": "string"
+        "originalName": {
+          "type": "string",
+          "description": "Nome original do atributo no marketplace",
+          "example": "Cor"
         },
-        "alternativeId": {
-          "type": "string"
+        "name": {
+          "type": "string",
+          "description": "Nome do atributo",
+          "example": "Cor"
         },
-        "url": {
-          "type": "string"
+        "valueId": {
+          "type": "string",
+          "description": "Identificador do valor no marketplace. Quando não informado em um atributo de produto, utiliza 0",
+          "example": "BLUE",
+          "default": "0"
         },
-        "title": {
-          "type": "string"
+        "valueName": {
+          "type": "string",
+          "description": "Nome do valor do atributo",
+          "example": "Azul"
         },
-        "condition": {
-          "type": "string"
+        "valueUnit": {
+          "type": "string",
+          "description": "Unidade do valor do atributo",
+          "example": "cm"
         },
-        "stock": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "cost": {
-          "type": "number"
-        },
-        "currency": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "technicalSpecification": {
-          "type": "string"
-        },
-        "additionalInformation": {
-          "type": "string"
-        },
-        "pictures": {
+        "children": {
           "type": "array",
+          "description": "Atributos dependentes deste atributo",
           "items": {
-            "$ref": "#/components/schemas/Picture"
+            "$ref": "#/components/schemas/AttributeRequest"
           }
+        }
+      },
+      "description": "Atributo de produto ou variação"
+    },
+    "AttributesRequest": {
+      "type": "object",
+      "properties": {
+        "marketplace": {
+          "type": "string",
+          "description": "Nome do marketplace",
+          "enum": [
+            "Shopee",
+            "Mercado Livre"
+          ]
         },
-        "price": {
-          "type": "number"
-        },
-        "warranty": {
-          "type": "string"
-        },
-        "business": {
-          "type": "string"
-        },
-        "ean": {
-          "type": "string"
-        },
-        "eanInvoice": {
-          "type": "string"
-        },
-        "height": {
-          "type": "number",
-          "format": "double"
-        },
-        "weight": {
-          "type": "number",
-          "format": "double"
-        },
-        "weightGross": {
-          "type": "number",
-          "format": "double"
-        },
-        "depth": {
-          "type": "number",
-          "format": "double"
-        },
-        "width": {
-          "type": "number",
-          "format": "double"
-        },
-        "brand": {
-          "type": "string"
-        },
-        "model": {
-          "type": "string"
-        },
-        "ncm": {
-          "type": "string"
-        },
-        "cest": {
-          "type": "string"
-        },
-        "origin": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "unit": {
-          "type": "string"
-        },
-        "customerId": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "updateStock": {
-          "type": "boolean"
-        },
-        "channel": {
-          "type": "string"
-        },
-        "integrationType": {
-          "type": "string"
-        },
-        "deadlineCrossdocking": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "productsBusinessUnit": {
+        "attribute": {
           "type": "array",
+          "description": "Atributos preenchidos para o marketplace",
           "items": {
-            "$ref": "#/components/schemas/ProductWarehouse"
+            "$ref": "#/components/schemas/AttributeRequest"
           }
-        },
-        "isImportProduct": {
-          "type": "boolean"
-        },
-        "note": {
-          "type": "string"
-        },
-        "youtubeId": {
-          "type": "string"
-        },
-        "location": {
-          "type": "string"
-        },
-        "productType": {
-          "type": "string"
-        },
-        "isVariation": {
-          "type": "boolean"
-        },
-        "status": {
-          "type": "string"
-        },
-        "productsComposition": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ProductComposition"
-          }
-        },
-        "warrantyProvider": {
-          "type": "string"
-        },
-        "quantityItemsSamePackaging": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "erpId": {
-          "type": "string"
-        },
-        "stockFixed": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "stockProvider": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "operationalCost": {
-          "type": "number"
-        },
-        "percentageProfit": {
-          "type": "number"
-        },
-        "usePicturesFromFatherVariation": {
-          "type": "boolean"
-        },
-        "productsCategory": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ProductCategory"
-          }
-        },
-        "variations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/Variation"
-          }
-        },
-        "productsCode": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ProductCode"
-          }
-        },
-        "productsRootCharacteristic": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/RootProductCharacteristic"
-          }
+        }
+      },
+      "description": "Atributos selecionados em um marketplace"
+    },
+    "CategoriesRequest": {
+      "type": "object",
+      "properties": {
+        "marketplace": {
+          "type": "string",
+          "description": "Nome do marketplace",
+          "enum": [
+            "Shopee",
+            "Mercado Livre"
+          ]
         },
         "categories": {
           "type": "array",
+          "description": "Caminho de categorias selecionado no marketplace",
           "items": {
-            "$ref": "#/components/schemas/Category"
+            "$ref": "#/components/schemas/CategoryRequest"
           }
-        },
-        "dateCreated": {
-          "type": "string"
-        },
-        "dateLastUpdated": {
-          "type": "string"
-        },
-        "restrictions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/Restriction"
-          }
-        },
-        "productsWarehouse": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ProductWarehouse"
-          }
-        },
-        "anp": {
-          "type": "string"
-        },
-        "subUserId": {
-          "type": "string"
-        },
-        "alternativeUnitMeasurement": {
-          "type": "string"
-        },
-        "integrationEnabled": {
-          "type": "boolean"
-        },
-        "links": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/Link"
-          }
-        },
-        "plainTextDescription": {
-          "type": "string"
         }
-      }
+      },
+      "description": "Categorias selecionadas em um marketplace"
     },
-    "Picture": {
+    "CategoryRequest": {
       "type": "object",
       "properties": {
-        "size": {
-          "type": "string"
-        },
-        "secure_url": {
-          "type": "string"
-        },
         "id": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        },
-        "max_size": {
-          "type": "string"
-        },
-        "quality": {
-          "type": "string"
+          "type": "string",
+          "description": "Identificador da categoria no marketplace",
+          "example": "123456"
         },
         "name": {
-          "type": "string"
-        },
-        "externalId": {
-          "type": "string"
-        },
-        "principal": {
-          "type": "boolean"
-        },
-        "posicao": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "ProductWarehouse": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "city": {
-          "type": "string"
-        },
-        "state": {
-          "type": "string"
-        },
-        "stock": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "stockWithReservation": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "reserved": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "price": {
-          "type": "number"
-        },
-        "currency": {
-          "type": "string"
-        },
-        "unconsidered": {
-          "type": "string"
-        },
-        "caller": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
-        },
-        "companyId": {
-          "type": "string"
-        },
-        "lot": {
-          "type": "string"
-        }
-      }
-    },
-    "ProductComposition": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "productId": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "productOnChannelId": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "title": {
-          "type": "string"
-        },
-        "sku": {
-          "type": "string"
-        },
-        "pictures": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/Picture"
-          }
-        },
-        "brand": {
-          "type": "string"
-        },
-        "quantity": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "unitValue": {
-          "type": "number"
-        },
-        "stock": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "percentagePriceValue": {
-          "type": "number"
-        },
-        "permalink": {
-          "type": "string"
-        },
-        "channel_id": {
-          "type": "string"
-        },
-        "variation_id": {
-          "type": "string"
-        },
-        "is_main_product": {
-          "type": "boolean"
-        },
-        "price_to_sell": {
-          "type": "number"
-        }
-      }
-    },
-    "ProductCategory": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string",
+          "description": "Nome da categoria",
+          "example": "Camisetas"
         },
         "parentId": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "getpId": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "categoryDescription": {
-          "type": "string"
-        },
-        "level": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "isNew": {
-          "type": "boolean"
-        },
-        "isEdited": {
-          "type": "boolean"
-        },
-        "categoryId": {
-          "type": "string"
-        },
-        "productId": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "productDescription": {
-          "type": "string"
+          "type": "string",
+          "description": "Identificador da categoria superior no marketplace",
+          "example": "123"
         }
-      }
+      },
+      "description": "Categoria de um marketplace"
     },
-    "Variation": {
+    "DimensionRequest": {
+      "type": "object",
+      "properties": {
+        "height": {
+          "type": "number",
+          "description": "Altura do produto",
+          "example": 10.5
+        },
+        "width": {
+          "type": "number",
+          "description": "Largura do produto",
+          "example": 20
+        },
+        "length": {
+          "type": "number",
+          "description": "Comprimento do produto",
+          "example": 30
+        },
+        "weight": {
+          "type": "number",
+          "description": "Peso do produto",
+          "example": 0.5
+        }
+      },
+      "description": "Dimensões e peso do produto"
+    },
+    "ImageRequest": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "integer",
+          "description": "Identificador da imagem. É utilizado com a ação MOVE em operações de atualização",
+          "format": "int64",
+          "example": 456
         },
-        "attribute_combinations": {
+        "image": {
+          "type": "string",
+          "description": "Para NEW, informe a Data URL completa no formato data:image/<formato>;base64,<conteúdo>. Para IMPORTED ou MOVE, informe uma URL pública da imagem. Os formatos de imagem aceitos são JPG, JPEG, PNG e GIF",
+          "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9ZQmcAAAAASUVORK5CYII="
+        },
+        "order": {
+          "type": "integer",
+          "description": "Posição da imagem, iniciando em 0",
+          "format": "int32",
+          "example": 0
+        },
+        "action": {
+          "type": "string",
+          "description": "Use NEW para enviar Base64 e IMPORTED para informar uma URL pública. MOVE e DELETE são destinados a operações de atualização",
+          "example": "NEW",
+          "enum": [
+            "NEW",
+            "DELETE",
+            "MOVE",
+            "IMPORTED",
+            "NEW",
+            "IMPORTED",
+            "MOVE",
+            "DELETE"
+          ]
+        },
+        "attribute": {
+          "$ref": "#/components/schemas/AttributeRequest"
+        }
+      },
+      "description": "Imagem geral do produto ou imagem associada a uma combinação de variação"
+    },
+    "ProductRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Identificador do produto. Na atualização por SKU, é opcional e, quando informado, deve pertencer ao produto indicado na URL",
+          "format": "int64",
+          "example": 12345
+        },
+        "sku": {
+          "type": "string",
+          "description": "SKU do produto principal. Na criação, quando não informado, um SKU numérico é gerado. Na atualização, pode ser omitido e será obtido da URL",
+          "example": "EXAMPLE-PARENT"
+        },
+        "title": {
+          "type": "string",
+          "description": "Título do produto",
+          "example": "Produto de exemplo"
+        },
+        "price": {
+          "type": "number",
+          "description": "Preço principal do produto",
+          "example": 79.9
+        },
+        "condition": {
+          "type": "string",
+          "description": "Condição do produto",
+          "enum": [
+            "NEW",
+            "USED"
+          ],
+          "default": "NEW"
+        },
+        "brand": {
+          "type": "string",
+          "description": "Marca do produto",
+          "example": "Marca Exemplo"
+        },
+        "model": {
+          "type": "string",
+          "description": "Modelo do produto",
+          "example": "Modelo Exemplo"
+        },
+        "dimension": {
+          "$ref": "#/components/schemas/DimensionRequest"
+        },
+        "warranty": {
+          "type": "integer",
+          "description": "Prazo de garantia do produto",
+          "format": "int32",
+          "example": 90
+        },
+        "crossdocking": {
+          "type": "integer",
+          "description": "Prazo de cross-docking em dias",
+          "format": "int32",
+          "example": 0,
+          "default": 0
+        },
+        "description": {
+          "type": "string",
+          "description": "Descrição do produto",
+          "example": "Descrição do produto de exemplo"
+        },
+        "categories": {
           "type": "array",
+          "description": "Categorias selecionadas por marketplace",
           "items": {
-            "$ref": "#/components/schemas/Attribute"
+            "$ref": "#/components/schemas/CategoriesRequest"
           }
         },
         "attributes": {
           "type": "array",
+          "description": "Atributos selecionados por marketplace",
           "items": {
-            "$ref": "#/components/schemas/Attribute"
+            "$ref": "#/components/schemas/AttributesRequest"
           }
         },
-        "available_quantity": {
-          "type": "integer",
-          "format": "int32"
+        "variations": {
+          "type": "array",
+          "description": "Variações do produto",
+          "items": {
+            "$ref": "#/components/schemas/VariationRequest"
+          }
         },
-        "available_quantity_flex": {
-          "type": "integer",
-          "format": "int32"
+        "images": {
+          "type": "array",
+          "description": "Imagens do produto e das variações",
+          "items": {
+            "$ref": "#/components/schemas/ImageRequest"
+          }
         },
-        "changeAvailableQuantity": {
-          "type": "boolean"
+        "marketplaceIds": {
+          "type": "array",
+          "description": "Identificadores dos marketplaces selecionados. Quando não informado, utiliza a Shopee",
+          "items": {
+            "type": "integer",
+            "description": "Identificadores dos marketplaces selecionados. Quando não informado, utiliza a Shopee",
+            "format": "int64",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "enum": [
+            "1",
+            "2"
+          ],
+          "default": [
+            1
+          ]
+        },
+        "listingType": {
+          "type": "string",
+          "description": "Tipo de anúncio do Mercado Livre",
+          "enum": [
+            "bronze",
+            "gold_pro",
+            "both"
+          ]
+        }
+      },
+      "description": "Dados do produto com variações"
+    },
+    "VariationRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Identificador da variação. Informe este campo ao atualizar",
+          "format": "int64",
+          "example": 98765
+        },
+        "sku": {
+          "type": "string",
+          "description": "SKU da variação",
+          "example": "EXAMPLE-BLUE-M"
+        },
+        "ean": {
+          "type": "integer",
+          "description": "Código EAN da variação",
+          "example": 2001234567893
         },
         "price": {
-          "type": "number"
+          "type": "number",
+          "description": "Preço da variação",
+          "example": 79.9
         },
-        "sold_quantity": {
+        "stock": {
           "type": "integer",
-          "format": "int32"
+          "description": "Estoque da variação",
+          "format": "int32",
+          "example": 10
         },
-        "seller_custom_field": {
-          "type": "string"
-        },
-        "catalog_product_id": {
-          "type": "string"
-        },
-        "picture_ids": {
+        "attributes": {
           "type": "array",
+          "description": "Combinação de atributos que identifica a variação",
           "items": {
-            "type": "string"
+            "$ref": "#/components/schemas/AttributeRequest"
           }
         },
-        "promotionalPrice": {
-          "type": "number"
-        },
-        "title": {
-          "type": "string"
-        },
-        "categoryId": {
-          "type": "string"
-        },
-        "inventory_id": {
-          "type": "string"
-        },
-        "user_product_id": {
+        "active": {
+          "type": "boolean",
+          "description": "Indica se a variação está ativa",
+          "default": true
+        }
+      },
+      "description": "Variação de um produto"
+    },
+    "ResponseErrorApi": {
+      "type": "object",
+      "properties": {
+        "error": {
           "type": "string"
         }
       }
@@ -9194,127 +9159,46 @@
         }
       }
     },
-    "Tags": {
-      "type": "object",
-      "properties": {
-        "allow_variations": {
-          "type": "boolean"
-        },
-        "defines_picture": {
-          "type": "boolean"
-        },
-        "hidden": {
-          "type": "boolean"
-        },
-        "variation_attribute": {
-          "type": "boolean"
-        },
-        "read_only": {
-          "type": "boolean"
-        },
-        "required": {
-          "type": "boolean"
-        },
-        "grid_filter": {
-          "type": "boolean"
-        },
-        "grid_template_required": {
-          "type": "boolean"
-        },
-        "editable": {
-          "type": "boolean"
-        }
-      }
-    },
-    "Value": {
+    "Category": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string"
         },
+        "parentId": {
+          "type": "string"
+        },
+        "parId": {
+          "type": "string"
+        },
+        "getpId": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
+        },
+        "lastLevel": {
+          "type": "boolean"
+        },
+        "isNew": {
+          "type": "boolean"
+        },
+        "isEdited": {
+          "type": "boolean"
+        },
+        "commission": {
+          "type": "number"
         },
         "attributes": {
           "type": "array",
           "items": {
-            "$ref": "#/components/schemas/AttributeValue"
+            "$ref": "#/components/schemas/Attribute"
           }
         },
-        "brandList": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/BrandValue"
-          }
-        }
-      }
-    },
-    "AttributeValue": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
+        "settings": {
+          "$ref": "#/components/schemas/CategorySetting"
         },
-        "value": {
-          "type": "integer",
-          "format": "int64"
-        }
-      }
-    },
-    "BrandValue": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        }
-      }
-    },
-    "AllowedUnit": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "Field": {
-      "type": "object",
-      "properties": {
-        "text_type": {
-          "type": "string"
-        }
-      }
-    },
-    "AttributeFile": {
-      "type": "object",
-      "properties": {
-        "url": {
-          "type": "string"
-        }
-      }
-    },
-    "ProductCode": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "product": {
-          "$ref": "#/components/schemas/Product"
-        },
-        "customer": {
-          "$ref": "#/components/schemas/Customer"
-        },
-        "created": {
-          "type": "string"
-        },
-        "code": {
+        "domainId": {
           "type": "string"
         }
       }
@@ -9483,6 +9367,12 @@
           "type": "integer",
           "format": "int32"
         },
+        "stockMinimum": {
+          "type": "integer",
+          "description": "Quantidade mínima de estoque configurada para o produto",
+          "format": "int32",
+          "example": 5
+        },
         "stockProvider": {
           "type": "integer",
           "format": "int32"
@@ -9555,83 +9445,40 @@
         }
       }
     },
-    "RootProductCharacteristic": {
+    "Value": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "key": {
           "type": "string"
         },
         "name": {
           "type": "string"
         },
-        "showInExpedition": {
-          "type": "boolean"
-        },
-        "addInvoiceNote": {
-          "type": "boolean"
-        },
-        "specifications": {
+        "attributes": {
           "type": "array",
           "items": {
-            "$ref": "#/components/schemas/RootProductCharacteristicSpecification"
+            "$ref": "#/components/schemas/AttributeValue"
           }
         },
-        "status": {
-          "type": "string"
+        "brandList": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/BrandValue"
+          }
         }
       }
     },
-    "RootProductCharacteristicSpecification": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "key": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
-        }
-      }
-    },
-    "Category": {
+    "Variation": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string"
         },
-        "parentId": {
-          "type": "string"
-        },
-        "parId": {
-          "type": "string"
-        },
-        "getpId": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "lastLevel": {
-          "type": "boolean"
-        },
-        "isNew": {
-          "type": "boolean"
-        },
-        "isEdited": {
-          "type": "boolean"
-        },
-        "commission": {
-          "type": "number"
+        "attribute_combinations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Attribute"
+          }
         },
         "attributes": {
           "type": "array",
@@ -9639,117 +9486,88 @@
             "$ref": "#/components/schemas/Attribute"
           }
         },
-        "settings": {
-          "$ref": "#/components/schemas/CategorySetting"
-        },
-        "domainId": {
-          "type": "string"
-        }
-      }
-    },
-    "CategorySetting": {
-      "type": "object",
-      "properties": {
-        "max_pictures_per_item": {
+        "available_quantity": {
           "type": "integer",
           "format": "int32"
         },
-        "max_pictures_per_item_var": {
+        "available_quantity_flex": {
           "type": "integer",
           "format": "int32"
         },
-        "catalog_domain": {
-          "type": "string"
+        "changeAvailableQuantity": {
+          "type": "boolean"
         },
-        "max_variations_allowed": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "minimum_price": {
+        "price": {
           "type": "number"
-        }
-      }
-    },
-    "Restriction": {
-      "type": "object",
-      "properties": {
-        "attribute_id": {
+        },
+        "sold_quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "seller_custom_field": {
           "type": "string"
         },
-        "attribute_values": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/RestrictionObject"
-          }
-        },
-        "combined_values": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/RestrictionObject"
-          }
-        }
-      }
-    },
-    "RestrictionObject": {
-      "type": "object",
-      "properties": {
-        "values": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/RestrictionObjectValue"
-          }
-        }
-      }
-    },
-    "RestrictionObjectValue": {
-      "type": "object",
-      "properties": {
-        "value_id": {
+        "catalog_product_id": {
           "type": "string"
         },
-        "value_name": {
-          "type": "string"
-        },
-        "opposite_values": {
+        "picture_ids": {
           "type": "array",
           "items": {
             "type": "string"
           }
+        },
+        "promotionalPrice": {
+          "type": "number"
+        },
+        "title": {
+          "type": "string"
+        },
+        "categoryId": {
+          "type": "string"
+        },
+        "inventory_id": {
+          "type": "string"
+        },
+        "user_product_id": {
+          "type": "string"
         }
       }
     },
-    "Customer": {
+    "RequestAllowedUnit": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "RequestAttribute": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string"
         },
-        "codigo": {
+        "value_name": {
           "type": "string"
         },
-        "descricao": {
+        "value_id": {
+          "type": "string"
+        },
+        "allowed_units": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RequestAllowedUnit"
+          }
+        },
+        "descriptionUnit": {
           "type": "string"
         }
       }
     },
-    "Link": {
+    "RequestCategory": {
       "type": "object",
       "properties": {
-        "rel": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "href": {
-          "type": "string"
-        }
-      }
-    },
-    "ResponseErrorApi": {
-      "type": "object",
-      "properties": {
-        "error": {
+        "id": {
           "type": "string"
         }
       }
@@ -9772,6 +9590,12 @@
         "stock": {
           "type": "integer",
           "format": "int32"
+        },
+        "stockMinimum": {
+          "type": "integer",
+          "description": "Quantidade mínima de estoque configurada para o produto",
+          "format": "int32",
+          "example": 5
         },
         "cost": {
           "type": "number"
@@ -9916,6 +9740,17 @@
         }
       }
     },
+    "RequestPicture": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        }
+      }
+    },
     "RequestProductCategory": {
       "type": "object",
       "properties": {
@@ -9931,6 +9766,47 @@
           "format": "int64"
         },
         "categoryDescription": {
+          "type": "string"
+        }
+      }
+    },
+    "RequestProductCode": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "RequestProductComposition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "unitValue": {
+          "type": "number"
+        },
+        "percentagePriceValue": {
+          "type": "number"
+        }
+      }
+    },
+    "RequestProductRootCharacteristic": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "key": {
+          "type": "string"
+        },
+        "status": {
           "type": "string"
         }
       }
@@ -9952,83 +9828,231 @@
         }
       }
     },
-    "RequestAttribute": {
+    "AllowedUnit": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string"
         },
-        "value_name": {
-          "type": "string"
-        },
-        "value_id": {
-          "type": "string"
-        },
-        "allowed_units": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/RequestAllowedUnit"
-          }
-        },
-        "descriptionUnit": {
-          "type": "string"
-        }
-      }
-    },
-    "RequestAllowedUnit": {
-      "type": "object",
-      "properties": {
         "name": {
           "type": "string"
         }
       }
     },
-    "RequestProductCode": {
+    "AttributeFile": {
       "type": "object",
       "properties": {
-        "code": {
+        "url": {
           "type": "string"
         }
       }
     },
-    "RequestProductRootCharacteristic": {
+    "AttributeValue": {
       "type": "object",
       "properties": {
         "id": {
           "type": "integer",
           "format": "int64"
         },
-        "key": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
+        "value": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },
-    "RequestCategory": {
+    "BrandValue": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CategorySetting": {
+      "type": "object",
+      "properties": {
+        "max_pictures_per_item": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "max_pictures_per_item_var": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "catalog_domain": {
+          "type": "string"
+        },
+        "max_variations_allowed": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minimum_price": {
+          "type": "number"
+        }
+      }
+    },
+    "Customer": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string"
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "descricao": {
+          "type": "string"
         }
       }
     },
-    "RequestPicture": {
+    "Field": {
       "type": "object",
       "properties": {
+        "text_type": {
+          "type": "string"
+        }
+      }
+    },
+    "Link": {
+      "type": "object",
+      "properties": {
+        "rel": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        }
+      }
+    },
+    "Picture": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "string"
+        },
+        "secure_url": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
         "url": {
           "type": "string"
         },
-        "action": {
+        "max_size": {
+          "type": "string"
+        },
+        "quality": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "externalId": {
+          "type": "string"
+        },
+        "principal": {
+          "type": "boolean"
+        },
+        "posicao": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "ProductCategory": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "parentId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "getpId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "categoryDescription": {
+          "type": "string"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "isNew": {
+          "type": "boolean"
+        },
+        "isEdited": {
+          "type": "boolean"
+        },
+        "categoryId": {
+          "type": "string"
+        },
+        "productId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productDescription": {
           "type": "string"
         }
       }
     },
-    "RequestProductComposition": {
+    "ProductCode": {
       "type": "object",
       "properties": {
         "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "product": {
+          "$ref": "#/components/schemas/Product"
+        },
+        "customer": {
+          "$ref": "#/components/schemas/Customer"
+        },
+        "created": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "ProductComposition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productOnChannelId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "title": {
+          "type": "string"
+        },
+        "sku": {
+          "type": "string"
+        },
+        "pictures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Picture"
+          }
+        },
+        "brand": {
           "type": "string"
         },
         "quantity": {
@@ -10038,8 +10062,1408 @@
         "unitValue": {
           "type": "number"
         },
+        "stock": {
+          "type": "integer",
+          "format": "int32"
+        },
         "percentagePriceValue": {
           "type": "number"
+        },
+        "permalink": {
+          "type": "string"
+        },
+        "channel_id": {
+          "type": "string"
+        },
+        "variation_id": {
+          "type": "string"
+        },
+        "is_main_product": {
+          "type": "boolean"
+        },
+        "price_to_sell": {
+          "type": "number"
+        }
+      }
+    },
+    "ProductWarehouse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "stock": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "stockWithReservation": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "reserved": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "price": {
+          "type": "number"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "unconsidered": {
+          "type": "string"
+        },
+        "caller": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "companyId": {
+          "type": "string"
+        },
+        "lot": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseProductApi": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "externalId": {
+          "type": "string"
+        },
+        "alternativeId": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "condition": {
+          "type": "string"
+        },
+        "stock": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "cost": {
+          "type": "number"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "technicalSpecification": {
+          "type": "string"
+        },
+        "additionalInformation": {
+          "type": "string"
+        },
+        "pictures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Picture"
+          }
+        },
+        "price": {
+          "type": "number"
+        },
+        "warranty": {
+          "type": "string"
+        },
+        "business": {
+          "type": "string"
+        },
+        "ean": {
+          "type": "string"
+        },
+        "eanInvoice": {
+          "type": "string"
+        },
+        "height": {
+          "type": "number",
+          "format": "double"
+        },
+        "weight": {
+          "type": "number",
+          "format": "double"
+        },
+        "weightGross": {
+          "type": "number",
+          "format": "double"
+        },
+        "depth": {
+          "type": "number",
+          "format": "double"
+        },
+        "width": {
+          "type": "number",
+          "format": "double"
+        },
+        "brand": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "ncm": {
+          "type": "string"
+        },
+        "cest": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "customerId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "updateStock": {
+          "type": "boolean"
+        },
+        "channel": {
+          "type": "string"
+        },
+        "integrationType": {
+          "type": "string"
+        },
+        "deadlineCrossdocking": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "productsBusinessUnit": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ProductWarehouse"
+          }
+        },
+        "isImportProduct": {
+          "type": "boolean"
+        },
+        "note": {
+          "type": "string"
+        },
+        "youtubeId": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "productType": {
+          "type": "string"
+        },
+        "isVariation": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string"
+        },
+        "productsComposition": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ProductComposition"
+          }
+        },
+        "warrantyProvider": {
+          "type": "string"
+        },
+        "quantityItemsSamePackaging": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "erpId": {
+          "type": "string"
+        },
+        "stockFixed": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "stockMinimum": {
+          "type": "integer",
+          "description": "Quantidade mínima de estoque configurada para o produto",
+          "format": "int32",
+          "example": 5
+        },
+        "stockProvider": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "operationalCost": {
+          "type": "number"
+        },
+        "percentageProfit": {
+          "type": "number"
+        },
+        "usePicturesFromFatherVariation": {
+          "type": "boolean"
+        },
+        "productsCategory": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ProductCategory"
+          }
+        },
+        "variations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Variation"
+          }
+        },
+        "productsCode": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ProductCode"
+          }
+        },
+        "productsRootCharacteristic": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RootProductCharacteristic"
+          }
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Category"
+          }
+        },
+        "dateCreated": {
+          "type": "string"
+        },
+        "dateLastUpdated": {
+          "type": "string"
+        },
+        "restrictions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Restriction"
+          }
+        },
+        "productsWarehouse": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ProductWarehouse"
+          }
+        },
+        "anp": {
+          "type": "string"
+        },
+        "subUserId": {
+          "type": "string"
+        },
+        "alternativeUnitMeasurement": {
+          "type": "string"
+        },
+        "integrationEnabled": {
+          "type": "boolean"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Link"
+          }
+        },
+        "plainTextDescription": {
+          "type": "string"
+        }
+      }
+    },
+    "Restriction": {
+      "type": "object",
+      "properties": {
+        "attribute_id": {
+          "type": "string"
+        },
+        "attribute_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RestrictionObject"
+          }
+        },
+        "combined_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RestrictionObject"
+          }
+        }
+      }
+    },
+    "RestrictionObject": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RestrictionObjectValue"
+          }
+        }
+      }
+    },
+    "RestrictionObjectValue": {
+      "type": "object",
+      "properties": {
+        "value_id": {
+          "type": "string"
+        },
+        "value_name": {
+          "type": "string"
+        },
+        "opposite_values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "RootProductCharacteristic": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "key": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "showInExpedition": {
+          "type": "boolean"
+        },
+        "addInvoiceNote": {
+          "type": "boolean"
+        },
+        "specifications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RootProductCharacteristicSpecification"
+          }
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "RootProductCharacteristicSpecification": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "Tags": {
+      "type": "object",
+      "properties": {
+        "allow_variations": {
+          "type": "boolean"
+        },
+        "defines_picture": {
+          "type": "boolean"
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "variation_attribute": {
+          "type": "boolean"
+        },
+        "read_only": {
+          "type": "boolean"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "grid_filter": {
+          "type": "boolean"
+        },
+        "grid_template_required": {
+          "type": "boolean"
+        },
+        "editable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "RequestAddressOfShipping": {
+      "type": "object",
+      "properties": {
+        "street_number": {
+          "type": "string"
+        },
+        "zip_code": {
+          "type": "string"
+        },
+        "street_name": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "neighborhood": {
+          "$ref": "#/components/schemas/RequestNeighborhood"
+        },
+        "city": {
+          "$ref": "#/components/schemas/RequestCity"
+        },
+        "state": {
+          "$ref": "#/components/schemas/RequestState"
+        }
+      }
+    },
+    "RequestCity": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "RequestEditOrder": {
+      "type": "object",
+      "properties": {
+        "shipping": {
+          "$ref": "#/components/schemas/RequestShipping"
+        },
+        "status": {
+          "type": "string"
+        },
+        "invoices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RequestInvoice"
+          }
+        },
+        "cause": {
+          "type": "string"
+        },
+        "queueStatus": {
+          "type": "string"
+        },
+        "sellerCommissionId": {
+          "type": "string"
+        },
+        "externalIdErp": {
+          "type": "string"
+        },
+        "payments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RequestEditPayment"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RequestEditTag"
+          }
+        }
+      }
+    },
+    "RequestEditPayment": {
+      "type": "object",
+      "properties": {
+        "installment_id": {
+          "type": "string",
+          "description": "Identificador da parcela no meio de pagamento",
+          "example": "string",
+          "default": "##default"
+        },
+        "authorization_code": {
+          "type": "string",
+          "description": "Código de autorização da transação do pagamento",
+          "example": "string",
+          "default": "##default"
+        },
+        "payment_gateway": {
+          "type": "string",
+          "description": "Gateway responsável pelo processamento do pagamento",
+          "example": "string",
+          "default": "##default"
+        }
+      }
+    },
+    "RequestEditTag": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "URL HTTP ou HTTPS do arquivo de etiqueta que será associado ao pedido",
+          "example": "https://example.com/shipping-label.zpl",
+          "default": "##default"
+        },
+        "type": {
+          "type": "string",
+          "description": "Formato de fallback usado somente quando não for possível identificar o arquivo pelo conteúdo",
+          "example": "pdf",
+          "enum": [
+            "pdf",
+            "zpl",
+            "txt"
+          ],
+          "default": "##default"
+        }
+      }
+    },
+    "RequestInvoice": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        }
+      }
+    },
+    "RequestLogisticOfShipping": {
+      "type": "object",
+      "properties": {
+        "logisticId": {
+          "type": "string"
+        }
+      }
+    },
+    "RequestNeighborhood": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "RequestShipping": {
+      "type": "object",
+      "properties": {
+        "receiver_address": {
+          "$ref": "#/components/schemas/RequestAddressOfShipping"
+        },
+        "shipping_number": {
+          "type": "string",
+          "description": "Código de rastreio; pode ser atualizado sem informar status",
+          "default": "##default"
+        },
+        "shipping_url": {
+          "type": "string",
+          "description": "URL de rastreio; pode ser atualizada sem informar status",
+          "default": "##default"
+        },
+        "logistic": {
+          "$ref": "#/components/schemas/RequestLogisticOfShipping"
+        }
+      }
+    },
+    "RequestState": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Address": {
+      "type": "object",
+      "properties": {
+        "address_line": {
+          "type": "string"
+        },
+        "latitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "street_number": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "zip_code": {
+          "type": "string"
+        },
+        "street_name": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "neighborhood": {
+          "$ref": "#/components/schemas/Neighborhood"
+        },
+        "country": {
+          "$ref": "#/components/schemas/Country"
+        },
+        "city": {
+          "$ref": "#/components/schemas/City"
+        },
+        "state": {
+          "$ref": "#/components/schemas/State"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "AlternativePhone": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "string"
+        },
+        "extension": {
+          "type": "string"
+        },
+        "area_code": {
+          "type": "string"
+        }
+      }
+    },
+    "Billing": {
+      "type": "object",
+      "properties": {
+        "doc_number": {
+          "type": "string"
+        },
+        "doc_type": {
+          "type": "string"
+        },
+        "ie": {
+          "type": "string"
+        }
+      }
+    },
+    "Buyer": {
+      "type": "object",
+      "properties": {
+        "nickname": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "first_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "full_name": {
+          "type": "string"
+        },
+        "billing_info": {
+          "$ref": "#/components/schemas/Billing"
+        },
+        "phone": {
+          "$ref": "#/components/schemas/Phone"
+        },
+        "alternative_phone": {
+          "$ref": "#/components/schemas/AlternativePhone"
+        }
+      }
+    },
+    "ChannelId": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "completeOrderNumber": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "string"
+        },
+        "quantityMarketplace": {
+          "type": "string"
+        }
+      }
+    },
+    "City": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "codeIbge": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "Cost": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "cost": {
+          "type": "string"
+        }
+      }
+    },
+    "Country": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "Errors": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "field": {
+          "type": "string"
+        },
+        "proposalFix": {
+          "type": "string"
+        },
+        "packageNo": {
+          "type": "string"
+        }
+      }
+    },
+    "Intermediary": {
+      "type": "object",
+      "properties": {
+        "salesDocument": {
+          "type": "string"
+        },
+        "salesName": {
+          "type": "string"
+        },
+        "paymentDocument": {
+          "type": "string"
+        },
+        "paymentName": {
+          "type": "string"
+        },
+        "fillIntermediarySales": {
+          "type": "boolean"
+        },
+        "fillIntermediaryPayment": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Invoice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "number": {
+          "type": "string"
+        },
+        "line": {
+          "type": "string"
+        },
+        "issue_date": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "totalValue": {
+          "type": "number"
+        },
+        "externalId": {
+          "type": "string"
+        },
+        "urlXml": {
+          "type": "string"
+        },
+        "operationType": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "channel": {
+          "type": "string"
+        },
+        "orderDetailRequiredData": {
+          "$ref": "#/components/schemas/OrderDetailRequiredDataDto"
+        },
+        "xmlType": {
+          "type": "string"
+        },
+        "natureOperation": {
+          "type": "string"
+        },
+        "natureOperationExtra": {
+          "type": "string"
+        },
+        "storeId": {
+          "type": "string"
+        },
+        "shippingId": {
+          "type": "string"
+        },
+        "relatedOrders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "modFreight": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "finality": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "subType": {
+          "type": "string"
+        },
+        "nprot": {
+          "type": "string"
+        }
+      }
+    },
+    "Item": {
+      "type": "object",
+      "properties": {
+        "seller_custom_field": {
+          "type": "string"
+        },
+        "category_id": {
+          "type": "string"
+        },
+        "variation_id": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "titleMarketplace": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "string"
+        },
+        "kitQuantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tempId": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        },
+        "depth": {
+          "type": "number"
+        },
+        "uniTOfMeasurement": {
+          "type": "string"
+        },
+        "ean": {
+          "type": "string"
+        },
+        "eanInvoice": {
+          "type": "string"
+        },
+        "eanChild": {
+          "type": "string"
+        },
+        "skuChild": {
+          "type": "string"
+        },
+        "seller_custom_field_alternative": {
+          "type": "string"
+        },
+        "defaultPicture": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "externalId": {
+          "type": "string"
+        },
+        "cfop": {
+          "type": "string"
+        },
+        "ncm": {
+          "type": "string"
+        },
+        "cest": {
+          "type": "string"
+        },
+        "warehouseId": {
+          "type": "string"
+        },
+        "anp": {
+          "type": "string"
+        },
+        "alternativeUnitOfMeasure": {
+          "type": "string"
+        }
+      }
+    },
+    "Logistic": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "logisticId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "freightType": {
+          "type": "string"
+        },
+        "vehiclePlate": {
+          "type": "string"
+        },
+        "vehicleState": {
+          "type": "string"
+        },
+        "rntc": {
+          "type": "string"
+        },
+        "document": {
+          "type": "string"
+        },
+        "ie": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "trackingUrl": {
+          "type": "string"
+        },
+        "trackingKey": {
+          "type": "string"
+        },
+        "trackingMethod": {
+          "type": "string"
+        },
+        "emailInvoice": {
+          "type": "string"
+        },
+        "number": {
+          "type": "string"
+        },
+        "complement": {
+          "type": "string"
+        },
+        "neighborhood": {
+          "type": "string"
+        },
+        "zipCode": {
+          "type": "string"
+        },
+        "logisticType": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "urlLogo": {
+          "type": "string"
+        },
+        "urlZebra": {
+          "type": "string"
+        },
+        "logisticERPId": {
+          "type": "string"
+        },
+        "agencyId": {
+          "type": "string"
+        },
+        "integrationLogistic": {
+          "type": "string"
+        },
+        "logisticIdOld": {
+          "type": "string"
+        }
+      }
+    },
+    "Neighborhood": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "OrderConciliation": {
+      "type": "object",
+      "properties": {
+        "freight": {
+          "type": "number"
+        },
+        "freightToPay": {
+          "type": "number"
+        },
+        "freightCompensation": {
+          "type": "number"
+        },
+        "totalTax": {
+          "type": "number"
+        },
+        "discount": {
+          "type": "number"
+        },
+        "totalValueWithFreight": {
+          "type": "number"
+        },
+        "totalValueWithoutFreight": {
+          "type": "number"
+        },
+        "totalCost": {
+          "type": "number"
+        },
+        "unitCost": {
+          "type": "number"
+        },
+        "unitValueItem": {
+          "type": "number"
+        },
+        "totalValueItem": {
+          "type": "number"
+        },
+        "percentageComission": {
+          "type": "number"
+        },
+        "comissionValue": {
+          "type": "number"
+        },
+        "totalNetWithoutCostProduct": {
+          "type": "number"
+        },
+        "totalNet": {
+          "type": "number"
+        },
+        "percentageNetWithoutProduct": {
+          "type": "number"
+        },
+        "percentageNet": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "OrderDetailRequiredAttributeDto": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "OrderDetailRequiredDataDto": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/OrderDetailRequiredItemDto"
+          }
+        }
+      }
+    },
+    "OrderDetailRequiredItemDto": {
+      "type": "object",
+      "properties": {
+        "sku": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "units": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/OrderDetailRequiredUnitDto"
+          }
+        }
+      }
+    },
+    "OrderDetailRequiredUnitDto": {
+      "type": "object",
+      "properties": {
+        "attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/OrderDetailRequiredAttributeDto"
+          }
+        }
+      }
+    },
+    "OrderItems": {
+      "type": "object",
+      "properties": {
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "quantity_multiple": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "externalQuantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sale_fee": {
+          "type": "number"
+        },
+        "unit_price": {
+          "type": "number"
+        },
+        "currency_id": {
+          "type": "string"
+        },
+        "cost": {
+          "type": "number"
+        },
+        "discount": {
+          "type": "number"
+        },
+        "item": {
+          "$ref": "#/components/schemas/Item"
+        },
+        "orderSpecifications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/OrderSpecification"
+          }
+        },
+        "quantityBarCodeValidated": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "unitMeasurement": {
+          "type": "string"
+        },
+        "kit_quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "childId": {
+          "type": "string"
+        },
+        "cfop": {
+          "type": "string"
+        },
+        "externalId": {
+          "type": "string"
+        },
+        "channelIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ChannelId"
+          }
+        }
+      }
+    },
+    "OrderSpecification": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "OrderTag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "field": {
+          "type": "string"
+        }
+      }
+    },
+    "Payment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "payment_type": {
+          "type": "string"
+        },
+        "payment_type_channel": {
+          "type": "string"
+        },
+        "installments": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "installment_id": {
+          "type": "string"
+        },
+        "payment_method_id": {
+          "type": "string"
+        },
+        "payment_method_id_channel": {
+          "type": "string"
+        },
+        "payment_gateway": {
+          "type": "string"
+        },
+        "installment_amount": {
+          "type": "number"
+        },
+        "shipping_cost": {
+          "type": "number"
+        },
+        "total_paid_amount": {
+          "type": "number"
+        },
+        "transaction_amount": {
+          "type": "number"
+        },
+        "installment_transaction_amount": {
+          "type": "number"
+        },
+        "channel": {
+          "type": "string"
+        },
+        "digitable_line": {
+          "type": "string"
+        },
+        "url_slip": {
+          "type": "string"
+        },
+        "url_slip_pdf": {
+          "type": "string"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "authorization_code": {
+          "type": "string"
+        },
+        "coupon_amount": {
+          "type": "number"
+        }
+      }
+    },
+    "Phone": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "string"
+        },
+        "extension": {
+          "type": "string"
+        },
+        "area_code": {
+          "type": "string"
         }
       }
     },
@@ -10096,6 +11520,9 @@
           "type": "string"
         },
         "externalId": {
+          "type": "string"
+        },
+        "externalIdAlternative": {
           "type": "string"
         },
         "externalIdInvoice": {
@@ -10300,104 +11727,6 @@
         }
       }
     },
-    "Buyer": {
-      "type": "object",
-      "properties": {
-        "nickname": {
-          "type": "string"
-        },
-        "last_name": {
-          "type": "string"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "first_name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "full_name": {
-          "type": "string"
-        },
-        "billing_info": {
-          "$ref": "#/components/schemas/Billing"
-        },
-        "phone": {
-          "$ref": "#/components/schemas/Phone"
-        },
-        "alternative_phone": {
-          "$ref": "#/components/schemas/AlternativePhone"
-        }
-      }
-    },
-    "Billing": {
-      "type": "object",
-      "properties": {
-        "doc_number": {
-          "type": "string"
-        },
-        "doc_type": {
-          "type": "string"
-        },
-        "ie": {
-          "type": "string"
-        }
-      }
-    },
-    "Phone": {
-      "type": "object",
-      "properties": {
-        "number": {
-          "type": "string"
-        },
-        "extension": {
-          "type": "string"
-        },
-        "area_code": {
-          "type": "string"
-        }
-      }
-    },
-    "AlternativePhone": {
-      "type": "object",
-      "properties": {
-        "number": {
-          "type": "string"
-        },
-        "extension": {
-          "type": "string"
-        },
-        "area_code": {
-          "type": "string"
-        }
-      }
-    },
-    "Intermediary": {
-      "type": "object",
-      "properties": {
-        "salesDocument": {
-          "type": "string"
-        },
-        "salesName": {
-          "type": "string"
-        },
-        "paymentDocument": {
-          "type": "string"
-        },
-        "paymentName": {
-          "type": "string"
-        },
-        "fillIntermediarySales": {
-          "type": "boolean"
-        },
-        "fillIntermediaryPayment": {
-          "type": "boolean"
-        }
-      }
-    },
     "Shipping": {
       "type": "object",
       "properties": {
@@ -10529,194 +11858,6 @@
         }
       }
     },
-    "Address": {
-      "type": "object",
-      "properties": {
-        "address_line": {
-          "type": "string"
-        },
-        "latitude": {
-          "type": "number",
-          "format": "double"
-        },
-        "longitude": {
-          "type": "number",
-          "format": "double"
-        },
-        "street_number": {
-          "type": "string"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "zip_code": {
-          "type": "string"
-        },
-        "street_name": {
-          "type": "string"
-        },
-        "comment": {
-          "type": "string"
-        },
-        "neighborhood": {
-          "$ref": "#/components/schemas/Neighborhood"
-        },
-        "country": {
-          "$ref": "#/components/schemas/Country"
-        },
-        "city": {
-          "$ref": "#/components/schemas/City"
-        },
-        "state": {
-          "$ref": "#/components/schemas/State"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "Neighborhood": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        }
-      }
-    },
-    "Country": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        }
-      }
-    },
-    "City": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "codeIbge": {
-          "type": "integer",
-          "format": "int64"
-        }
-      }
-    },
-    "State": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        }
-      }
-    },
-    "Logistic": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "logisticId": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "freightType": {
-          "type": "string"
-        },
-        "vehiclePlate": {
-          "type": "string"
-        },
-        "vehicleState": {
-          "type": "string"
-        },
-        "rntc": {
-          "type": "string"
-        },
-        "document": {
-          "type": "string"
-        },
-        "ie": {
-          "type": "string"
-        },
-        "address": {
-          "type": "string"
-        },
-        "city": {
-          "type": "string"
-        },
-        "state": {
-          "type": "string"
-        },
-        "trackingUrl": {
-          "type": "string"
-        },
-        "trackingKey": {
-          "type": "string"
-        },
-        "trackingMethod": {
-          "type": "string"
-        },
-        "emailInvoice": {
-          "type": "string"
-        },
-        "number": {
-          "type": "string"
-        },
-        "complement": {
-          "type": "string"
-        },
-        "neighborhood": {
-          "type": "string"
-        },
-        "zipCode": {
-          "type": "string"
-        },
-        "logisticType": {
-          "type": "string"
-        },
-        "phone": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "urlLogo": {
-          "type": "string"
-        },
-        "urlZebra": {
-          "type": "string"
-        },
-        "logisticERPId": {
-          "type": "string"
-        },
-        "agencyId": {
-          "type": "string"
-        },
-        "integrationLogistic": {
-          "type": "string"
-        },
-        "logisticIdOld": {
-          "type": "string"
-        }
-      }
-    },
     "ShippingOption": {
       "type": "object",
       "properties": {
@@ -10742,6 +11883,40 @@
         "scheduling": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "Sla": {
+      "type": "object",
+      "properties": {
+        "deadline": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "initialDeadline": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "DELAYED",
+            "EARLY"
+          ]
+        },
+        "service": {
+          "type": "string"
+        }
+      }
+    },
+    "State": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
         }
       }
     },
@@ -10774,708 +11949,11 @@
         }
       }
     },
-    "Cost": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "cost": {
-          "type": "string"
-        }
-      }
-    },
-    "Sla": {
-      "type": "object",
-      "properties": {
-        "deadline": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "initialDeadline": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "status": {
-          "type": "string",
-          "enum": [
-            "DELAYED",
-            "EARLY"
-          ]
-        },
-        "service": {
-          "type": "string"
-        }
-      }
-    },
-    "OrderItems": {
-      "type": "object",
-      "properties": {
-        "quantity": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "quantity_multiple": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "externalQuantity": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "sale_fee": {
-          "type": "number"
-        },
-        "unit_price": {
-          "type": "number"
-        },
-        "currency_id": {
-          "type": "string"
-        },
-        "cost": {
-          "type": "number"
-        },
-        "discount": {
-          "type": "number"
-        },
-        "item": {
-          "$ref": "#/components/schemas/Item"
-        },
-        "orderSpecifications": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/OrderSpecification"
-          }
-        },
-        "quantityBarCodeValidated": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "unitMeasurement": {
-          "type": "string"
-        },
-        "kit_quantity": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "childId": {
-          "type": "string"
-        },
-        "cfop": {
-          "type": "string"
-        },
-        "externalId": {
-          "type": "string"
-        },
-        "channelIds": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ChannelId"
-          }
-        }
-      }
-    },
-    "Item": {
-      "type": "object",
-      "properties": {
-        "seller_custom_field": {
-          "type": "string"
-        },
-        "category_id": {
-          "type": "string"
-        },
-        "variation_id": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "titleMarketplace": {
-          "type": "string"
-        },
-        "origin": {
-          "type": "string"
-        },
-        "kitQuantity": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "tempId": {
-          "type": "string"
-        },
-        "weight": {
-          "type": "number"
-        },
-        "width": {
-          "type": "number"
-        },
-        "height": {
-          "type": "number"
-        },
-        "depth": {
-          "type": "number"
-        },
-        "uniTOfMeasurement": {
-          "type": "string"
-        },
-        "ean": {
-          "type": "string"
-        },
-        "eanInvoice": {
-          "type": "string"
-        },
-        "eanChild": {
-          "type": "string"
-        },
-        "skuChild": {
-          "type": "string"
-        },
-        "seller_custom_field_alternative": {
-          "type": "string"
-        },
-        "defaultPicture": {
-          "type": "string"
-        },
-        "location": {
-          "type": "string"
-        },
-        "externalId": {
-          "type": "string"
-        },
-        "cfop": {
-          "type": "string"
-        },
-        "ncm": {
-          "type": "string"
-        },
-        "cest": {
-          "type": "string"
-        },
-        "warehouseId": {
-          "type": "string"
-        },
-        "anp": {
-          "type": "string"
-        },
-        "alternativeUnitOfMeasure": {
-          "type": "string"
-        }
-      }
-    },
-    "OrderSpecification": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string"
-        }
-      }
-    },
-    "ChannelId": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "completeOrderNumber": {
-          "type": "string"
-        },
-        "quantity": {
-          "type": "string"
-        },
-        "quantityMarketplace": {
-          "type": "string"
-        }
-      }
-    },
-    "Payment": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
-        },
-        "payment_type": {
-          "type": "string"
-        },
-        "payment_type_channel": {
-          "type": "string"
-        },
-        "installments": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "installment_id": {
-          "type": "string"
-        },
-        "payment_method_id": {
-          "type": "string"
-        },
-        "payment_method_id_channel": {
-          "type": "string"
-        },
-        "payment_gateway": {
-          "type": "string"
-        },
-        "installment_amount": {
-          "type": "number"
-        },
-        "shipping_cost": {
-          "type": "number"
-        },
-        "total_paid_amount": {
-          "type": "number"
-        },
-        "transaction_amount": {
-          "type": "number"
-        },
-        "installment_transaction_amount": {
-          "type": "number"
-        },
-        "channel": {
-          "type": "string"
-        },
-        "digitable_line": {
-          "type": "string"
-        },
-        "url_slip": {
-          "type": "string"
-        },
-        "url_slip_pdf": {
-          "type": "string"
-        },
-        "dueDate": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "authorization_code": {
-          "type": "string"
-        },
-        "coupon_amount": {
-          "type": "number"
-        }
-      }
-    },
-    "Invoice": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "key": {
-          "type": "string"
-        },
-        "number": {
-          "type": "string"
-        },
-        "line": {
-          "type": "string"
-        },
-        "issue_date": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
-        },
-        "totalValue": {
-          "type": "number"
-        },
-        "externalId": {
-          "type": "string"
-        },
-        "urlXml": {
-          "type": "string"
-        },
-        "operationType": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "channel": {
-          "type": "string"
-        },
-        "orderDetailRequiredData": {
-          "$ref": "#/components/schemas/OrderDetailRequiredDataDto"
-        },
-        "xmlType": {
-          "type": "string"
-        },
-        "natureOperation": {
-          "type": "string"
-        },
-        "natureOperationExtra": {
-          "type": "string"
-        },
-        "storeId": {
-          "type": "string"
-        },
-        "shippingId": {
-          "type": "string"
-        },
-        "relatedOrders": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "modFreight": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "finality": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "subType": {
-          "type": "string"
-        },
-        "nprot": {
-          "type": "string"
-        }
-      }
-    },
-    "OrderDetailRequiredDataDto": {
-      "type": "object",
-      "properties": {
-        "items": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/OrderDetailRequiredItemDto"
-          }
-        }
-      }
-    },
-    "OrderDetailRequiredItemDto": {
-      "type": "object",
-      "properties": {
-        "sku": {
-          "type": "string"
-        },
-        "quantity": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "units": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/OrderDetailRequiredUnitDto"
-          }
-        }
-      }
-    },
-    "OrderDetailRequiredUnitDto": {
-      "type": "object",
-      "properties": {
-        "attributes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/OrderDetailRequiredAttributeDto"
-          }
-        }
-      }
-    },
-    "OrderDetailRequiredAttributeDto": {
-      "type": "object",
-      "properties": {
-        "key": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        }
-      }
-    },
     "Tag": {
       "type": "object",
       "properties": {
         "url": {
           "type": "string"
-        }
-      }
-    },
-    "OrderConciliation": {
-      "type": "object",
-      "properties": {
-        "freight": {
-          "type": "number"
-        },
-        "freightToPay": {
-          "type": "number"
-        },
-        "freightCompensation": {
-          "type": "number"
-        },
-        "totalTax": {
-          "type": "number"
-        },
-        "discount": {
-          "type": "number"
-        },
-        "totalValueWithFreight": {
-          "type": "number"
-        },
-        "totalValueWithoutFreight": {
-          "type": "number"
-        },
-        "totalCost": {
-          "type": "number"
-        },
-        "unitCost": {
-          "type": "number"
-        },
-        "unitValueItem": {
-          "type": "number"
-        },
-        "totalValueItem": {
-          "type": "number"
-        },
-        "percentageComission": {
-          "type": "number"
-        },
-        "comissionValue": {
-          "type": "number"
-        },
-        "totalNetWithoutCostProduct": {
-          "type": "number"
-        },
-        "totalNet": {
-          "type": "number"
-        },
-        "percentageNetWithoutProduct": {
-          "type": "number"
-        },
-        "percentageNet": {
-          "type": "number"
-        },
-        "status": {
-          "type": "string"
-        }
-      }
-    },
-    "Errors": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "field": {
-          "type": "string"
-        },
-        "proposalFix": {
-          "type": "string"
-        },
-        "packageNo": {
-          "type": "string"
-        }
-      }
-    },
-    "OrderTag": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "key": {
-          "type": "string"
-        },
-        "namespace": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string"
-        },
-        "field": {
-          "type": "string"
-        }
-      }
-    },
-    "RequestEditOrder": {
-      "type": "object",
-      "properties": {
-        "shipping": {
-          "$ref": "#/components/schemas/RequestShipping"
-        },
-        "status": {
-          "type": "string"
-        },
-        "invoices": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/RequestInvoice"
-          }
-        },
-        "cause": {
-          "type": "string"
-        },
-        "queueStatus": {
-          "type": "string"
-        },
-        "sellerCommissionId": {
-          "type": "string"
-        },
-        "externalIdErp": {
-          "type": "string"
-        },
-        "payments": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/RequestEditPayment"
-          }
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/RequestEditTag"
-          }
-        }
-      }
-    },
-    "RequestShipping": {
-      "type": "object",
-      "properties": {
-        "receiver_address": {
-          "$ref": "#/components/schemas/RequestAddressOfShipping"
-        },
-        "shipping_number": {
-          "type": "string",
-          "description": "Código de rastreio; pode ser atualizado sem informar status",
-          "default": "##default"
-        },
-        "shipping_url": {
-          "type": "string",
-          "description": "URL de rastreio; pode ser atualizada sem informar status",
-          "default": "##default"
-        },
-        "logistic": {
-          "$ref": "#/components/schemas/RequestLogisticOfShipping"
-        }
-      }
-    },
-    "RequestAddressOfShipping": {
-      "type": "object",
-      "properties": {
-        "street_number": {
-          "type": "string"
-        },
-        "zip_code": {
-          "type": "string"
-        },
-        "street_name": {
-          "type": "string"
-        },
-        "comment": {
-          "type": "string"
-        },
-        "neighborhood": {
-          "$ref": "#/components/schemas/RequestNeighborhood"
-        },
-        "city": {
-          "$ref": "#/components/schemas/RequestCity"
-        },
-        "state": {
-          "$ref": "#/components/schemas/RequestState"
-        }
-      }
-    },
-    "RequestNeighborhood": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "RequestCity": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "RequestState": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "RequestLogisticOfShipping": {
-      "type": "object",
-      "properties": {
-        "logisticId": {
-          "type": "string"
-        }
-      }
-    },
-    "RequestInvoice": {
-      "type": "object",
-      "properties": {
-        "key": {
-          "type": "string"
-        }
-      }
-    },
-    "RequestEditPayment": {
-      "type": "object",
-      "properties": {
-        "installment_id": {
-          "type": "string",
-          "description": "Identificador da parcela no meio de pagamento",
-          "default": "##default",
-          "example": "string"
-        },
-        "authorization_code": {
-          "type": "string",
-          "description": "Código de autorização da transação do pagamento",
-          "default": "##default",
-          "example": "string"
-        },
-        "payment_gateway": {
-          "type": "string",
-          "description": "Gateway responsável pelo processamento do pagamento",
-          "default": "##default",
-          "example": "string"
-        }
-      }
-    },
-    "RequestEditTag": {
-      "type": "object",
-      "properties": {
-        "url": {
-          "type": "string",
-          "description": "URL HTTP ou HTTPS do arquivo de etiqueta que será associado ao pedido",
-          "default": "##default",
-          "example": "https://example.com/shipping-label.zpl"
-        },
-        "type": {
-          "type": "string",
-          "enum": [
-            "pdf",
-            "zpl",
-            "txt"
-          ],
-          "description": "Formato de fallback usado somente quando não for possível identificar o arquivo pelo conteúdo",
-          "default": "##default",
-          "example": "pdf"
         }
       }
     },
@@ -11527,6 +12005,23 @@
         }
       }
     },
+    "VariationCreationResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Indica que a criação foi concluída com sucesso",
+          "example": "OK"
+        },
+        "id": {
+          "type": "integer",
+          "description": "Identificador do produto com variações criado",
+          "format": "int64",
+          "example": 12345
+        }
+      },
+      "description": "Resultado da criação do produto com variações"
+    },
     "RequestLoginUser": {
       "type": "object",
       "properties": {
@@ -11543,48 +12038,6 @@
       "properties": {
         "X-MAGIS5-APIKEY": {
           "type": "string"
-        }
-      }
-    },
-    "ResponsePaginationCompleteProductApi": {
-      "type": "object",
-      "properties": {
-        "next": {
-          "type": "string"
-        },
-        "products": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ResponseProductApi"
-          }
-        }
-      }
-    },
-    "ResponsePaginationSimpleProductApi": {
-      "type": "object",
-      "properties": {
-        "next": {
-          "type": "string"
-        },
-        "products": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ResponsePaginationProductApi"
-          }
-        }
-      }
-    },
-    "ResponsePaginationProductApi": {
-      "type": "object",
-      "properties": {
-        "sku": {
-          "type": "string"
-        },
-        "links": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/Link"
-          }
         }
       }
     },
@@ -11609,6 +12062,12 @@
         "stock": {
           "type": "integer",
           "format": "int32"
+        },
+        "stockMinimum": {
+          "type": "integer",
+          "description": "Quantidade mínima de estoque configurada para o produto",
+          "format": "int32",
+          "example": 5
         },
         "cost": {
           "type": "number"
@@ -11753,45 +12212,48 @@
         }
       }
     },
-    "ResponsePaginationCompleteOrderApi": {
+    "RequestAlternativePhone": {
       "type": "object",
       "properties": {
-        "next": {
+        "number": {
           "type": "string"
-        },
-        "orders": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ResponseOrderApi"
-          }
         }
       }
     },
-    "ResponsePaginationSimpleOrderApi": {
+    "RequestBilling": {
       "type": "object",
       "properties": {
-        "next": {
+        "doc_number": {
           "type": "string"
         },
-        "orders": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ResponsePaginationOrderApi"
-          }
+        "ie": {
+          "type": "string"
         }
       }
     },
-    "ResponsePaginationOrderApi": {
+    "RequestBuyer": {
       "type": "object",
       "properties": {
-        "completeOrderNumber": {
+        "first_name": {
           "type": "string"
         },
-        "links": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/Link"
-          }
+        "last_name": {
+          "type": "string"
+        },
+        "full_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "billing_info": {
+          "$ref": "#/components/schemas/RequestBilling"
+        },
+        "phone": {
+          "$ref": "#/components/schemas/RequestPhone"
+        },
+        "alternative_phone": {
+          "$ref": "#/components/schemas/RequestAlternativePhone"
         }
       }
     },
@@ -11878,13 +12340,12 @@
         },
         "orderChannelType": {
           "type": "string",
-          "nullable": true,
-          "enum": [
-            "sample_order",
-            null
-          ],
           "description": "Define o tipo de canal do pedido. Aceita somente o valor sample_order ou null",
-          "example": "sample_order"
+          "nullable": true,
+          "example": "sample_order",
+          "enum": [
+            "sample_order"
+          ]
         },
         "externalIdErp": {
           "type": "string"
@@ -11937,59 +12398,6 @@
         }
       }
     },
-    "RequestBuyer": {
-      "type": "object",
-      "properties": {
-        "first_name": {
-          "type": "string"
-        },
-        "last_name": {
-          "type": "string"
-        },
-        "full_name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "billing_info": {
-          "$ref": "#/components/schemas/RequestBilling"
-        },
-        "phone": {
-          "$ref": "#/components/schemas/RequestPhone"
-        },
-        "alternative_phone": {
-          "$ref": "#/components/schemas/RequestAlternativePhone"
-        }
-      }
-    },
-    "RequestBilling": {
-      "type": "object",
-      "properties": {
-        "doc_number": {
-          "type": "string"
-        },
-        "ie": {
-          "type": "string"
-        }
-      }
-    },
-    "RequestPhone": {
-      "type": "object",
-      "properties": {
-        "number": {
-          "type": "string"
-        }
-      }
-    },
-    "RequestAlternativePhone": {
-      "type": "object",
-      "properties": {
-        "number": {
-          "type": "string"
-        }
-      }
-    },
     "RequestIntermediary": {
       "type": "object",
       "properties": {
@@ -12007,10 +12415,65 @@
         }
       }
     },
-    "RequestTag": {
+    "RequestItemOfOrderItems": {
       "type": "object",
       "properties": {
-        "url": {
+        "seller_custom_field": {
+          "type": "string"
+        },
+        "category_id": {
+          "type": "string"
+        },
+        "variation_id": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "string"
+        },
+        "uniTOfMeasurement": {
+          "type": "string"
+        },
+        "kitQuantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tempId": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "number"
+        },
+        "ean": {
+          "type": "string"
+        },
+        "eanInvoice": {
+          "type": "string"
+        },
+        "defaultPicture": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "externalId": {
+          "type": "string"
+        },
+        "cfop": {
+          "type": "string"
+        },
+        "ncm": {
+          "type": "string"
+        },
+        "cest": {
+          "type": "string"
+        },
+        "eanChild": {
           "type": "string"
         }
       }
@@ -12116,69 +12579,6 @@
         }
       }
     },
-    "RequestItemOfOrderItems": {
-      "type": "object",
-      "properties": {
-        "seller_custom_field": {
-          "type": "string"
-        },
-        "category_id": {
-          "type": "string"
-        },
-        "variation_id": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "origin": {
-          "type": "string"
-        },
-        "uniTOfMeasurement": {
-          "type": "string"
-        },
-        "kitQuantity": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "tempId": {
-          "type": "string"
-        },
-        "weight": {
-          "type": "number"
-        },
-        "ean": {
-          "type": "string"
-        },
-        "eanInvoice": {
-          "type": "string"
-        },
-        "defaultPicture": {
-          "type": "string"
-        },
-        "location": {
-          "type": "string"
-        },
-        "externalId": {
-          "type": "string"
-        },
-        "cfop": {
-          "type": "string"
-        },
-        "ncm": {
-          "type": "string"
-        },
-        "cest": {
-          "type": "string"
-        },
-        "eanChild": {
-          "type": "string"
-        }
-      }
-    },
     "RequestOrderSpecificationOfOrderItems": {
       "type": "object",
       "properties": {
@@ -12236,19 +12636,27 @@
         "payment_gateway": {
           "type": "string",
           "description": "Gateway responsável pelo processamento do pagamento",
-          "default": "##default",
-          "example": "string"
+          "example": "string",
+          "default": "##default"
         },
         "authorization_code": {
           "type": "string",
           "description": "Código de autorização da transação do pagamento",
-          "default": "##default",
-          "example": "string"
+          "example": "string",
+          "default": "##default"
         },
         "dueDate": {
           "type": "string"
         },
         "digitable_line": {
+          "type": "string"
+        }
+      }
+    },
+    "RequestPhone": {
+      "type": "object",
+      "properties": {
+        "number": {
           "type": "string"
         }
       }
@@ -12296,6 +12704,14 @@
         }
       }
     },
+    "RequestTag": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      }
+    },
     "ResponseOrderDetailRequiredApi": {
       "type": "object",
       "properties": {
@@ -12321,22 +12737,34 @@
         }
       }
     },
-    "Retorno": {
+    "Deposito": {
       "type": "object",
       "properties": {
-        "estoques": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/Estoques"
-          }
+        "id": {
+          "type": "string"
+        },
+        "nome": {
+          "type": "string"
+        },
+        "saldo": {
+          "type": "string"
+        },
+        "desconsiderar": {
+          "type": "string"
+        },
+        "saldoVirtual": {
+          "type": "string"
+        },
+        "caller": {
+          "type": "string"
         }
       }
     },
-    "Estoques": {
+    "Depositos": {
       "type": "object",
       "properties": {
-        "estoque": {
-          "$ref": "#/components/schemas/Estoque"
+        "deposito": {
+          "$ref": "#/components/schemas/Deposito"
         }
       }
     },
@@ -12361,34 +12789,22 @@
         }
       }
     },
-    "Depositos": {
+    "Estoques": {
       "type": "object",
       "properties": {
-        "deposito": {
-          "$ref": "#/components/schemas/Deposito"
+        "estoque": {
+          "$ref": "#/components/schemas/Estoque"
         }
       }
     },
-    "Deposito": {
+    "Retorno": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
-        },
-        "nome": {
-          "type": "string"
-        },
-        "saldo": {
-          "type": "string"
-        },
-        "desconsiderar": {
-          "type": "string"
-        },
-        "saldoVirtual": {
-          "type": "string"
-        },
-        "caller": {
-          "type": "string"
+        "estoques": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Estoques"
+          }
         }
       }
     },
@@ -12436,6 +12852,29 @@
         "grossWeight": {
           "type": "number",
           "format": "double"
+        }
+      }
+    },
+    "ProductsList": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Product"
+          }
+        },
+        "totalRecords": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -12490,6 +12929,20 @@
         }
       }
     },
+    "ResponsePaginationGenericApi": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Link"
+          }
+        }
+      }
+    },
     "ResponsePaginationSimpleProviderApi": {
       "type": "object",
       "properties": {
@@ -12504,16 +12957,86 @@
         }
       }
     },
-    "ResponsePaginationGenericApi": {
+    "ResponsePaginationCompleteProductApi": {
       "type": "object",
       "properties": {
-        "id": {
+        "next": {
+          "type": "string"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ResponseProductApi"
+          }
+        }
+      }
+    },
+    "ResponsePaginationProductApi": {
+      "type": "object",
+      "properties": {
+        "sku": {
           "type": "string"
         },
         "links": {
           "type": "array",
           "items": {
             "$ref": "#/components/schemas/Link"
+          }
+        }
+      }
+    },
+    "ResponsePaginationSimpleProductApi": {
+      "type": "object",
+      "properties": {
+        "next": {
+          "type": "string"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ResponsePaginationProductApi"
+          }
+        }
+      }
+    },
+    "ResponsePaginationCompleteOrderApi": {
+      "type": "object",
+      "properties": {
+        "next": {
+          "type": "string"
+        },
+        "orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ResponseOrderApi"
+          }
+        }
+      }
+    },
+    "ResponsePaginationOrderApi": {
+      "type": "object",
+      "properties": {
+        "completeOrderNumber": {
+          "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Link"
+          }
+        }
+      }
+    },
+    "ResponsePaginationSimpleOrderApi": {
+      "type": "object",
+      "properties": {
+        "next": {
+          "type": "string"
+        },
+        "orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ResponsePaginationOrderApi"
           }
         }
       }
@@ -12571,6 +13094,9 @@
           "type": "string"
         },
         "externalId": {
+          "type": "string"
+        },
+        "externalIdAlternative": {
           "type": "string"
         },
         "externalIdInvoice": {
@@ -12789,20 +13315,6 @@
         }
       }
     },
-    "ResponsePaginationSimpleOrderDetailRequiredApi": {
-      "type": "object",
-      "properties": {
-        "next": {
-          "type": "string"
-        },
-        "orders": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ResponsePaginationOrderDetailRequiredApi"
-          }
-        }
-      }
-    },
     "ResponsePaginationOrderDetailRequiredApi": {
       "type": "object",
       "properties": {
@@ -12817,27 +13329,22 @@
         }
       }
     },
-    "ResponsePaginationLogisticProvidersQueueApi": {
+    "ResponsePaginationSimpleOrderDetailRequiredApi": {
       "type": "object",
-      "description": "Resultado paginado dos pedidos disponíveis para processamento",
       "properties": {
         "next": {
           "type": "string"
         },
-        "rows": {
+        "orders": {
           "type": "array",
-          "description": "Pedidos disponíveis para processamento",
-          "default": "##default",
           "items": {
-            "$ref": "#/components/schemas/ResponseLogisticProvidersQueueApi"
+            "$ref": "#/components/schemas/ResponsePaginationOrderDetailRequiredApi"
           }
         }
-      },
-      "default": "##default"
+      }
     },
     "ResponseLogisticProvidersQueueApi": {
       "type": "object",
-      "description": "Pedido disponível para processamento pela integração",
       "properties": {
         "queueId": {
           "type": "integer",
@@ -12848,28 +13355,47 @@
         "externalId": {
           "type": "string",
           "description": "Número completo do pedido no canal de venda",
-          "default": "##default",
-          "example": "584892895105615579-1202601213293266651"
+          "example": "584892895105615579-1202601213293266651",
+          "default": "##default"
         },
         "channel": {
           "type": "string",
           "description": "Identificador do canal de venda na Magis5",
-          "default": "##default",
-          "example": "tiktok-489bf474f8cf4d038e9e5b549511a68a"
+          "example": "tiktok-489bf474f8cf4d038e9e5b549511a68a",
+          "default": "##default"
         },
         "id": {
           "type": "string",
           "description": "Número do pedido no canal de venda",
-          "default": "##default",
-          "example": "218881145349441"
+          "example": "218881145349441",
+          "default": "##default"
         },
         "storeId": {
           "type": "string",
           "description": "Identificador da loja à qual o pedido pertence",
-          "default": "##default",
-          "example": "STORE-1"
+          "example": "STORE-1",
+          "default": "##default"
         }
       },
+      "description": "Pedido disponível para processamento pela integração",
+      "default": "##default"
+    },
+    "ResponsePaginationLogisticProvidersQueueApi": {
+      "type": "object",
+      "properties": {
+        "next": {
+          "type": "string"
+        },
+        "rows": {
+          "type": "array",
+          "description": "Pedidos disponíveis para processamento",
+          "items": {
+            "$ref": "#/components/schemas/ResponseLogisticProvidersQueueApi"
+          },
+          "default": "##default"
+        }
+      },
+      "description": "Resultado paginado dos pedidos disponíveis para processamento",
       "default": "##default"
     },
     "ResponseOrderLabelApi": {
@@ -12909,20 +13435,6 @@
         }
       }
     },
-    "ResponsePaginationSimpleOrderLabelApi": {
-      "type": "object",
-      "properties": {
-        "next": {
-          "type": "string"
-        },
-        "orders": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ResponsePaginationOrderLabelApi"
-          }
-        }
-      }
-    },
     "ResponsePaginationOrderLabelApi": {
       "type": "object",
       "properties": {
@@ -12937,16 +13449,16 @@
         }
       }
     },
-    "ResponsePaginationCompleteInvoiceApi": {
+    "ResponsePaginationSimpleOrderLabelApi": {
       "type": "object",
       "properties": {
         "next": {
           "type": "string"
         },
-        "invoices": {
+        "orders": {
           "type": "array",
           "items": {
-            "$ref": "#/components/schemas/ResponseInvoiceApi"
+            "$ref": "#/components/schemas/ResponsePaginationOrderLabelApi"
           }
         }
       }
@@ -13042,6 +13554,20 @@
         }
       }
     },
+    "ResponsePaginationCompleteInvoiceApi": {
+      "type": "object",
+      "properties": {
+        "next": {
+          "type": "string"
+        },
+        "invoices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ResponseInvoiceApi"
+          }
+        }
+      }
+    },
     "ResponsePaginationSimpleInvoiceApi": {
       "type": "object",
       "properties": {
@@ -13052,20 +13578,6 @@
           "type": "array",
           "items": {
             "$ref": "#/components/schemas/ResponsePaginationOrderApi"
-          }
-        }
-      }
-    },
-    "ResponsePaginationCompleteChannelApi": {
-      "type": "object",
-      "properties": {
-        "next": {
-          "type": "string"
-        },
-        "channels": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ResponseChannelApi"
           }
         }
       }
@@ -13099,6 +13611,20 @@
           "type": "array",
           "items": {
             "$ref": "#/components/schemas/Link"
+          }
+        }
+      }
+    },
+    "ResponsePaginationCompleteChannelApi": {
+      "type": "object",
+      "properties": {
+        "next": {
+          "type": "string"
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ResponseChannelApi"
           }
         }
       }
@@ -13874,7 +14400,7 @@
       "body": "{\n  \"id\": \"ID_EXEMPLO\",\n  \"title\": \"Produto de exemplo\",\n  \"externalId\": \"ID_EXEMPLO\",\n  \"condition\": \"string\",\n  \"stock\": 0,\n  \"cost\": 0,\n  \"description\": \"Descrição de exemplo\",\n  \"technicalSpecification\": \"Especificação de exemplo\",\n  \"price\": 0,\n  \"warranty\": \"string\",\n  \"business\": \"Fornecedor exemplo\",\n  \"ean\": \"0000000000000\",\n  \"eanInvoice\": \"0000000000000\",\n  \"height\": 0,\n  \"weight\": 0,\n  \"weightGross\": 0,\n  \"depth\": 0,\n  \"width\": 0,\n  \"brand\": \"Marca exemplo\",\n  \"model\": \"Modelo exemplo\",\n  \"ncm\": \"string\",\n  \"origin\": 0,\n  \"deadlineCrossdocking\": 0,\n  \"youtubeId\": \"exemplo\",\n  \"location\": \"A1\",\n  \"isVariation\": true,\n  \"warrantyProvider\": \"string\",\n  \"quantityItemsSamePackaging\": 0,\n  \"erpId\": \"ID_EXEMPLO\",\n  \"stockFixed\": 0,\n  \"operationalCost\": 0,\n  \"percentageProfit\": 0,\n  \"productsCategory\": [\n    {\n      \"id\": 1001,\n      \"name\": \"Exemplo\",\n      \"parentId\": 0,\n      \"categoryDescription\": \"exemplo\"\n    }\n  ],\n  \"productsVariation\": [\n    {\n      \"sku\": \"SKU_EXEMPLO\"\n    },\n    {\n      \"sku\": \"SKU_EXEMPLO\"\n    }\n  ],\n  \"productsCode\": [\n    {\n      \"code\": \"exemplo\"\n    }\n  ],\n  \"productsRootCharacteristic\": [\n    {\n      \"id\": 1001,\n      \"key\": \"00000000000000000000000000000000000000000000\",\n      \"status\": \"string\"\n    }\n  ],\n  \"categories\": [\n    {\n      \"id\": \"ID_EXEMPLO\"\n    }\n  ],\n  \"pictures\": [\n    {\n      \"url\": \"exemplo\",\n      \"action\": \"exemplo\"\n    }\n  ],\n  \"plainTextDescription\": \"Descrição de exemplo\"\n}",
       "language": "json",
       "note": null,
-      "operationId": null
+      "operationId": "post-variations"
     },
     {
       "id": "postman-30",
@@ -14491,28 +15017,19 @@
     }
   ],
   "report": {
-    "operations": 45,
-    "schemas": 132,
+    "operations": 49,
+    "schemas": 142,
     "postmanRequests": 51,
     "guides": 14,
-    "assets": 14,
-    "credentialScreenshotReplaced": 1,
-    "collectionOnly": [
-      {
-        "id": "postman-29",
-        "name": "Criar produto Com Variação",
-        "path": "/v1/variations"
-      }
-    ],
+    "assets": 0,
+    "credentialScreenshotReplaced": 0,
+    "collectionOnly": [],
     "sources": {
-      "openapiSha256": "8df187129030f2993b255b7581b690ca2959f697d56d9c81d5b0437d8abde6e9",
-      "collectionSha256": "ef00bf5b1be3a36d0e4c3f66b368de3440fa7221aabcc723c916b0ad8af419dc"
+      "openapiSha256": "92a5f6bc7dbac38c2983370e1670e7c5857ee60372c0b93172e3648f2a7a94aa"
     },
-    "credentialsReplaced": 1,
+    "credentialsReplaced": 0,
     "notes": [
-      "Respostas e schemas vêm da especificação OpenAPI. A collection original não possui respostas salvas.",
-      "Dados de clientes, tokens e XMLs reais da collection foram substituídos por exemplos.",
-      "Links internos dos guias foram migrados para a navegação local."
+      "Requisições e guias preservados do catálogo anterior; apenas o OpenAPI foi atualizado."
     ]
   }
 }
