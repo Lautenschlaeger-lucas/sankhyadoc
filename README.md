@@ -1,6 +1,6 @@
 # Jornada de Implantação Magis5 + Sankhya
 
-Guia responsivo em português com sete tópicos, baseado no PDF fornecido.
+Guia responsivo em português com sete tópicos e abas para integração Sankhya e API pública Magis5. A seleção da integração é mantida durante a navegação entre os tópicos.
 
 ## Desenvolvimento
 
@@ -12,14 +12,24 @@ npm run dev
 ## Validação
 
 ```sh
-npm run build
+npm run build:vercel
 npx tsc --noEmit
+node scripts/verify-api-docs.mjs
 ```
 
 ## Conteúdo e imagens
 
-O conteúdo e a navegação estão em `app/page.tsx`; o estilo está em `app/globals.css`.
-Os componentes `Photo` identificam as capturas reais do painel que ainda precisam ser incluídas. Não há telas fictícias nem imagens do painel neste projeto. Para incluir uma captura, salve o arquivo em `public/processos/` e substitua o respectivo espaço por uma imagem com descrição acessível.
+O conteúdo Sankhya e a navegação estão em `app/page.tsx`; os resumos da API estão em `app/api-topic.tsx` e o portal completo em `app/api-docs.tsx`; o estilo está em `app/globals.css`.
+
+A aba API reúne os tópicos de implantação e uma documentação completa com 45 operações, 132 schemas, 51 exemplos Postman e 14 guias e tutoriais. Busca, navegação por grupos, links diretos, exemplos copiáveis e download da collection Postman funcionam no próprio site. Os dados ficam em `public/api-data/` e as 14 imagens em `public/api-assets/`, sem depender do Stoplight para carregar.
+
+A migração preserva os contratos e textos das fontes. Exemplos gerados de schemas são identificados como ilustrativos. A requisição POST `/v1/variations`, presente apenas na collection, está identificada como sem contrato OpenAPI. Diagramas antigos de faturamento receberam uma observação sobre o método atual.
+
+Tokens, dados pessoais e XML fiscal reais foram substituídos por variáveis ou exemplos. Uma captura que expunha token foi substituída por instruções textuais. O arquivo Postman original não foi modificado. O site não executa requisições à API nem coleta credenciais.
+
+O script `scripts/migrate-api-docs.py` recebe, nesta ordem, o OpenAPI exportado, a collection original, a pasta com os 14 artigos JSON e o manifesto de imagens. Ele gera os arquivos públicos e `migration-report.json`. O verificador confere contagens, referências de schemas, links locais, imagens e variáveis da collection.
+
+Os componentes `Photo` do guia Sankhya ainda indicam capturas a incluir; os guias da API já incluem as imagens migradas.
 
 As permissões são documentação, sem conexão ativa com o ERP. O site não coleta credenciais e não executa alterações no Sankhya. Não há login separado para o tópico de integração.
 

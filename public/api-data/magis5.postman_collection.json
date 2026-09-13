@@ -1,0 +1,1774 @@
+{
+  "info": {
+    "name": "Magis5 API 1.0 — Exemplos públicos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection com 51 exemplos. Configure apiKey e os identificadores antes de usar. Documentos fiscais e dados de clientes foram substituídos por exemplos. Requisições de escrita alteram o ambiente configurado."
+  },
+  "item": [
+    {
+      "name": "V1",
+      "item": [
+        {
+          "name": "Order",
+          "item": [
+            {
+              "name": "Invoice",
+              "item": [
+                {
+                  "name": "Enviar XML da nota fiscal",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "X-MAGIS5-APIKEY",
+                        "value": "{{apiKey}}",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{url}}/v1/invoices/{{completeOrderNumber}}?releaseOrder=false",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "v1",
+                        "invoices",
+                        "{{completeOrderNumber}}"
+                      ],
+                      "query": [
+                        {
+                          "key": "releaseOrder",
+                          "value": "false"
+                        }
+                      ]
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{invoiceXml}}",
+                      "options": {
+                        "raw": {
+                          "language": "xml"
+                        }
+                      }
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Enviar XML da nota fiscal C/ E-mail",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "X-MAGIS5-APIKEY",
+                        "value": "{{apiKey}}",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{url}}/v1/invoices/{{completeOrderNumber}}?releaseOrder=true&userId={{userEmail}}",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "v1",
+                        "invoices",
+                        "{{completeOrderNumber}}"
+                      ],
+                      "query": [
+                        {
+                          "key": "releaseOrder",
+                          "value": "true"
+                        },
+                        {
+                          "key": "userId",
+                          "value": "{{userEmail}}"
+                        }
+                      ]
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{invoiceXml}}",
+                      "options": {
+                        "raw": {
+                          "language": "xml"
+                        }
+                      }
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "NOTA FISCAL",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "X-MAGIS5-APIKEY",
+                        "value": "{{apiKey}}",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/xml",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{url}}/v1/invoices/{{completeOrderNumber}}?releaseOrder=true",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "v1",
+                        "invoices",
+                        "{{completeOrderNumber}}"
+                      ],
+                      "query": [
+                        {
+                          "key": "releaseOrder",
+                          "value": "true"
+                        }
+                      ]
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{{invoiceXml}}",
+                      "options": {
+                        "raw": {
+                          "language": "xml"
+                        }
+                      }
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Buscar pedido pelo código",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "{{completeOrderNumber}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar pedidos prontos",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders?status=awaiting_logistic&queueStatus=blank",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "awaiting_logistic"
+                    },
+                    {
+                      "key": "queueStatus",
+                      "value": "blank"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar pedidos por queue status",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders?queueStatus=I&page=2",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders"
+                  ],
+                  "query": [
+                    {
+                      "key": "queueStatus",
+                      "value": "I"
+                    },
+                    {
+                      "key": "page",
+                      "value": "2"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar pedidos cancelados",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders?status=canceled",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "canceled"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar pedidos por queue status",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders?queueStatus=blank",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders"
+                  ],
+                  "query": [
+                    {
+                      "key": "queueStatus",
+                      "value": "blank"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar pedidos por status",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar pedidos prontos timestamp",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders?timestampFrom=1725208774&timestampTo=1727714374&page=1",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders"
+                  ],
+                  "query": [
+                    {
+                      "key": "timestampFrom",
+                      "value": "1725208774"
+                    },
+                    {
+                      "key": "timestampTo",
+                      "value": "1727714374"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar pedidos prontos por loja",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders?status=ready_to_print&queueStatus=blank&storeId={{storeId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "ready_to_print"
+                    },
+                    {
+                      "key": "queueStatus",
+                      "value": "blank"
+                    },
+                    {
+                      "key": "storeId",
+                      "value": "{{storeId}}"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar pedido após consumido",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "{{completeOrderNumber}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"queueStatus\": \"ESPERANDO_INVOICE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar pedidos Aguardando pagamento",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders?status=awaiting_payment&queueStatus=blank",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "awaiting_payment"
+                    },
+                    {
+                      "key": "queueStatus",
+                      "value": "blank"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Realizar Expedição",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/releaseOrders/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "releaseOrders",
+                    "{{completeOrderNumber}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Realizar Expedição por e-mail",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/releaseOrders/{{completeOrderNumber}}?userId={{userEmail}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "releaseOrders",
+                    "{{completeOrderNumber}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "{{userEmail}}"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar pedido caso não seja possível cadastrar no ERP",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "{{completeOrderNumber}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cause\": \"API - Não foi possível subir o pedido no ERP, pois o mesmo não possui items\",\n  \"status\": \"awaiting_approval\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Criar Pedido",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"ID_EXEMPLO\",\n  \"dateCreated\": \"2025-07-04T21:24:08.813Z\",\n  \"totalTax\": 0,\n  \"status\": \"awaiting_payment\",\n  \"externalIdInvoice\": \"exemplo\",\n  \"integrationType\": \"api\",\n  \"channel\": \"ID_EXEMPLO\",\n  \"discount\": 0,\n  \"additionalNoteInvoice\": \"Observação de exemplo\",\n  \"saleFee\": 0,\n  \"queueStatus\": \"Importado\",\n  \"orderChannelType\": \"marketplace\",\n  \"buyer\": {\n    \"last_name\": \"exemplo\",\n    \"first_name\": \"exemplo\",\n    \"email\": \"usuario@example.com\",\n    \"full_name\": \"Cliente Exemplo\",\n    \"billing_info\": {\n      \"doc_number\": \"00000000000\",\n      \"ie\": \"\"\n    },\n    \"phone\": {\n      \"number\": \"00000000000\"\n    },\n    \"alternative_phone\": {\n      \"number\": \"00000000000\"\n    }\n  },\n  \"orderConciliation\": {\n    \"comissionValue\": 0\n  },\n  \"intermediary\": {\n    \"salesDocument\": \"\",\n    \"salesName\": \"Canal exemplo\",\n    \"paymentDocument\": \"\",\n    \"paymentName\": \"\"\n  },\n  \"order_items\": [\n    {\n      \"quantity\": 2,\n      \"unit_price\": 211.93,\n      \"discount\": 0,\n      \"unitMeasurement\": \"UN\",\n      \"item\": {\n        \"seller_custom_field\": \"SKU_EXEMPLO\",\n        \"title\": \"Produto de exemplo\",\n        \"kitQuantity\": 0\n      }\n    }\n  ],\n  \"payments\": [\n    {\n      \"payment_type\": \"exemplo\",\n      \"installments\": 0,\n      \"installment_amount\": 0,\n      \"shipping_cost\": 12.5,\n      \"total_paid_amount\": 436.36\n    }\n  ],\n  \"shipping\": {\n    \"shipping_mode\": \"Envio próprio - custom\",\n    \"shipment_type\": \"custom\",\n    \"logistic\": {\n      \"logisticId\": \"\"\n    },\n    \"shipping_option\": {\n      \"list_cost\": 0,\n      \"cost\": 12.5,\n      \"comission\": 0\n    },\n    \"receiver_address\": {\n      \"street_number\": \"100\",\n      \"zip_code\": \"00000000\",\n      \"street_name\": \"Rua Exemplo\",\n      \"comment\": \"Complemento exemplo\",\n      \"neighborhood\": {\n        \"name\": \"Exemplo\"\n      },\n      \"city\": {\n        \"name\": \"Exemplo\"\n      },\n      \"state\": {\n        \"name\": \"Exemplo\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Order Detail Required",
+          "item": [
+            {
+              "name": "Buscar pedidos aguardando atributos pelo código",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/details/required/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "details",
+                    "required",
+                    "{{completeOrderNumber}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar pedidos aguardando atributos",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/details/required/queues?limit=50&page=1",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "details",
+                    "required",
+                    "queues"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar pedido aguardando atributos",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/details/required/queues/read/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "details",
+                    "required",
+                    "queues",
+                    "read",
+                    "{{completeOrderNumber}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"items\": [\n    {\n      \"units\": [\n        {\n          \"attributes\": [\n            {\n              \"value\": \"exemplo\",\n              \"type\": \"date\",\n              \"key\": \"00000000000000000000000000000000000000000000\"\n            },\n            {\n              \"value\": \"exemplo\",\n              \"type\": \"string\",\n              \"key\": \"00000000000000000000000000000000000000000000\"\n            },\n            {\n              \"value\": \"exemplo\",\n              \"type\": \"date\",\n              \"key\": \"00000000000000000000000000000000000000000000\"\n            },\n            {\n              \"value\": \"exemplo\",\n              \"type\": \"number\",\n              \"key\": \"00000000000000000000000000000000000000000000\"\n            },\n            {\n              \"value\": \"exemplo\",\n              \"type\": \"number\",\n              \"key\": \"00000000000000000000000000000000000000000000\"\n            },\n            {\n              \"value\": \"exemplo\",\n              \"type\": \"number\",\n              \"key\": \"00000000000000000000000000000000000000000000\"\n            },\n            {\n              \"value\": \"exemplo\",\n              \"type\": \"number\",\n              \"key\": \"00000000000000000000000000000000000000000000\"\n            },\n            {\n              \"value\": \"exemplo\",\n              \"type\": \"number\",\n              \"key\": \"00000000000000000000000000000000000000000000\"\n            },\n            {\n              \"value\": \"ID_EXEMPLO\",\n              \"type\": \"string\",\n              \"key\": \"00000000000000000000000000000000000000000000\"\n            }\n          ]\n        }\n      ],\n      \"sku\": \"SKU_EXEMPLO\",\n      \"quantity\": \"exemplo\"\n    }\n  ],\n  \"id\": \"ID_EXEMPLO\",\n  \"external_id\": \"ID_EXEMPLO\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Label",
+          "item": [
+            {
+              "name": "Buscar etiqueta pelo código",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/labels/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "labels",
+                    "{{completeOrderNumber}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar etiquetas prontas",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/labels/queues?limit=50&page=1",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "labels",
+                    "queues"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar pedido após consumido",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/labels/queues/read/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "labels",
+                    "queues",
+                    "read",
+                    "{{completeOrderNumber}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"queueStatus\": \"ESPERANDO_INVOICE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Stock",
+          "item": [
+            {
+              "name": "Stock Filial",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/callbacks/stocks",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "callbacks",
+                    "stocks"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"stocks\": [\n    {\n      \"sku\": \"SKU_EXEMPLO\",\n      \"totalStock\": 100,\n      \"warehouses\": [\n        {\n          \"id\": 1001,\n          \"title\": \"Produto de exemplo\",\n          \"stock\": 50,\n          \"consider\": true,\n          \"stockVirtual\": 50\n        },\n        {\n          \"id\": 1001,\n          \"title\": \"Produto de exemplo\",\n          \"stock\": 50,\n          \"consider\": true,\n          \"stockVirtual\": 50\n        }\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Stock Simples",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/callbacks/stocks",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "callbacks",
+                    "stocks"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"stocks\": [\n    {\n      \"sku\": \"SKU_EXEMPLO\",\n      \"totalStock\": 20,\n      \"warehouses\": [\n        {\n          \"consider\": true\n        }\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Products",
+          "item": [
+            {
+              "name": "Buscar produtos pelo código SKU",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/products/{{sku}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "products",
+                    "{{sku}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar produtos",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/products?page=1",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "products"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Criar produto",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/products",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "products"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"ID_EXEMPLO\",\n  \"externalId\": \"ID_EXEMPLO\",\n  \"title\": \"Produto de exemplo\",\n  \"condition\": \"New\",\n  \"stock\": 0,\n  \"cost\": 11.67,\n  \"description\": \"Descrição de exemplo\",\n  \"plainTextDescription\": \"Descrição de exemplo\",\n  \"technicalSpecification\": \"Especificação de exemplo\",\n  \"pictures\": [\n    {\n      \"url\": \"https://example.com/arquivo-exemplo\"\n    }\n  ],\n  \"price\": 18.42,\n  \"warranty\": \"0\",\n  \"business\": \"Fornecedor exemplo\",\n  \"ean\": \"0000000000000\",\n  \"eanInvoice\": \"0000000000000\",\n  \"height\": 15.0,\n  \"weight\": 15.0,\n  \"weightGross\": 15.0,\n  \"depth\": 15.0,\n  \"width\": 15.0,\n  \"brand\": \"Marca exemplo\",\n  \"model\": \"Modelo exemplo\",\n  \"ncm\": \"30049029\",\n  \"cest\": \"1300201\",\n  \"origin\": 0,\n  \"isVariation\": false,\n  \"productsComposition\": [],\n  \"quantityItemsSamePackaging\": 1,\n  \"stockFixed\": 0,\n  \"operationalCost\": 0.0,\n  \"percentageProfit\": 0.0,\n  \"productsCategory\": [\n    {\n      \"id\": 1001,\n      \"parentId\": 0,\n      \"categoryDescription\": \"exemplo\"\n    }\n  ],\n  \"productsCode\": [\n    {\n      \"code\": \"ID_EXEMPLO\"\n    }\n  ],\n  \"productsRootCharacteristic\": [],\n  \"categories\": [\n    {\n      \"id\": \"ID_EXEMPLO\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Criar produto Com Variação",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/variations",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "variations"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"ID_EXEMPLO\",\n  \"title\": \"Produto de exemplo\",\n  \"externalId\": \"ID_EXEMPLO\",\n  \"condition\": \"string\",\n  \"stock\": 0,\n  \"cost\": 0,\n  \"description\": \"Descrição de exemplo\",\n  \"technicalSpecification\": \"Especificação de exemplo\",\n  \"price\": 0,\n  \"warranty\": \"string\",\n  \"business\": \"Fornecedor exemplo\",\n  \"ean\": \"0000000000000\",\n  \"eanInvoice\": \"0000000000000\",\n  \"height\": 0,\n  \"weight\": 0,\n  \"weightGross\": 0,\n  \"depth\": 0,\n  \"width\": 0,\n  \"brand\": \"Marca exemplo\",\n  \"model\": \"Modelo exemplo\",\n  \"ncm\": \"string\",\n  \"origin\": 0,\n  \"deadlineCrossdocking\": 0,\n  \"youtubeId\": \"exemplo\",\n  \"location\": \"A1\",\n  \"isVariation\": true,\n  \"warrantyProvider\": \"string\",\n  \"quantityItemsSamePackaging\": 0,\n  \"erpId\": \"ID_EXEMPLO\",\n  \"stockFixed\": 0,\n  \"operationalCost\": 0,\n  \"percentageProfit\": 0,\n  \"productsCategory\": [\n    {\n      \"id\": 1001,\n      \"name\": \"Exemplo\",\n      \"parentId\": 0,\n      \"categoryDescription\": \"exemplo\"\n    }\n  ],\n  \"productsVariation\": [\n    {\n      \"sku\": \"SKU_EXEMPLO\"\n    },\n    {\n      \"sku\": \"SKU_EXEMPLO\"\n    }\n  ],\n  \"productsCode\": [\n    {\n      \"code\": \"exemplo\"\n    }\n  ],\n  \"productsRootCharacteristic\": [\n    {\n      \"id\": 1001,\n      \"key\": \"00000000000000000000000000000000000000000000\",\n      \"status\": \"string\"\n    }\n  ],\n  \"categories\": [\n    {\n      \"id\": \"ID_EXEMPLO\"\n    }\n  ],\n  \"pictures\": [\n    {\n      \"url\": \"exemplo\",\n      \"action\": \"exemplo\"\n    }\n  ],\n  \"plainTextDescription\": \"Descrição de exemplo\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar produto",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/products/{{sku}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "products",
+                    "{{sku}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"ID_EXEMPLO\",\n  \"title\": \"Produto de exemplo\",\n  \"externalId\": \"\",\n  \"condition\": \"\",\n  \"stock\": 5649,\n  \"cost\": 81.3,\n  \"description\": \"\",\n  \"technicalSpecification\": \"\",\n  \"price\": 81.3,\n  \"warranty\": \"180\",\n  \"warrantyProvider\": \"180\",\n  \"business\": \"Fornecedor exemplo\",\n  \"ean\": \"0000000000000\",\n  \"eanInvoice\": \"\",\n  \"height\": 4.0,\n  \"weight\": 83.2,\n  \"weightGross\": 0.0,\n  \"depth\": 0.0,\n  \"width\": 10.5,\n  \"brand\": \"Marca exemplo\",\n  \"model\": \"\",\n  \"ncm\": \"\",\n  \"origin\": 0,\n  \"deadlineCrossdocking\": 0,\n  \"isVariation\": false,\n  \"quantityItemsSamePackaging\": 0,\n  \"stockFixed\": 0,\n  \"operationalCost\": 0,\n  \"percentageProfit\": 0.1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Invoice Fulfillment",
+          "item": [
+            {
+              "name": "Buscar pedidos Fulfillment",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/invoices/queues?page=1&logisticType=fulfillment",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "invoices",
+                    "queues"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "logisticType",
+                      "value": "fulfillment"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar pedidos Fulfillment Cross/Flex",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/invoices/queues?page=1&logisticType=crossdocking_flex",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "invoices",
+                    "queues"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "logisticType",
+                      "value": "crossdocking_flex"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Ler pedido fulfillment consumido",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/invoices/queues/read/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "invoices",
+                    "queues",
+                    "read",
+                    "{{completeOrderNumber}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Download Invoices Zip",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/invoices/marketplaces/batch/{{channel}}/{{start}}/{{end}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "invoices",
+                    "marketplaces",
+                    "batch",
+                    "{{channel}}",
+                    "{{start}}",
+                    "{{end}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar Documentos NF-E",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/invoices/documents/queues?page=1",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "invoices",
+                    "documents",
+                    "queues"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar Documentos NF-E Com filtros",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/invoices/documents/queues?page=1&operationType=shipment_partial_customer_sales&type=symbolic_return",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "invoices",
+                    "documents",
+                    "queues"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "operationType",
+                      "value": "shipment_partial_customer_sales"
+                    },
+                    {
+                      "key": "type",
+                      "value": "symbolic_return"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar Documentos NF-E Operationtype",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/invoices/documents/queues?page=1&type=symbolic_remittance",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "invoices",
+                    "documents",
+                    "queues"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "type",
+                      "value": "symbolic_remittance"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Ler nota fiscal fulfillment consumido",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/invoices/documents/queues/read/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "invoices",
+                    "documents",
+                    "queues",
+                    "read",
+                    "{{completeOrderNumber}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Order Fulfillment",
+          "item": [
+            {
+              "name": "Buscar pedidos Fulfillment",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/fulfillments/queues?page=1",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "fulfillments",
+                    "queues"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Ler pedido fulfillment consumido",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/fulfillments/queues/read/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "fulfillments",
+                    "queues",
+                    "read",
+                    "{{completeOrderNumber}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Channels",
+          "item": [
+            {
+              "name": "Buscar Lojas",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/channels",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "channels"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar Lojas pelo Channel",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/channels/{{channel}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "channels",
+                    "{{channel}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Ads",
+          "item": [
+            {
+              "name": "Buscar Anúncios",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/ads/{{sku}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "ads",
+                    "{{sku}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Alterar Preço Anúncio",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/ads/prices/{{sku}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "ads",
+                    "prices",
+                    "{{sku}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ads\": [\n    {\n      \"channel\": \"ID_EXEMPLO\",\n      \"channelId\": \"exemplo\",\n      \"variationId\": \"ID_EXEMPLO\",\n      \"price\": 117.8\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tracking",
+      "item": [
+        {
+          "name": "Order",
+          "item": [
+            {
+              "name": "Buscar pedidos",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/invoices/queues?page=1&logisticType=crossdocking_flex",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "invoices",
+                    "queues"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "logisticType",
+                      "value": "crossdocking_flex"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buscar pedido pelo código",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "{{completeOrderNumber}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Ler pedido consumido",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/invoices/queues/read/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "invoices",
+                    "queues",
+                    "read",
+                    "{{completeOrderNumber}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar pedido para aguardando envio",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "{{completeOrderNumber}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shipping\": {\n    \"shipping_number\": \"exemplo\",\n    \"shipping_url\": \"https://example.com/arquivo-exemplo\"\n  },\n  \"status\": \"awaiting_send\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar pedido para enviado",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "{{completeOrderNumber}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shipping\": {\n    \"shipping_number\": \"exemplo\",\n    \"shipping_url\": \"https://example.com/arquivo-exemplo\"\n  },\n  \"status\": \"sent\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar pedido para entregue",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "{{completeOrderNumber}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"delivered\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Atualizar pedido problema entrega",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "X-MAGIS5-APIKEY",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/v1/orders/{{completeOrderNumber}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "orders",
+                    "{{completeOrderNumber}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"returned_logistic\",\n  \"cause\": \"Não foi possível realizar a entrega porque o endereço do destinatário está incorreto.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "url",
+      "value": "https://app.magis5.com.br",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "completeOrderNumber",
+      "value": "PEDIDO_EXEMPLO",
+      "type": "string"
+    },
+    {
+      "key": "sku",
+      "value": "SKU_EXEMPLO",
+      "type": "string"
+    },
+    {
+      "key": "channel",
+      "value": "CANAL_EXEMPLO",
+      "type": "string"
+    },
+    {
+      "key": "start",
+      "value": "20260101",
+      "type": "string"
+    },
+    {
+      "key": "end",
+      "value": "20260131",
+      "type": "string"
+    },
+    {
+      "key": "userEmail",
+      "value": "usuario@example.com",
+      "type": "string"
+    },
+    {
+      "key": "invoiceXml",
+      "value": "COLE_AQUI_O_XML_COMPLETO_DA_NFE",
+      "type": "string"
+    },
+    {
+      "key": "storeId",
+      "value": "STOREID_EXEMPLO",
+      "type": "string"
+    }
+  ]
+}
