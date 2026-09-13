@@ -1,5 +1,6 @@
 import {ArrowUpRight, ArrowRight, Code2} from 'lucide-react';
 import {SuggestedDevelopment} from './suggested-development';
+import {highlightJson} from './json-highlight';
 
 const guide = '#api/api-docs?view=guides&item=apjw4t1q0jms3';
 const reference = '#api/api-docs?view=reference';
@@ -28,7 +29,7 @@ function Sources() {
   return <div className="api-sources"><span>DOCUMENTAÇÃO OFICIAL</span><Source href={guide}>Desenvolvimento sugerido</Source><Source href={reference}>Endpoints e schemas</Source></div>;
 }
 function Code({children,label='Exemplo ilustrativo'}:{children:string;label?:string}) {
-  return <figure className="api-code"><figcaption>{label}</figcaption><pre tabIndex={0}><code>{children}</code></pre></figure>;
+  return <figure className="api-code"><figcaption>{label}</figcaption><pre tabIndex={0}><code dangerouslySetInnerHTML={{__html: highlightJson(children)}} /></pre></figure>;
 }
 function Endpoints({rows=endpoints}:{rows?:Endpoint[]}) {
   return <div className="table-wrap"><table className="api-endpoints"><thead><tr><th>Método</th><th>Endpoint</th><th>Finalidade</th></tr></thead><tbody>{rows.map(([method,path,desc])=><tr key={method+path}><td><span className="method">{method}</span></td><td><code>{path}</code></td><td>{desc}</td></tr>)}</tbody></table></div>;

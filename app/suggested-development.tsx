@@ -1,11 +1,12 @@
 import {ArrowUpRight} from "lucide-react";
+import {highlightJson} from './json-highlight';
 
 function Source({href,children}:{href:string;children:React.ReactNode}) {
   return <a className="api-source" href={href}>{children}<ArrowUpRight size={16} aria-hidden="true"/></a>;
 }
 
 function Code({children,label="Exemplo ilustrativo"}:{children:string;label?:string}) {
-  return <figure className="api-code"><figcaption>{label}</figcaption><pre tabIndex={0}><code>{children}</code></pre></figure>;
+  return <figure className="api-code"><figcaption>{label}</figcaption><pre tabIndex={0}><code dangerouslySetInnerHTML={{__html: highlightJson(children)}} /></pre></figure>;
 }
 
 type Endpoint = [string, string, string];

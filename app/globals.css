@@ -192,6 +192,7 @@ body{font-family:'Avenir Next',Avenir,'Segoe UI',sans-serif}.sidebar{background:
 .docs-code-card figcaption button:hover{background:#334155;color:white}
 .docs-code-card pre{margin:0;max-height:480px;overflow:auto;padding:16px;font-size:13px;line-height:1.7}
 .docs-code-card pre code{background:none;color:#e2e8f0;padding:0;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+.hl-key{color:#bd93f9}
 
 /* cURL Card */
 .curl-disclosure-card{border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;background:#f8fafc}

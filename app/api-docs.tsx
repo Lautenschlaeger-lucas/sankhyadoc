@@ -3,6 +3,7 @@ import {useEffect, useRef, useState, useMemo} from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {Search, Download, Copy, Check, BookOpen, Code2, Layers, ShieldCheck, ChevronDown, ChevronRight, X} from 'lucide-react';
+import {highlightJson} from './json-highlight';
 
 type Json = Record<string, any>;
 type Catalog = {operations: Json[]; schemas: Record<string, Json>; securitySchemes: Json; requests: Json[]; guides: Json[]; report: Json};
@@ -115,16 +116,28 @@ function CopyBlock({value, label = 'JSON'}: {value: string; label?: string}) {
           {copied ? 'Copiado' : 'Copiar'}
         </button>
       </figcaption>
-      <pre tabIndex={0}><code>{value}</code></pre>
+      <pre tabIndex={0}><code dangerouslySetInnerHTML={{__html: highlightJson(value)}} /></pre>
     </figure>
   );
+}
+
+function MarkdownCode({className, children}: {className?: string; children?: React.ReactNode}) {
+  return <code className={className} dangerouslySetInnerHTML={{__html: highlightJson(String(children ?? ''))}} />;
 }
 
 function Description({text}: {text?: string}) {
   if (!text) return null;
   return (
     <div className="docs-markdown-text">
-      <Markdown remarkPlugins={[remarkGfm]}>{text}</Markdown>
+      <Markdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          pre: ({children}) => <pre tabIndex={0}>{children}</pre>,
+          code: MarkdownCode,
+        }}
+      >
+        {text}
+      </Markdown>
     </div>
   );
 }
@@ -547,6 +560,7 @@ function GuideDetail({guide}: {guide: Json}) {
               </a>
             ),
             pre: ({children}) => <pre tabIndex={0}>{children}</pre>,
+            code: MarkdownCode,
           }}
         >
           {content}
