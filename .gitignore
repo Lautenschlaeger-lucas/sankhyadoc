@@ -38,3 +38,4 @@ next-env.d.ts
 /work/
 /dist-vercel/
 *.tsbuildinfo
+/magis5-central-de-implantacao.zip

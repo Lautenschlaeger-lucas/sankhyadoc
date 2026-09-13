@@ -581,12 +581,12 @@ export function ApiDocs() {
   useEffect(() => {
     const controller = new AbortController();
     setError(false);
-    fetch('/api-data/catalog.json', {signal: controller.signal})
+    fetch('api-data/catalog.json', {signal: controller.signal})
       .then(r => {
         if (!r.ok) throw Error('catalog');
         return r.json();
       })
-      .then(data => setCatalog(data as Catalog))
+      .then(data => setCatalog({...(data as Catalog), guides: (data as Catalog).guides.map(g => ({...g, content: g.content.replace(/\/api-assets\//g, 'api-assets/')}))}))
       .catch(e => {
         if (e.name !== 'AbortError') setError(true);
       });
@@ -652,7 +652,7 @@ export function ApiDocs() {
           <p className="docs-lead">Consulte a especificação completa da API pública Magis5: endpoints, modelos de dados e guias práticos.</p>
         </div>
         <div className="docs-downloads-wrap">
-          <a className="docs-button postman-cta" href="/api-data/magis5.postman_collection.json" download>
+          <a className="docs-button postman-cta" href="api-data/magis5.postman_collection.json" download>
             <Download size={16} />
             <span>Collection Postman</span>
             <span className="download-badge">51 requisições</span>
