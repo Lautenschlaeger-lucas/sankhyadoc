@@ -2,7 +2,7 @@
 import {useEffect, useRef, useState, useMemo} from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import {Search, Download, Copy, Check, ArrowUpRight, BookOpen, Code2, Layers, ShieldCheck, ChevronDown, ChevronRight, X} from 'lucide-react';
+import {Search, Download, Copy, Check, BookOpen, Code2, Layers, ShieldCheck, ChevronDown, ChevronRight, X} from 'lucide-react';
 
 type Json = Record<string, any>;
 type Catalog = {operations: Json[]; schemas: Record<string, Json>; securitySchemes: Json; requests: Json[]; guides: Json[]; report: Json};
@@ -523,11 +523,13 @@ function OperationDetail({op, catalog}: {op: Json; catalog: Catalog}) {
 }
 
 function GuideDetail({guide}: {guide: Json}) {
+  const heading = String(guide.heading || guide.title);
+  const content = guide.content.replace(new RegExp('^#{1,6}\\s+' + heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[ \\t]*\\n', 'm'), '');
   return (
     <div className="guide-view-container">
       <div className="guide-header">
         <span className="guide-meta-tag">{guide.group} · Guia oficial</span>
-        <h2>{guide.heading || guide.title}</h2>
+        <h2>{heading}</h2>
       </div>
       <div className="docs-markdown-text guide-content-body">
         <Markdown
@@ -547,7 +549,7 @@ function GuideDetail({guide}: {guide: Json}) {
             pre: ({children}) => <pre tabIndex={0}>{children}</pre>,
           }}
         >
-          {guide.content}
+          {content}
         </Markdown>
       </div>
     </div>
@@ -805,9 +807,6 @@ export function ApiDocs() {
                 <span className="detail-section-breadcrumb">
                   {view === 'reference' ? `Endpoints / ${selected.group}` : view === 'schemas' ? 'Modelos de dados (Schemas)' : `Guias / ${selected.group}`}
                 </span>
-                <a href={local(view, selected.id)} className="direct-link">
-                  Link direto <ArrowUpRight size={13} />
-                </a>
               </div>
 
               {view === 'reference' ? (
