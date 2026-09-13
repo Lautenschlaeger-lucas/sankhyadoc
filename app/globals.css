@@ -99,11 +99,9 @@ body{font-family:'Avenir Next',Avenir,'Segoe UI',sans-serif}.sidebar{background:
 .guide-sub-label{font-size:11px;color:#94a3b8}
 
 /* Detail Pane */
-.docs-detail-pane{padding:32px;min-width:0;overflow-wrap:anywhere;overflow:hidden}
+.docs-detail-pane{padding:32px;min-width:0;max-width:100%;width:100%;overflow-wrap:anywhere;overflow:hidden}
 .detail-top-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid #f1f5f9;margin-bottom:24px;font-size:13px;color:#64748b}
 .detail-section-breadcrumb{font-weight:500;color:#64748b}
-.direct-link{display:inline-flex;align-items:center;gap:4px;color:#4f46e5;text-decoration:none;font-weight:500}
-.direct-link:hover{text-decoration:underline}
 
 /* Endpoint Hero */
 .endpoint-hero{margin-bottom:24px}
