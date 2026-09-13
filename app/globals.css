@@ -26,7 +26,7 @@ body{font-family:'Avenir Next',Avenir,'Segoe UI',sans-serif}.sidebar{background:
 .api-flow>div{padding:22px;border-right:1px solid var(--border)}.api-flow>div:last-child{border:0}.api-flow>div>span{font-size:14px;color:#5269b5;font-weight:650}.api-flow h3{margin:12px 0 8px}.api-flow p{font-size:15px;margin:0}
 .api-source{display:inline-flex;align-items:center;gap:8px;color:#344fc0;font-size:15px;font-weight:600;line-height:1.6;text-decoration:underline;text-underline-offset:4px}.api-source svg{flex-shrink:0}.api-source:hover{color:#182f92}
 .api-sources{display:flex;gap:14px 24px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--border);margin-top:38px;padding-top:24px}.api-sources>span{flex-basis:100%;font-size:12px;font-weight:650;letter-spacing:1.3px;color:var(--muted)}
-.api-code{margin:24px 0;border:1px solid #d7dfef;border-radius:12px;overflow:hidden;background:#f8fafc}.api-code figcaption{padding:12px 18px;background:#eaf0fb;color:#445778;font-size:14px}.api-code pre{padding:20px;overflow:auto;margin:0;line-height:1.7}.api-code pre code{background:transparent;color:#0f172a;padding:0;font-size:14px;white-space:pre;overflow-wrap:normal}
+.api-code{margin:24px 0;border:1px solid #d7dfef;border-radius:12px;overflow:hidden;background:#0f172a}.api-code figcaption{padding:12px 18px;background:#1e293b;color:#94a3b8;font-size:14px}.api-code pre{padding:20px;overflow:auto;margin:0;line-height:1.7}.api-code pre code{background:transparent;color:#e2e8f0;padding:0;font-size:14px;white-space:pre;overflow-wrap:normal}
 .api-endpoints td{vertical-align:top}.api-endpoints td:nth-child(2){width:44%}.api-article .method{font-size:13px}.api-article th{font-size:14px}
 @media(max-width:1000px){.api-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.api-flow>div:nth-child(2){border-right:0}.api-flow>div:nth-child(-n+2){border-bottom:1px solid var(--border)}}
 @media(max-width:760px){.integration-tabs{margin-bottom:24px}.integration-tab{flex:1;padding:14px 12px}.integration-content>h1{font-size:33px}.api-intro{padding:24px;gap:14px}.api-intro>svg{display:none}.api-intro h2{font-size:27px}.api-code pre{padding:16px}.api-flow>div{padding:18px}.api-sources{align-items:flex-start;flex-direction:column}}
@@ -203,8 +203,8 @@ body{font-family:'Avenir Next',Avenir,'Segoe UI',sans-serif}.sidebar{background:
 .guide-meta-tag{font-size:12px;font-weight:600;color:#6366f1;text-transform:uppercase;letter-spacing:.03em}
 .guide-view-container h2{font-size:28px;font-weight:700;color:#0f172a;margin:6px 0 16px}
 .guide-content-body img{max-width:100%;height:auto;border-radius:8px;border:1px solid #e2e8f0;margin:16px 0}
-.guide-content-body pre{background:#f8fafc;border:1px solid #e2e8f0;padding:16px;border-radius:8px;overflow:auto}
-.guide-content-body pre code{color:#0f172a;font-size:13px}
+.guide-content-body pre{background:#0f172a;padding:16px;border-radius:8px;overflow:auto;margin:12px 0;line-height:1.7;max-height:480px}
+.guide-content-body pre code{background:none;color:#e2e8f0;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
 
 /* Empty State */
 .docs-empty-state{text-align:center;padding:64px 20px;color:#94a3b8}
