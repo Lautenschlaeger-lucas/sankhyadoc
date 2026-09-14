@@ -9043,14 +9043,6 @@
       },
       "description": "Variação de um produto"
     },
-    "ResponseErrorApi": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string"
-        }
-      }
-    },
     "Attribute": {
       "type": "object",
       "properties": {
@@ -9529,6 +9521,14 @@
           "type": "string"
         },
         "user_product_id": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseErrorApi": {
+      "type": "object",
+      "properties": {
+        "error": {
           "type": "string"
         }
       }
@@ -15025,7 +15025,7 @@
     "credentialScreenshotReplaced": 0,
     "collectionOnly": [],
     "sources": {
-      "openapiSha256": "92a5f6bc7dbac38c2983370e1670e7c5857ee60372c0b93172e3648f2a7a94aa"
+      "openapiSha256": "50b6c7914006109ad409c158b7730e3455675099e5dce08761849e601fa7946c"
     },
     "credentialsReplaced": 0,
     "notes": [
