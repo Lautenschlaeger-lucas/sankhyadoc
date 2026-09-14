@@ -1,6 +1,6 @@
 # Jornada de Implantação Magis5 + Sankhya
 
-Guia responsivo em português com sete tópicos e abas para integração Sankhya e API pública Magis5. A seleção da integração é mantida durante a navegação entre os tópicos.
+Guia responsivo em português com uma tela inicial para escolher Sankhya ou API Magis5. Cada integração tem sua própria área, com o botão Trocar integração para retornar à seleção.
 
 ## Desenvolvimento
 
@@ -45,3 +45,9 @@ Deploy enviado à Vercel em 07/09/2026:
 https://sankhyadoc-lautenschlaeger-lucas-projects.vercel.app
 
 O endereço exige autenticação Vercel. A conexão utilizada conseguiu criar o deploy, mas retornou 403 ao consultar o status no escopo da conta. Confirme o resultado no painel antes de compartilhar com visitantes externos.
+
+## Pacote para hospedagem estática
+
+Execute `npm run build:static` para gerar `dist-vercel/` e atualizar `magis5-central-de-implantacao.zip`. Envie todo o conteúdo do ZIP ao gestor do domínio: index.html, CSS, JavaScript, imagens e dados JSON. Não é necessário Node.js no servidor de hospedagem. O site precisa ser servido por HTTP/HTTPS, não aberto por file://.
+
+A documentação apresenta exemplos JSON dos schemas, com os detalhes de campos recolhidos. A navegação Postman e o download OpenAPI foram removidos da interface; a collection continua disponível para download.

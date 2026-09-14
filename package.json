@@ -12,7 +12,8 @@
     "lint": "oxlint",
     "format": "oxfmt",
     "build:vercel": "vite build --config vite.vercel.config.ts",
-    "sync:api": "node scripts/fetch-openapi.mjs && python3 scripts/migrate-api-docs.py .cache/openapi.json && node scripts/verify-api-docs.mjs"
+    "sync:api": "node scripts/fetch-openapi.mjs && python3 scripts/migrate-api-docs.py .cache/openapi.json && node scripts/verify-api-docs.mjs",
+    "build:static": "npm run build:vercel && node scripts/package-static.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

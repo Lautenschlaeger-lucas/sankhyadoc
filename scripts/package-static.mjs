@@ -1,0 +1,12 @@
+import { readdir, readFile, rename } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+const root = path.resolve(import.meta.dirname, '..');
+const output = path.join(root, 'dist-vercel');
+await readFile(path.join(output, 'index.html'));
+const files = await readdir(output);
+const temp = path.join(root, `magis5-static-${Date.now()}.zip`);
+const result = spawnSync('zip', ['-qr', temp, ...files], { cwd: output, stdio: 'inherit' });
+if (result.status !== 0) throw new Error('Não foi possível gerar o ZIP.');
+await rename(temp, path.join(root, 'magis5-central-de-implantacao.zip'));
+console.log('ZIP atualizado: magis5-central-de-implantacao.zip');
