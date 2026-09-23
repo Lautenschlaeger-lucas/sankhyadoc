@@ -9013,6 +9013,14 @@
         },
         "description": "Variação de um produto"
       },
+      "ResponseErrorApi": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
       "Attribute": {
         "type": "object",
         "properties": {
@@ -9491,14 +9499,6 @@
             "type": "string"
           },
           "user_product_id": {
-            "type": "string"
-          }
-        }
-      },
-      "ResponseErrorApi": {
-        "type": "object",
-        "properties": {
-          "error": {
             "type": "string"
           }
         }
@@ -10823,6 +10823,28 @@
           }
         }
       },
+      "Dimension": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "dimensionUnit": {
+            "type": "string"
+          }
+        }
+      },
+      "DocumentRequirement": {
+        "type": "object",
+        "properties": {
+          "requirement": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
       "Errors": {
         "type": "object",
         "properties": {
@@ -11311,6 +11333,9 @@
           "externalId": {
             "type": "string"
           },
+          "storeId": {
+            "type": "string"
+          },
           "channelIds": {
             "type": "array",
             "items": {
@@ -11350,6 +11375,20 @@
           },
           "field": {
             "type": "string"
+          }
+        }
+      },
+      "PackageDimensions": {
+        "type": "object",
+        "properties": {
+          "length": {
+            "$ref": "#/components/schemas/Dimension"
+          },
+          "width": {
+            "$ref": "#/components/schemas/Dimension"
+          },
+          "height": {
+            "$ref": "#/components/schemas/Dimension"
           }
         }
       },
@@ -11433,6 +11472,31 @@
             "type": "string"
           },
           "area_code": {
+            "type": "string"
+          }
+        }
+      },
+      "RecommendedPackage": {
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/PackageDimensions"
+          },
+          "weight": {
+            "$ref": "#/components/schemas/Weight"
+          },
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecommendedPackageLineItem"
+            }
+          }
+        }
+      },
+      "RecommendedPackageLineItem": {
+        "type": "object",
+        "properties": {
+          "lineItemId": {
             "type": "string"
           }
         }
@@ -11689,11 +11753,34 @@
               "$ref": "#/components/schemas/OrderTag"
             }
           },
+          "recommendedPackages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecommendedPackage"
+            }
+          },
+          "shipmentRequirements": {
+            "$ref": "#/components/schemas/ShipmentRequirements"
+          },
           "links": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Link"
             }
+          }
+        }
+      },
+      "ShipmentRequirements": {
+        "type": "object",
+        "properties": {
+          "invoice": {
+            "$ref": "#/components/schemas/DocumentRequirement"
+          },
+          "pslip": {
+            "$ref": "#/components/schemas/DocumentRequirement"
+          },
+          "pSlip": {
+            "$ref": "#/components/schemas/DocumentRequirement"
           }
         }
       },
@@ -11923,6 +12010,17 @@
         "type": "object",
         "properties": {
           "url": {
+            "type": "string"
+          }
+        }
+      },
+      "Weight": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "weightUnit": {
             "type": "string"
           }
         }
@@ -13262,6 +13360,15 @@
             "items": {
               "$ref": "#/components/schemas/OrderTag"
             }
+          },
+          "recommendedPackages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecommendedPackage"
+            }
+          },
+          "shipmentRequirements": {
+            "$ref": "#/components/schemas/ShipmentRequirements"
           },
           "links": {
             "type": "array",
