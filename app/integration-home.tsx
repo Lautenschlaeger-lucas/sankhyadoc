@@ -1,10 +1,11 @@
 'use client';
+import {ThemeToggle} from './theme-toggle';
 import {ArrowRight, BookOpen, Code2, Check} from 'lucide-react';
 
 export function IntegrationHome({onSelect}:{onSelect:(mode:string)=>void}) {
   return <div className="integration-home">
     <a className="skip" href="#choose-integration">Pular para o conteúdo</a>
-    <header className="portal-header"><img src="brand/magis5-light.webp" alt="Magis5 by Sankhya"/><span><BookOpen size={16}/> Central de implantação</span></header>
+    <header className="portal-header"><img src="brand/magis5-light.webp" alt="Magis5 by Sankhya"/><div className="portal-header-actions"><span><BookOpen size={16}/> Central de implantação</span><ThemeToggle/></div></header>
     <main id="choose-integration" className="portal-main">
       <div className="portal-intro"><span className="portal-kicker">CONECTE SUA OPERAÇÃO</span><h1>Qual é o seu tipo<br/>de integração?</h1><p>Escolha como sua empresa se conecta ao Magis5.<br/>Vamos mostrar o caminho certo para você.</p></div>
       <div className="integration-choices">

@@ -57,3 +57,7 @@ O endereço exige autenticação Vercel. A conexão utilizada conseguiu criar o 
 Execute `npm run build:static` para gerar `dist-vercel/` e atualizar `magis5-central-de-implantacao.zip`. Envie todo o conteúdo do ZIP ao gestor do domínio: index.html, CSS, JavaScript, imagens e dados JSON. Não é necessário Node.js no servidor de hospedagem. O site precisa ser servido por HTTP/HTTPS, não aberto por file://.
 
 A documentação apresenta exemplos JSON dos schemas, com os detalhes de campos recolhidos. A navegação Postman e o download OpenAPI foram removidos da interface; a collection continua disponível para download.
+
+## Aparência
+
+O botão no cabeçalho alterna entre modo claro e escuro em todas as áreas. A primeira visita acompanha o tema do sistema; a escolha manual fica salva no navegador em `magis5-theme`. O arquivo estático `theme-init.js` aplica a preferência antes da renderização. Inclua esse arquivo na publicação junto aos demais arquivos do ZIP.
