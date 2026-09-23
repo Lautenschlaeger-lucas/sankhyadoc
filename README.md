@@ -31,7 +31,13 @@ O script `scripts/migrate-api-docs.py` recebe, nesta ordem, o OpenAPI exportado,
 
 ## Sincronização automática
 
-`npm run sync:api` baixa o Swagger público (`scripts/fetch-openapi.mjs`), roda a migração em modo preservado e valida o resultado. O workflow `.github/workflows/api-sync.yml` executa essa rotina semanalmente (e sob demanda via *workflow_dispatch*); se o `public/api-data/` ou o `.cache/openapi.json` mudarem, ele valida o build, commita e publica, disparamando o deploy na Vercel.
+`npm run sync:api` baixa o Swagger público, migra e valida o catálogo. O workflow `.github/workflows/api-sync.yml` consulta a fonte aproximadamente a cada 15 minutos, com horários sujeitos à fila do GitHub Actions. Também aceita execução manual e o evento `repository_dispatch` com `event_type: swagger-updated`, que o CTO pode enviar pela rotina de publicação da API. As credenciais para disparar esse evento ficam apenas nessa rotina, nunca no site. O workflow valida os arquivos antes de publicar e mantém a versão anterior se falhar.
+
+O navegador lê o catálogo público de `raw.githubusercontent.com/Lautenschlaeger-lucas/sankhyadoc/main/public/api-data/catalog.json` ao abrir a documentação e a cada cinco minutos enquanto ela estiver visível. A cópia local aparece primeiro e permanece disponível em caso de falha. Não há backend a instalar no domínio. É necessário publicar este novo ZIP uma vez para habilitar o comportamento; novas mudanças de endpoints e schemas passam a chegar sem reenviar o ZIP. Textos editoriais, guias, imagens e a collection Postman continuam vinculados à versão estática e precisam de atualização própria.
+
+Em 23/09/2026, o Swagger não retornou `Access-Control-Allow-Origin` na consulta com Origin externo; o catálogo público do GitHub retornou `*`. Por isso a implementação usa o espelho validado em vez de chamar o Swagger diretamente no navegador. Se o domínio utilizar Content-Security-Policy, o gestor deve permitir `https://raw.githubusercontent.com` em `connect-src`, além de `self`. O repositório precisa continuar público e o workflow precisa estar habilitado com permissão para gravar em `main`. Restrições de branch ou Actions podem exigir ajuste pelo administrador. GitHub pode atrasar execuções e desativar agendas em repositórios públicos inativos.
+
+O status “Catálogo online” confirma a leitura do espelho, não que o Swagger acabou de ser sincronizado. O histórico do workflow informa a última consulta à origem. Campos removidos do Swagger somem da referência, mas menções em guias são editoriais e geram avisos para revisão.
 
 As permissões são documentação, sem conexão ativa com o ERP. O site não coleta credenciais e não executa alterações no Sankhya. Não há login separado para o tópico de integração.
 

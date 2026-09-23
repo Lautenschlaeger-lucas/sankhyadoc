@@ -3,6 +3,7 @@ import {useEffect, useRef, useState, useMemo} from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {Search, Download, Copy, Check, BookOpen, Code2, Layers, ShieldCheck, ChevronDown, ChevronRight, X} from 'lucide-react';
+import {CATALOG_URL, fetchCatalog} from './catalog-sync';
 import {highlightJson} from './json-highlight';
 
 type Json = Record<string, any>;
@@ -572,6 +573,7 @@ function GuideDetail({guide}: {guide: Json}) {
 
 export function ApiDocs() {
   const [catalog, setCatalog] = useState<Catalog | null>(null);
+  const [syncStatus, setSyncStatus] = useState('Consultando atualizações…');
   const [error, setError] = useState(false);
   const [selection, setSelection] = useState<{view: View; item: string}>({view: 'reference', item: ''});
   const [query, setQuery] = useState('');
@@ -596,17 +598,38 @@ export function ApiDocs() {
 
   useEffect(() => {
     const controller = new AbortController();
+    let latest: Catalog | null = null;
+    let running = false;
     setError(false);
-    fetch('api-data/catalog.json', {signal: controller.signal})
-      .then(r => {
-        if (!r.ok) throw Error('catalog');
-        return r.json();
-      })
-      .then(data => setCatalog({...(data as Catalog), guides: (data as Catalog).guides.map(g => ({...g, content: g.content.replace(/\/api-assets\//g, 'api-assets/')}))}))
-      .catch(e => {
-        if (e.name !== 'AbortError') setError(true);
-      });
-    return () => controller.abort();
+    const refresh = async () => {
+      if (running || controller.signal.aborted) return;
+      running = true;
+      try {
+        const remote = await fetchCatalog(CATALOG_URL, controller.signal);
+        if (controller.signal.aborted) return;
+        // Keep editorial guides and the downloadable collection tied to this release.
+        latest = {...(latest ?? remote), operations: remote.operations, schemas: remote.schemas, securitySchemes: remote.securitySchemes, report: remote.report};
+        setCatalog(latest);
+        setError(false);
+        setSyncStatus('Catálogo online · verificado às ' + new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}));
+      } catch {
+        if (!controller.signal.aborted) {
+          setSyncStatus(latest ? 'Consulta online indisponível · exibindo a última versão carregada.' : 'Documentação indisponível.');
+          if (!latest) setError(true);
+        }
+      } finally { running = false; }
+    };
+    void (async () => {
+      try {
+        const local = await fetchCatalog('api-data/catalog.json', controller.signal);
+        if (controller.signal.aborted) return;
+        latest = {...local, guides: local.guides.map((g: Json) => ({...g, content: g.content.replace(/\/api-assets\//g, 'api-assets/')}))};
+        setCatalog(latest);
+      } catch { /* The public mirror can still load when the local copy fails. */ }
+      await refresh();
+    })();
+    const interval = setInterval(() => { if (document.visibilityState === 'visible') void refresh(); }, 5 * 60 * 1000);
+    return () => { controller.abort(); clearInterval(interval); };
   }, [attempt]);
 
   if (error) {
@@ -664,7 +687,7 @@ export function ApiDocs() {
     <div className="article docs-redesign-root">
       {/* Top Header & Single Postman Download */}
       <div className="docs-top-bar">
-        <div className="docs-top-text">
+        <div className="docs-top-text"><p className="catalog-sync-status" role="status">{syncStatus}</p>
           <p className="docs-lead">Consulte a especificação completa da API pública Magis5: endpoints, modelos de dados e guias práticos.</p>
         </div>
         <div className="docs-downloads-wrap">

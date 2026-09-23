@@ -2,8 +2,14 @@ name: api-sync
 
 on:
   schedule:
-    - cron: '0 3 * * 1'
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
+  repository_dispatch:
+    types: [swagger-updated]
+
+concurrency:
+  group: api-sync
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -23,7 +29,7 @@ jobs:
       - name: Synchronize catalog with live Swagger
         run: node scripts/fetch-openapi.mjs && python3 scripts/migrate-api-docs.py .cache/openapi.json && node scripts/verify-api-docs.mjs
       - name: Validate build
-        run: npx tsc --noEmit && npm run build:vercel
+        run: node --experimental-strip-types scripts/verify-catalog-sync.mjs && npx tsc --noEmit && npm run build:vercel
       - name: Commit and push changes
         run: |
           if git diff --quiet public/api-data .cache; then
