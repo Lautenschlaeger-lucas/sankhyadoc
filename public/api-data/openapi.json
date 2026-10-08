@@ -780,7 +780,7 @@
           "Order"
         ],
         "summary": "Obter um pedido pelo código",
-        "description": "Obtenha um pedido pelo código",
+        "description": "Obtenha um pedido pelo código. lockReasons contém objetos com code e description, sem códigos repetidos. Ordem dos motivos conhecidos: poc_locked (Anúncio travado), pharma (Receita médica pendente), detail_required (Dados fiscais pendentes). Códigos desconhecidos aparecem depois, em ordem lexicográfica, com o próprio código como descrição; integrações devem aceitar códigos futuros e usar code para decisões. lockReasons está presente em toda resposta de sucesso, inclusive como []. Uma lista vazia indica motivos indisponíveis e não comprova que o pedido está destravado. isOrderLocked mantém seu nome e comportamento e continua indicando o estado de trava. Motivos são exclusivos desta consulta individual; na consulta por pack, correspondem somente ao pedido retornado.",
         "operationId": "getOrderByCompleteOrderNumber",
         "parameters": [
           {
@@ -810,7 +810,36 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ResponseOrderApi"
+                  "$ref": "#/components/schemas/ResponseOrderDetailApi"
+                },
+                "examples": {
+                  "Pedido travado com motivos": {
+                    "description": "Exemplo parcial: os demais campos do pedido e links permanecem presentes conforme suas regras.",
+                    "value": {
+                      "isOrderLocked": true,
+                      "lockReasons": [
+                        {
+                          "code": "exemplo",
+                          "description": "Descrição de exemplo"
+                        },
+                        {
+                          "code": "exemplo",
+                          "description": "Descrição de exemplo"
+                        },
+                        {
+                          "code": "exemplo",
+                          "description": "Descrição de exemplo"
+                        }
+                      ]
+                    }
+                  },
+                  "Pedido travado sem motivos disponíveis": {
+                    "description": "Pedido travado sem motivos disponíveis",
+                    "value": {
+                      "isOrderLocked": true,
+                      "lockReasons": []
+                    }
+                  }
                 }
               }
             }
@@ -865,7 +894,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/ResponseOrderDetailApi"
                 }
               }
             }
@@ -13106,6 +13135,302 @@
             "items": {
               "$ref": "#/components/schemas/ResponsePaginationOrderApi"
             }
+          }
+        }
+      },
+      "OrderLockReasonApi": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Código estável do motivo. Conhecidos: poc_locked, pharma, detail_required. Aceite códigos futuros; use este campo para decisões.",
+            "example": "pharma",
+            "default": "##default"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição pública: Anúncio travado, Receita médica pendente ou Dados fiscais pendentes. Para código desconhecido, contém o próprio código.",
+            "example": "Receita médica pendente",
+            "default": "##default"
+          }
+        },
+        "description": "Motivos ativos de trava, sem códigos repetidos. Conhecidos na ordem poc_locked, pharma, detail_required; desconhecidos depois, em ordem lexicográfica. [] indica ausência de motivos disponíveis e não determina o estado de trava: use isOrderLocked.",
+        "default": "##default"
+      },
+      "ResponseOrderDetailApi": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "buyer": {
+            "$ref": "#/components/schemas/Buyer"
+          },
+          "intermediary": {
+            "$ref": "#/components/schemas/Intermediary"
+          },
+          "shipping": {
+            "$ref": "#/components/schemas/Shipping"
+          },
+          "quantityPackage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "order_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItems"
+            }
+          },
+          "payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Payment"
+            }
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Invoice"
+            }
+          },
+          "status": {
+            "type": "string"
+          },
+          "subStatus": {
+            "type": "string"
+          },
+          "subStatusExpedition": {
+            "type": "string"
+          },
+          "storeId": {
+            "type": "string"
+          },
+          "negotiationType": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "externalIdAlternative": {
+            "type": "string"
+          },
+          "externalIdInvoice": {
+            "type": "string"
+          },
+          "externalIdInvoiceDevolution": {
+            "type": "string"
+          },
+          "externalIdErp": {
+            "type": "string"
+          },
+          "integrationType": {
+            "type": "string"
+          },
+          "totalValue": {
+            "type": "number"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "channelName": {
+            "type": "string"
+          },
+          "channelStatus": {
+            "type": "string"
+          },
+          "statusChannel": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "packId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "usePackIdOrderNumber": {
+            "type": "boolean"
+          },
+          "advertisement": {
+            "type": "string"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "discountMarketplace": {
+            "type": "number"
+          },
+          "fulfilled": {
+            "type": "boolean"
+          },
+          "totalWeight": {
+            "type": "number"
+          },
+          "queueId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalMetricCubic": {
+            "type": "number"
+          },
+          "expeditionBlock": {
+            "type": "string"
+          },
+          "erpId": {
+            "type": "string"
+          },
+          "totalTax": {
+            "type": "number"
+          },
+          "isMainErp": {
+            "type": "boolean"
+          },
+          "expeditionLevel": {
+            "type": "string"
+          },
+          "hasStock": {
+            "type": "boolean"
+          },
+          "hasAccount": {
+            "type": "boolean"
+          },
+          "totalHeight": {
+            "type": "number"
+          },
+          "totalWidth": {
+            "type": "number"
+          },
+          "totallength": {
+            "type": "number"
+          },
+          "dateCreated": {
+            "type": "string"
+          },
+          "dateDelivered": {
+            "type": "string"
+          },
+          "dateExpedition": {
+            "type": "string"
+          },
+          "dateApproved": {
+            "type": "string"
+          },
+          "datePackingList": {
+            "type": "string"
+          },
+          "dateClosed": {
+            "type": "string"
+          },
+          "additionalNoteInvoice": {
+            "type": "string"
+          },
+          "statusHistory": {
+            "$ref": "#/components/schemas/StatusHistory"
+          },
+          "dateLastUpdated": {
+            "type": "string"
+          },
+          "invoiceVolume": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "saleFee": {
+            "type": "number"
+          },
+          "escrowAmount": {
+            "type": "number"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "orderConciliation": {
+            "$ref": "#/components/schemas/OrderConciliation"
+          },
+          "queueStatus": {
+            "type": "string"
+          },
+          "sellerCommissionId": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string"
+          },
+          "logisticQuoteId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "logisticOrderId": {
+            "type": "string"
+          },
+          "bonusValue": {
+            "type": "number"
+          },
+          "packageOrders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "generateInvoiceAutomatically": {
+            "type": "boolean"
+          },
+          "orderChannelType": {
+            "type": "string"
+          },
+          "deadlineDate": {
+            "type": "string"
+          },
+          "isOrderLocked": {
+            "type": "boolean"
+          },
+          "erpName": {
+            "type": "string"
+          },
+          "warehouse": {
+            "type": "string"
+          },
+          "parentBundleItemId": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Errors"
+            }
+          },
+          "additionalTags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderTag"
+            }
+          },
+          "recommendedPackages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecommendedPackage"
+            }
+          },
+          "shipmentRequirements": {
+            "$ref": "#/components/schemas/ShipmentRequirements"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            }
+          },
+          "lockReasons": {
+            "type": "array",
+            "description": "Motivos ativos de trava, sem códigos repetidos. Conhecidos na ordem poc_locked, pharma, detail_required; desconhecidos depois, em ordem lexicográfica. [] indica ausência de motivos disponíveis e não determina o estado de trava: use isOrderLocked.",
+            "items": {
+              "$ref": "#/components/schemas/OrderLockReasonApi"
+            },
+            "default": "##default"
           }
         }
       },
