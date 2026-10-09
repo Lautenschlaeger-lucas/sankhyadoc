@@ -7624,11 +7624,11 @@
           "required": false,
           "schema": {
             "type": "string",
+            "default": "complete",
             "enum": [
               "complete",
               "simple"
-            ],
-            "default": "complete"
+            ]
           }
         },
         {
@@ -8930,11 +8930,11 @@
         "condition": {
           "type": "string",
           "description": "Condição do produto",
+          "default": "NEW",
           "enum": [
             "NEW",
             "USED"
-          ],
-          "default": "NEW"
+          ]
         },
         "brand": {
           "type": "string",
@@ -9007,12 +9007,12 @@
               2
             ]
           },
+          "default": [
+            1
+          ],
           "enum": [
             "1",
             "2"
-          ],
-          "default": [
-            1
           ]
         },
         "listingType": {
@@ -10658,12 +10658,12 @@
           "type": "string",
           "description": "Formato de fallback usado somente quando não for possível identificar o arquivo pelo conteúdo",
           "example": "pdf",
+          "default": "##default",
           "enum": [
             "pdf",
             "zpl",
             "txt"
-          ],
-          "default": "##default"
+          ]
         }
       }
     },
@@ -15457,7 +15457,7 @@
     "credentialScreenshotReplaced": 0,
     "collectionOnly": [],
     "sources": {
-      "openapiSha256": "796caca829264c176985441ab2c6933168c03f7b62b70107d88416648d759d8c"
+      "openapiSha256": "b5c192bf9e947947e80a0768ee27147b0cc4a4714775cbf72a9a49325b2fb496"
     },
     "credentialsReplaced": 0,
     "notes": [
