@@ -9042,14 +9042,6 @@
         },
         "description": "Variação de um produto"
       },
-      "ResponseErrorApi": {
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "string"
-          }
-        }
-      },
       "Attribute": {
         "type": "object",
         "properties": {
@@ -9528,6 +9520,14 @@
             "type": "string"
           },
           "user_product_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ResponseErrorApi": {
+        "type": "object",
+        "properties": {
+          "error": {
             "type": "string"
           }
         }
