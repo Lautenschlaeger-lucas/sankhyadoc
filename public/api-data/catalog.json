@@ -7624,11 +7624,11 @@
           "required": false,
           "schema": {
             "type": "string",
-            "default": "complete",
             "enum": [
               "complete",
               "simple"
-            ]
+            ],
+            "default": "complete"
           }
         },
         {
@@ -8930,11 +8930,11 @@
         "condition": {
           "type": "string",
           "description": "Condição do produto",
-          "default": "NEW",
           "enum": [
             "NEW",
             "USED"
-          ]
+          ],
+          "default": "NEW"
         },
         "brand": {
           "type": "string",
@@ -9007,12 +9007,12 @@
               2
             ]
           },
-          "default": [
-            1
-          ],
           "enum": [
             "1",
             "2"
+          ],
+          "default": [
+            1
           ]
         },
         "listingType": {
@@ -9071,14 +9071,6 @@
         }
       },
       "description": "Variação de um produto"
-    },
-    "ResponseErrorApi": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string"
-        }
-      }
     },
     "Attribute": {
       "type": "object",
@@ -9558,6 +9550,14 @@
           "type": "string"
         },
         "user_product_id": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseErrorApi": {
+      "type": "object",
+      "properties": {
+        "error": {
           "type": "string"
         }
       }
@@ -10658,12 +10658,12 @@
           "type": "string",
           "description": "Formato de fallback usado somente quando não for possível identificar o arquivo pelo conteúdo",
           "example": "pdf",
-          "default": "##default",
           "enum": [
             "pdf",
             "zpl",
             "txt"
-          ]
+          ],
+          "default": "##default"
         }
       }
     },
@@ -15461,7 +15461,7 @@
     "credentialScreenshotReplaced": 0,
     "collectionOnly": [],
     "sources": {
-      "openapiSha256": "7ec5b65ebec6bd1a2a1ae9348a6d2f51aca6a75ca46cf9794ec71502813fb408"
+      "openapiSha256": "ba32ec7ba259e383fa5b235bf460e9594ab8b9a52db9c0130dcb9120c42b3e78"
     },
     "credentialsReplaced": 0,
     "notes": [
