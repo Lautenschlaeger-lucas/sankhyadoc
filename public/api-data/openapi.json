@@ -7603,11 +7603,11 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "complete",
               "enum": [
                 "complete",
                 "simple"
-              ],
-              "default": "complete"
+              ]
             }
           },
           {
@@ -8900,11 +8900,11 @@
           "condition": {
             "type": "string",
             "description": "Condição do produto",
+            "default": "NEW",
             "enum": [
               "NEW",
               "USED"
-            ],
-            "default": "NEW"
+            ]
           },
           "brand": {
             "type": "string",
@@ -8977,12 +8977,12 @@
                 2
               ]
             },
+            "default": [
+              1
+            ],
             "enum": [
               "1",
               "2"
-            ],
-            "default": [
-              1
             ]
           },
           "listingType": {
@@ -9041,6 +9041,14 @@
           }
         },
         "description": "Variação de um produto"
+      },
+      "ResponseErrorApi": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
       },
       "Attribute": {
         "type": "object",
@@ -9520,14 +9528,6 @@
             "type": "string"
           },
           "user_product_id": {
-            "type": "string"
-          }
-        }
-      },
-      "ResponseErrorApi": {
-        "type": "object",
-        "properties": {
-          "error": {
             "type": "string"
           }
         }
@@ -10628,12 +10628,12 @@
             "type": "string",
             "description": "Formato de fallback usado somente quando não for possível identificar o arquivo pelo conteúdo",
             "example": "pdf",
+            "default": "##default",
             "enum": [
               "pdf",
               "zpl",
               "txt"
-            ],
-            "default": "##default"
+            ]
           }
         }
       },
