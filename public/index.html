@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Documentação da API Magis5 gerada automaticamente a partir do Swagger/OpenAPI."/>
+<title>API Magis5 - Endpoints</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="stylesheet" href="app.css"/>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="mark">M5</span>
+      <div class="brand-text">
+        <strong>API Magis5</strong>
+        <span class="sub">Endpoints gerados a partir do Swagger (OpenAPI 3.0)</span>
+      </div>
+    </div>
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Buscar endpoint, método ou caminho..."/>
+      <button id="refresh" title="Atualizar dados"><span>&#8635;</span></button>
+    </div>
+  </div>
+  <div class="meta">
+    <span id="spec-source" class="spec-source">Carregando espec&iacute;...</span>
+    <span class="divider">&#8226;</span>
+    <span id="count-badge">0 endpoints</span>
+  </div>
+</header>
+
+<main>
+  <section class="filters">
+    <div class="tag-pills" id="tag-pills"></div>
+    <button class="reset-btn" id="reset-tags" style="display:none">Limpar filtros</button>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="grid" id="grid"></div>
+
+  <template id="endpoint-tpl">
+    <article class="card" data-method="" data-tag="" data-path="">
+      <div class="card-head">
+        <span class="method-badge"></span>
+        <span class="path"></span>
+        <a class="link" target="_blank" rel="noopener">Abrir no Swagger</a>
+      </div>
+      <h3 class="title"></h3>
+      <p class="desc"></p>
+      <div class="meta-row">
+        <span class="tag"></span>
+        <span class="op-id"></span>
+      </div>
+      <section class="params" style="display:none">
+        <h4>Par&acirc;metros</h4>
+        <table>
+          <thead><tr><th>Nome</th><th>Local</th><th>Obrigat&oacute;rio</th><th>Tipo</th><th>Descri&ccedil;&atilde;o</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+      <section class="responses" style="display:none">
+        <h4>Respostas</h4>
+        <ul></ul>
+      </section>
+    </article>
+  </template>
+</main>
+
+<footer class="site-footer">
+  Atualizado automaticamente a partir da especifica&ccedil;&atilde;o OpenAPI (Swagger). Sem build de front-end.
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
