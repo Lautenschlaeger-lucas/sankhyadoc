@@ -1,3 +1,4 @@
+import {AiBriefDownload} from './ai-brief-download';
 import {ArrowUpRight, ArrowRight, Code2} from 'lucide-react';
 import {SuggestedDevelopment} from './suggested-development';
 import {highlightJson} from './json-highlight';
@@ -42,6 +43,7 @@ const steps = [
 ];
 export function ApiTopic({id,selectedStage=0,onNavigate}:{id:string;selectedStage?:number;onNavigate:(id:string)=>void}) {
   return <div className="article api-article">
+    <AiBriefDownload/>
     {id==='overview'?<>
       <p>Conecte seu ERP ou sistema próprio ao Magis5 pela API pública. Use este guia para organizar o desenvolvimento de produtos, estoque, pedidos e faturamento.</p>
       <div className="api-intro"><Code2 size={30} aria-hidden="true"/><div><span className="api-kicker">INTEGRAÇÃO COM SEU SISTEMA</span><h2>Do catálogo à expedição.</h2><p>O ERP envia produtos e saldos. O Magis5 disponibiliza os pedidos dos canais. O envio da nota fiscal completa o fluxo de faturamento.</p><button className="light-button" onClick={()=>onNavigate('sankhya')}>Começar pela integração <ArrowRight size={17}/></button></div></div>

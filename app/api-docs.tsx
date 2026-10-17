@@ -1,4 +1,5 @@
 'use client';
+import {AiBriefDownload} from './ai-brief-download';
 import {useEffect, useRef, useState, useMemo} from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -699,6 +700,7 @@ export function ApiDocs() {
         </div>
       </div>
 
+      <AiBriefDownload/>
       {/* Main Navigation Tabs */}
       <nav className="docs-main-tabs" role="tablist" aria-label="Seções da documentação">
         {views.map(({id, label, icon: Icon}) => {

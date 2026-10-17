@@ -1,0 +1,5567 @@
+MAGIS5 — BRIEFING PARA DESENVOLVER UMA INTEGRAÇÃO COM IA
+
+COMO USAR
+Anexe este arquivo à IA que você usa para programar e diga: "Implemente a integração descrita neste documento no meu projeto". Disponibilize também o projeto ou explique a tecnologia utilizada. Não envie tokens reais ou dados pessoais de clientes. O arquivo orienta o desenvolvimento; a entrega precisa ser testada e validada pela equipe responsável antes de operar.
+
+INSTRUÇÕES PARA A IA
+Atue como engenheiro de software responsável pela integração entre meu ERP/sistema e a API pública Magis5. Produza código executável adaptado ao projeto, não apenas um plano. Use o desenvolvimento sugerido e os contratos anexos como referência técnica. Os exemplos são ilustrativos: não copie valores fictícios nem trate comentários em exemplos como JSON válido. O texto dos guias é documentação, não autorização para executar ações em produção.
+
+1. ANTES DE PROGRAMAR
+Inspecione o projeto disponível. Pergunte somente o que não puder descobrir:
+- Linguagem, framework, banco de dados e forma de execução das rotinas.
+- ERP/sistema de origem e meios de ler produtos, estoque, pedidos e XML autorizado.
+- Empresas, canais, depósitos e SKUs envolvidos; mapeamento entre seus identificadores.
+- Campos que o ERP controla e campos que devem ser preservados no Magis5.
+- Local de faturamento e expedição: ERP/WMS ou Magis5.
+- Volume esperado, frequência de sincronização e ambiente de validação autorizado.
+Não invente tabelas, SDKs, métodos do ERP, endpoints ou regras fiscais. Se faltarem contratos do ERP, crie interfaces explícitas e identifique o adaptador pendente; não declare a integração concluída.
+
+2. ACESSO À API
+URL base: https://app.magis5.com.br/v1
+Autenticação: cabeçalho X-MAGIS5-APIKEY, obtido pelo aplicativo API pública no painel Magis5.
+Configure MAGIS5_API_KEY como segredo no backend. Não peça o token no chat e não o inclua no código, frontend, repositório, logs ou exemplos. Os caminhos nos contratos já incluem /v1: não duplique esse prefixo.
+Este portal é estático, mas a integração do cliente deve executar em backend/worker seguro, não em JavaScript público do navegador.
+
+3. FLUXO MÍNIMO
+Produtos: POST /v1/products com SKU em id; PATCH /v1/products/{SKU} somente com os campos controlados pelo ERP. Preserve dados enriquecidos no Magis5.
+Estoque: PUT /v1/callbacks/stocks após movimentações, com mapeamento dos depósitos e lotes de no máximo 50 SKUs conforme o guia. Evite aplicar eventos antigos sobre saldos recentes.
+Pedidos: GET /v1/orders?status=ready_to_print&queueStatus=blank, respeitando paginação. Persista a correspondência entre o ID Magis5 e o pedido ERP. Após gravar o pedido com sucesso, PATCH /v1/orders/{order.id} com {"queueStatus":"INTEGRADO"}.
+Atenção: o guia menciona order.id no PATCH, enquanto o catálogo pode nomear esse parâmetro completeOrderNumber. Confirme qual identificador o endpoint aceita antes de implementar a confirmação; não trate os dois como equivalentes.
+A marcação queueStatus não substitui idempotência local. Use chave única persistente por empresa/pedido, controle de concorrência e recuperação quando a criação no ERP funciona, mas a confirmação no Magis5 falha.
+Faturamento: envie XML autorizado completo via POST /v1/invoices/{completeOrderNumber}. releaseOrder=true para expedição ERP/WMS; false para expedição Magis5. Nunca escolha esse parâmetro sem confirmar o processo. Preserve a distinção entre order.id e completeOrderNumber. Confira o Content-Type no contrato. Não gere nem emita NF-e fictícia.
+Etiquetas: consulte GET /v1/orders/{completeOrderNumber}, conforme o fluxo, e trate tags[] ausente ou ainda indisponível.
+Preços, anúncios, kits e outros recursos: só implemente se incluídos no escopo acordado.
+
+4. RESILIÊNCIA E SEGURANÇA
+Implemente timeouts, paginação conforme cada contrato, limite de concorrência, logs sem segredos/dados pessoais, estado persistente e reprocessamento controlado.
+Trate 429 com espera progressiva e Retry-After quando fornecido. Confirme o limite atual no guia anexo. Não repita erros 4xx indiscriminadamente. Para timeouts e 5xx, avalie o resultado anterior e a idempotência antes de repetir uma escrita; não suponha suporte a Idempotency-Key.
+Não execute operações reais de estoque, pedidos ou faturamento sem autorização explícita. Use mocks e dados sintéticos durante o desenvolvimento.
+
+5. ENTREGÁVEIS
+- Cliente HTTP Magis5, configurações e adaptadores do ERP.
+- Fluxos de produtos, estoque, pedidos, confirmação e notas, com persistência e recuperação.
+- Migrações necessárias, .env.example sem segredos e instruções de instalação/execução.
+- Testes de sucesso, paginação, duplicidade, concorrência, 429, timeout, falha após gravação do ERP e XML inválido; validação dos dois fluxos de expedição.
+- Mapeamento dos campos, decisões, pendências reais e checklist de homologação.
+Implemente incrementalmente e execute os testes possíveis. Diferencie testes com mocks de testes reais. Não afirme homologação ou prontidão de produção sem evidência.
+
+6. COMO LER OS ANEXOS
+O guia explica o processo; os contratos JSON descrevem requisições/respostas e schemas. Se houver divergência, destaque-a e confirme antes de programar o trecho afetado. Trechos comentados do guia são explicativos, não payloads válidos. Imagens e links relativos não acompanham o TXT: solicite o diagrama quando necessário. A cópia tem a data de geração indicada abaixo e não se atualiza depois de baixada. Confirme a versão vigente antes de finalizar a implementação.
+Swagger oficial: https://app.magis5.com.br/v1/v3/api-docs
+
+Gerado em: 2026-10-17T20:56:38.850Z
+
+===== Desenvolvimento Sugerido =====
+## Integração com Magis5 - Hub Marketplace
+
+[Visite a documentação da API para integração com as aplicações Magis5](#api/api-docs?view=reference)
+
+### Visão geral
+  Documentação de integração focada no desenvolvimento das integrações.
+  Essa documentação foi construída de uma forma mais enxuta para que seja feito o melhor proveito entre ERP e HUB.
+### Objetivos
+  -	Os objetivos dessa integração são obter uma gestão organizada a nível de produtos, estoque e pedidos.
+
+## Integração de Produtos
+  #### Cadastrar um produto no Magis5
+  -	O ideal no momento de criar um produto no magis5 é que isso seja on-time, ou seja, sempre que for cadastrado um produto NOVO no ERP, também realizar este cadastro no Magis5.
+  -	Para criar um produto no magis5 será utilizado o endpoint [/v1/products](#api/api-docs?view=reference&item=post-products)
+  -	Se tratando de uma integração com um ERP não é necessário preencher todos os campos, mas sim os campos que o ERP possui ou tem controle gerencial, como por exemplo: Código/Sku, Título, Marca, Modelo, EAN, EAN Tributável, NCM, Origem, Cest, Condição do produto, Localização, Dimensões (Altura, Largura, Comprimento, Peso), Descrição.
+   -	O único campo obrigatório para criação de um produto é o Código/Sku, preenchido no campo "id".
+
+  -	Abaixo segue um exemplo de payload dos dados:
+```json
+  "id": "EXEMPLO", #Código/SKU
+  "title": "string", #Título do produto
+  "externalId": "EXEMPLO",
+  "condition": "string", #Condição do produto (enviar “new” ou “used”)
+  "cost": 0, #Preço Base do produto (Pode ser o preço de compra, preço de custo ou qualquer outro preço base que o cliente achar correto)
+  "description": "string", #Descrição do produto
+  "technicalSpecification": "string", #Descrição mais técnica do produto
+  "warranty": "string", #Tempo de garantia em DIAS (Exemplo 90)
+  "business": "string", #Fornecedor
+  "ean": "string", #Código de barras
+  "eanInvoice": "string", #Código de barras nota fiscal
+  "height": 0, #Altura, em cm
+  "weight": 0, #Peso Líquido, em kg
+  "weightGross": 0, #Peso Bruto, em kg
+  "depth": 0, #Comprimento, em cm
+  "width": 0, #largura, em cm
+  "brand": "string", #Marca
+  "model": "string", #Modelo
+  "ncm": "string", #Ncm
+  "origin": 0, #Origem da mercadoria
+  "deadlineCrossdocking": 0, #Tempo de envio/fabricação do produto
+  "youtubeId": "string", #Caso o produto tenha algum vídeo, pode ser enviado o código do youtube.
+  "location": "string", #localização de estoque deste produto
+  "warrantyProvider": "string", #Tempo de garantia do fornecedor em DIAS (Exemplo 90) 
+  "quantityItemsSamePackaging": 0, #Enviar sempre 1
+  "stockFixed": 0, #Geralmente este campo é preenchido diretamente no magis5, trata-se de um estoque que nunca acaba, é infinito, enviar sempre zero.
+  "operationalCost": 0, # Precificação automática, deve ser preenchido somente se acordado com o cliente.
+  "percentageProfit": 0, # Precificação automática, deve ser preenchido somente se acordado com o cliente.
+ "pictures": [ #Geralmente o ERP não possui fotos de qualidade para ser comercializado nos marketplaces, logo é preenchido no magis5.
+    {
+      "url": "EXEMPLO",  #URL da Imagem. Caso enviar via ERP, preencher com a URL hospedada em domínio público e protocolo HTTPS, ou o código base64 referente a imagem desejada
+    }
+  ],
+  "plainTextDescription": "string" #Preencher novamente a descrição do produto
+}
+```
+### Atualizar um produto no Magis5
+-	Para atualizar um produto no Magis5 é indicado a utilização do método PATCH **(para que dados preenchidos posteriormente não sejam apagados)**.
+-	Se tratando de uma integração com um ERP não é necessário preencher todos os campos, mas sim os campos que o ERP possui ou tem controle gerencial, como por exemplo: Título, Marca, Modelo, EAN, EAN Tributável, NCM, Origem, Cest, Condição do produto, Localização, Dimensões (Altura, Largura, Comprimento, Peso), Descrição.
+-	Para atualizar um produto no Magis5 será utilizado o endpoint [/v1/products/{SKU}](#api/api-docs?view=reference&item=patch-products-sku).
+-	Este campo SKU é o mesmo enviado anteriormente na criação do produto no campo _**“id”**_.
+-	Seguindo a idéia de atualizar somente os campos que o ERP tem controle, essa atualização ficaria da seguinte forma:
+```json
+{
+ "title": "string",
+ "brand": "string",
+ "model": "string",
+"ean": "string",
+ "eanInvoice": "string",
+ "ncm": "string",
+ "origin": 0,
+ "cest": “string”,
+ "location": "string",
+ "height": 0,
+ "weight": 0,
+ "weightGross": 0,
+ "depth": 0,
+ "width": 0,
+ "description": "string",
+ "plainTextDescription": "string"
+}
+```
+## Integração de Pedidos
+### Mapeamento dos dados de um pedido
+```json
+{
+    "links": [],
+    "id": "EXEMPLO", # Código do pedido no Magis5
+    "buyer": { # Dados do comprador
+        "nickname": "EXEMPLO", #Apelido do cliente
+        "id": 1232350058, #Código do buyer, geralmente não é usado
+        "full_name": "Cliente Exemplo", # Nome completo
+        "billing_info": { # dados de faturamento
+            "doc_number": "EXEMPLO", #documento do comprador
+            "doc_type": "CPF", #Tipo do documento, poderá vir CPF ou CNPJ
+            “ie” : null # Quando o cliente for pessoa jurídica, poderá vir a inscrição estadual preenchida.
+        },
+        "phone": {
+            "number": "EXEMPLO" # Número telefone
+        },
+        "alternative_phone": {
+            "number": "EXEMPLO" # Número secundário telefone (pode ou não vir preenchido)
+        }
+    },
+    "intermediary": { #dados do intermediador da compra, deve ser enviado na nota fiscal quando a operação for venda online
+        "salesDocument": "EXEMPLO", #cnpj
+        "salesName": "EXEMPLO" #marketplace que vendeu
+    },
+    "shipping": { # dados de envio (endereço de envio, logística, outros)
+        "receiver_address": { #dados de envio da mercadoria
+            "address_line": "EXEMPLO", # Endereço completo envio
+            "street_number": "EXEMPLO", # Número da casa
+            "zip_code": "EXEMPLO", # cep
+            "street_name": "EXEMPLO", # Nome da Rua
+            "comment": "EXEMPLO", #complemento
+            "neighborhood": {
+                "name": "Cliente Exemplo" # Bairro
+            },
+            "country": {
+                "name": "Cliente Exemplo" #País
+            },
+            "city": {
+                "name": "Cliente Exemplo" # Cidade
+            },
+            "state": {
+                "name": "Cliente Exemplo" #Estado
+            },
+            "name": "Cliente Exemplo" #Nome da pessoa que deve emitir a nota fiscal
+        },
+        "date_created": "2022-10-07T20:06:20Z", # Data de criação do envio no marketplace
+        "shipping_mode": "ShopeeXpress - ShopeeXpress", # Modo de envio
+        "shipment_type": "ShopeeXpress", # Tipo de envio
+        "logistic_type": "-", # Tipo da logística podendo vir (-, “normal”, “self_service”, “fulfillment)
+
+        "shipping_option": {
+            "list_cost": 0, #Valor do frete grátis
+            "cost": 13.13, #Valor do frete que deverá ser informado na nota fiscal
+            "comission": 0.00 #NÃO USAR
+        },
+        "deliveryMethodId": 0 #NAO USAR
+    },
+    "order_items": [ # Produtos que foram vendidos
+        {
+            "quantity": 1, #Quantidade vendida
+            "quantity_multiple": 1, # NÃO USAR
+            "unit_price": 28.0000, # Valor unitário da venda deste produto
+            "cost": 18.85, # Valor de custo que foi preenchido no magis5 no produto
+            "discount": 0.00, #NÃO USAR
+            "item": {
+                "seller_custom_field": "13319", #Código do produto
+                "id": "EXEMPLO", # ID do produto, geralmente não é usado
+                "title": "AMPOLA TERMICA P/REPOSICAO GARRAFAS 1,0 L - 50750", # Título do produto
+                "ean": "7891023005201", #código de barras do produto
+                "eanInvoice": "7891023005201", #Código de barras da nota fiscal
+                "defaultPicture":  # Foto principal do produto no magis5 "https://example.com/arquivo-exemplo",
+                "location": "A1/32 - CD04 / A08-6" #Localização cadastrado no produto
+            },
+            "orderSpecifications": [], #NÃO USAR
+            "quantityBarCodeValidated": 0, #NÃO USAR
+            "unitMeasurement": "UN" # Unidade de medida, porém geralmente usado do ERP
+        }
+    ],
+    "invoices": [
+        {
+            "id": "EXEMPLO", #ID da nota fiscal, geralmente não é usado
+            "key": "EXEMPLO", #Chave nota
+            "number": "EXEMPLO", #Número Nota
+            "line": "1", # Série Nota
+            "issue_date": "2022-10-11 09:53:02", # Data Emissão Nota
+            "totalValue": 62.00, # Total da Nota
+            "urlXml": # URL XML da nota
+"https://example.com/arquivo-exemplo"
+        }
+    ],
+    "status": "ready_to_print", # Status do pedido no magis5
+    "subStatusExpedition": "in_expedition", # Status expedição do pedido no magis5
+    "storeId": "EXEMPLO", #código da filial (geralmente usado para operar com multi empresa)
+    "externalId": "EXEMPLO", Código do pedido no marketplace
+    "totalValue": 41.13, # Total do pedido
+    "channel": "EXEMPLO", # Código interno magis5 que representa determinada loja
+    "channelName": "Shopee - NOME LOJA", # Nome da loja no magis5
+    "discount": 0.00, # Desconto do pedido que deve ser aplicado na nota fiscal
+    "totalTax": 0.00, # Juros que deverá ser preenchido no campo “outras despesas” nota fiscal
+    "expeditionBlock": "Bloco_11-10-2022_11:01:50", #NAO USAR
+    "expeditionLevel": "mono", # NÃO USAR
+    "dateCreated": "2022-10-07T20:06:20Z",  # Data do pedido
+    "dateApproved": "2022-10-07T20:06:20Z", # Data de aprovação do pedido
+    "dateLastUpdated": "2022-10-11T16:51:42Z", # Última atualização do pedido no magis5
+    "saleFee": 3.92, #Comissão
+    "tags": [
+        {
+            "url": # Url da etiqueta de envio "https://example.com/arquivo-exemplo"
+        }
+    ],
+    "orderConciliation": { # Estes dados geralmente não são usados para criação do pedido no ERP, Apenas para geração de relatórios gerenciais
+        "freight": 13.13, # Valor do frete pedido
+        "freightToPay": 0.00, # Valor do frete grátis
+        "totalTax": 0.00, # Total de juros
+        "discount": 0.00, # Total de descontos
+        "totalValueWithFreight": 41.13, # Total do pedido com frete
+        "totalValueWithoutFreight": 28.00, # Total do pedido sem frete
+        "totalCost": 18.85, # Total de custos do produto
+        "unitCost": 18.85, # Total unitário custos do produto
+        "unitValueItem": 28.00, # Valores unitários só do produto venda
+        "totalValueItem": 28.00, # Valores totais  só do produto venda
+        "percentageComission": 14.00, # O quanto representa em % o valor de comissão cobrado
+        "comissionValue": 3.92, # Valor da comissão
+        "totalNetWithoutCostProduct": 18.36, # Margem de lucro deduzindo todos os custos
+        "totalNet": 37.21, # Margem sem deduzir o custo do produto
+        "percentageNetWithoutProduct": 44.60 # O quanto totalNetWithoutCostProduct representa em %
+    }
+}
+```
+### Buscando os pedidos para serem criados no ERP
+  -	Os pedidos que devem ser criados no ERP devem ser somente os pedidos que estiverem no status de **“Ag. Separação”** _(ready_to_print)_, somente este status garante um pedido completo e já com todos os dados necessários para ser processado no ERP.
+  -	[**Busca para buscar a lista de pedidos a serem criados no ERP**](https://app.magis5.com.br/v1/orders?status=ready_to_print&queueStatus=blank)  
+  -	O parâmetro _**queueStatus**_ irá garantir que o mesmo pedido não se repita ao realizar a consulta acima novamente, mas para isso será necessário atualizar o campo _**queueStatus**_ assim que o pedido for criado no ERP.
+  -	Para isso, será necessário realizar um PATCH com os seguintes dados:
+    - https://app.magis5.com.br/v1/orders/{order.id} 
+    - Body:
+    ```json
+      {
+          "queueStatus" : "INTEGRADO"
+      }
+    ```
+    - O valor _“INTEGRADO”_ pode ser substituído por qualquer outra informação, o campo _**queueStatus**_ é livre e pode ser colocado qualquer informação.
+    -	Como a consulta constante aos pedidos _**ready_to_print**_ será passado por parâmetro o _**queueStatus=blank**_, isso faz com que os pedidos não se repitam mais neste processo de criação de pedido.
+
+### Enviando os dados de faturamento
+-	Após subir o pedido para o ERP e atualizar o _**queueStatus**_, seguimos para a próxima etapa que é o faturamento, emissão de nota fiscal e envio do XML para o pedido no Magis5.
+-	Para isso, será necessário realizar um POST com os seguintes dados:
+  - Caso utilize a expedição de seu ERP/WMS: [**{{url}}/v1/invoices/{completeOrderNumber}?releaseOrder=true**](#api/api-docs?view=reference&item=post-invoices-completeordernumber) 
+  - Caso utilize a expedição do Magis5: [**{{url}}/v1/invoices/{completeOrderNumber}?releaseOrder=false**](#api/api-docs?view=reference&item=post-invoices-completeordernumber)
+  - O parâmetro "releaseOrder" irá definir o comportamento do pedido ao receber o XML da NF-e: 
+  - Com valor **true**, o pedido avançará para Faturado (billed), e terá essa NF-e enviada ao canal de venda, simulando a expedição realizada no painel Magis5, para que a etiqueta de envio possa ser coletada via [GET orders/{completeOrderNumber}](#api/api-docs?view=reference&item=get-orders-completeordernumber), na estrutura tags[] do pedido;
+  - Com valor **false**, o pedido permanecerá em Ag. Separação (ready_to_print), para que seja exibido em nosso módulo de Expedição e possa ser expedido efetivamente pelo painel do HUB Magis5.
+  - Body:
+  ```json
+    <?xml version="1.0" encoding="UTF-8"?><nfeProc ……..</xml>
+    (XML COMPLETO DA NOTA FISCAL)
+  ```
+    - **Só será aceito XMLs que tenham a tag <?xml e nfeProc**
+    - Geralmente uma nota fiscal que não tem nfeProc significa que a nota fiscal ainda não foi emitida 100%.
+
+## Integração Estoques
+### Sincronizar estoque com o Magis5
+- Para termos uma integração ágil e de qualidade devemos atualizar estoque no Magis5 sempre quando houver alguma movimentação dentro do ERP. Ou seja, **SEMPRE** que tivermos uma saída, entrada, balanço, o mesmo deve ser enviado ao Magis5.
+- A atualização pode ser realizada em lote, enviando múltiplos SKUs para atualização no array "stocks", recomendando-se o envio de, no máximo, 50 SKUs por requisição.
+- É possível realizar a sincronização de estoque no Magis5 de forma mais simples, ou seja, sem a necessidade de especificar múltiplos estoques por depósito, mas também é possível sincronizar os estoques por pontos de estoque.
+- [**Para atualizar estoque no Magis5 será utilizado o endpoint/v1/callbacks/stocks**](#api/api-docs?view=reference&item=put-callbacks-stocks).
+- Abaixo segue um exemplo de  payload dos dados para atualização sem a necessidade de informar múltiplos depósitos:
+
+```json
+{
+  "stocks": [
+    {
+      "sku": "5BL-M",
+      "totalStock": 200,
+      "warehouses": [
+        {
+          "id": 1,
+          "title": "Estoque Único",
+          "stock": 200,
+          "consider": true
+          "stockVirtual": 200
+        }
+      ]
+    }
+  ]
+}
+```
+- Abaixo segue um exemplo de payload dos dados para atualização dos estoques por depósito:
+```json
+{
+    "stocks": [
+        {
+            "sku": "5BL-M",
+            "totalStock": 200,
+            "warehouses": [
+                {
+                    "id": 1,
+                    "title": "Filial 1",
+                    "stock": 50,
+                    "consider": true
+                    "stockVirtual": 50
+                },
+                {
+                    "id": 2,
+                    "title": "Filial 2",
+                    "stock": 100,
+                    "consider": true
+                    "stockVirtual": 100
+                },
+                {
+                    "id": 3,
+                    "title": "Filial 3",
+                    "stock": 50,
+                    "consider": true
+                    "stockVirtual": 50
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+
+
+
+
+===== Como consigo um token para integração? =====
+# Como consigo um token para integrar à API Magis5?
+
+Existem algumas maneiras de se obter o token para integração:
+
+1. Caso você não seja cliente magis, utilize ERP próprio e desejar ser nosso cliente integrando a nossa API, basta contatar nosso time comercial através das nossas páginas:
+    - Página do Magis 5: https://magis5.com.br/#especialista
+    - Whatsapp: http://wa.me/5511913694560
+    - E-mail comercial: contato@magis5.com.br
+
+2. Se você já for nosso cliente e desejar utilizar nossos serviços de API, no seu painel gerencial *(Tela Inicial do Magis5)*, acesse a opção de menu *Aplicativos*, leias as instruções referentes ao *APP API pública*, clique para ativar e inicie os procedimentos presentes nas instruções. 
+
+
+===== Rate Limiting =====
+# Limites de Requisição (Rate Limiting)
+
+Para garantir a estabilidade, segurança e um excelente desempenho da nossa API para todos os clientes, aplicamos limites de taxa (Rate Limits) nas chamadas aos nossos endpoints.
+
+Limite Máximo: 600 requisições por minuto.
+
+Como é medido: O limite é contabilizado com base na sua chave de API (header X-MAGIS5-APIKEY) e no seu endereço IP.
+
+Comportamento ao exceder: Caso a sua aplicação ultrapasse esse limite de 600 chamadas dentro de uma janela de 60 segundos, a API passará a rejeitar temporariamente as novas requisições, retornando o código de status HTTP 429 Too Many Requests.
+
+Recomendação de Boas Práticas:
+Recomendamos que a sua integração seja desenhada para lidar com o código 429 de forma elegante. Ao receber este status, sua aplicação deve pausar as requisições e utilizar uma estratégia de retentativa com atraso progressivo (Exponential Backoff) antes de tentar novamente.
+
+
+===== CONTRATOS E SCHEMAS DO CATÁLOGO =====
+{
+  "operations": [
+    {
+      "id": "patch-products-sku",
+      "method": "PATCH",
+      "path": "/v1/products/{sku}",
+      "group": "Product",
+      "tags": [
+        "Product"
+      ],
+      "summary": "Atualizar alguns campos do produto pelo SKU",
+      "description": "Atualize alguns campos do produto pelo código SKU",
+      "operationId": "patchProductBySku",
+      "parameters": [
+        {
+          "name": "sku",
+          "in": "path",
+          "description": "SKU principal ou alternativo do produto a ser atualizado",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        }
+      ],
+      "requestBody": {
+        "description": "Objeto para atualização de alguns campos do produto",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RequestEditProduct"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Sucesso",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseProductApi"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Requisição inválida, verifique o JSON",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o JSON informado é inválido": {
+                  "summary": "JSON inválido",
+                  "description": "Exemplo de erro quando o JSON informado é inválido",
+                  "value": {
+                    "error": "Invalid RequestBody"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
+                "default": "##default"
+              },
+              "examples": {
+                "Exemplo de erro quando o JSON contém um campo desconhecido": {
+                  "summary": "Campo desconhecido",
+                  "description": "Exemplo de erro quando o JSON contém um campo desconhecido",
+                  "value": "Unrecognized field ..."
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Sem autorização",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o token não é fornecido no Header da requisição": {
+                  "summary": "Token requerido",
+                  "description": "Exemplo de erro quando o token não é fornecido no Header da requisição",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is required"
+                  }
+                },
+                "Exemplo de erro quando o token fornecido é inválido": {
+                  "summary": "Token inválido",
+                  "description": "Exemplo de erro quando o token fornecido é inválido",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is invalid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Produto não encontrado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o sku informado não é encontrado": {
+                  "summary": "Produto não encontrado",
+                  "description": "Exemplo de erro quando o sku informado não é encontrado",
+                  "value": {
+                    "error": "Register not found"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "502": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "get-orders-completeordernumber",
+      "method": "GET",
+      "path": "/v1/orders/{completeOrderNumber}",
+      "group": "Order",
+      "tags": [
+        "Order"
+      ],
+      "summary": "Obter um pedido pelo código",
+      "description": "Obtenha um pedido pelo código. lockReasons contém objetos com code e description, sem códigos repetidos. Ordem dos motivos conhecidos: poc_locked (Anúncio travado), pharma (Receita médica pendente), detail_required (Dados fiscais pendentes). Códigos desconhecidos aparecem depois, em ordem lexicográfica, com o próprio código como descrição; integrações devem aceitar códigos futuros e usar code para decisões. lockReasons está presente em toda resposta de sucesso, inclusive como []. Uma lista vazia indica motivos indisponíveis e não comprova que o pedido está destravado. isOrderLocked mantém seu nome e comportamento e continua indicando o estado de trava. Motivos são exclusivos desta consulta individual; na consulta por pack, correspondem somente ao pedido retornado.",
+      "operationId": "getOrderByCompleteOrderNumber",
+      "parameters": [
+        {
+          "name": "completeOrderNumber",
+          "in": "path",
+          "description": "Código do pedido a ser pesquisado",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "enableLink",
+          "in": "query",
+          "description": "Retorna links",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Sucesso",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseOrderDetailApi"
+              },
+              "examples": {
+                "Pedido travado com motivos": {
+                  "description": "Exemplo parcial: os demais campos do pedido e links permanecem presentes conforme suas regras.",
+                  "value": {
+                    "isOrderLocked": true,
+                    "lockReasons": [
+                      {
+                        "code": "exemplo",
+                        "description": "Descrição de exemplo"
+                      },
+                      {
+                        "code": "exemplo",
+                        "description": "Descrição de exemplo"
+                      },
+                      {
+                        "code": "exemplo",
+                        "description": "Descrição de exemplo"
+                      }
+                    ]
+                  }
+                },
+                "Pedido travado sem motivos disponíveis": {
+                  "description": "Pedido travado sem motivos disponíveis",
+                  "value": {
+                    "isOrderLocked": true,
+                    "lockReasons": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Sem autorização",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o token não é fornecido no Header da requisição": {
+                  "summary": "Token requerido",
+                  "description": "Exemplo de erro quando o token não é fornecido no Header da requisição",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is required"
+                  }
+                },
+                "Exemplo de erro quando o token fornecido é inválido": {
+                  "summary": "Token inválido",
+                  "description": "Exemplo de erro quando o token fornecido é inválido",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is invalid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Pedido não encontrado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o pedido informado não é encontrado": {
+                  "summary": "Pedido não encontrado",
+                  "description": "Exemplo de erro quando o pedido informado não é encontrado",
+                  "value": {
+                    "error": "Register not found"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "502": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseOrderDetailApi"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "patch-orders-completeordernumber",
+      "method": "PATCH",
+      "path": "/v1/orders/{completeOrderNumber}",
+      "group": "Order",
+      "tags": [
+        "Order"
+      ],
+      "summary": "Atualizar alguns campos do pedido pelo código",
+      "description": "Atualize alguns campos do pedido pelo código",
+      "operationId": "patchOrderByCompleteOrderNumber",
+      "parameters": [
+        {
+          "name": "completeOrderNumber",
+          "in": "path",
+          "description": "Código do pedido a ser atualizado",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        }
+      ],
+      "requestBody": {
+        "description": "Objeto para atualização de alguns campos do pedido. Rastreio e etiquetas podem ser enviados sem alterar o status. Para associar etiquetas, informe URLs HTTP/HTTPS; o formato PDF, ZPL ou TXT será identificado pelo conteúdo de cada arquivo. Quando a identificação não for possível, o campo type será usado como fallback.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RequestEditOrder"
+            },
+            "examples": {
+              "Atualizar rastreio e etiqueta": {
+                "summary": "Rastreio e etiqueta PDF sem alterar o status",
+                "description": "Atualizar rastreio e etiqueta",
+                "value": {
+                  "shipping": {
+                    "shipping_number": "exemplo",
+                    "shipping_url": "https://example.com/arquivo-exemplo"
+                  },
+                  "tags": [
+                    {
+                      "url": "https://example.com/arquivo-exemplo",
+                      "type": "pdf"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Sucesso",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseOrderApi"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Requisição inválida, verifique o JSON",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o json informado é inválido": {
+                  "summary": "Json inválido",
+                  "description": "Exemplo de erro quando o json informado é inválido",
+                  "value": {
+                    "error": "Invalid RequestBody"
+                  }
+                },
+                "Exemplo de erro quando o status do pedido está aguardando logística": {
+                  "summary": "Status 'Aguardando Logística'",
+                  "description": "Exemplo de erro quando o status do pedido está aguardando logística",
+                  "value": {
+                    "error": "Não é possível mudar o status de um pedido shopee quando está aguardando logística. Aguarde até que o pedido vá para separação automaticamente."
+                  }
+                },
+                "Exemplo de erro quando a chave da nota está inválida": {
+                  "summary": "Chave NF inválida",
+                  "description": "Exemplo de erro quando a chave da nota está inválida",
+                  "value": {
+                    "error": "A chave da nota fiscal deve ter 44 dígitos"
+                  }
+                },
+                "Exemplo de erro quando o status está como pendente": {
+                  "summary": "Status 'Pendente'",
+                  "description": "Exemplo de erro quando o status está como pendente",
+                  "value": {
+                    "error": "Pedidos no status de pendência devem ser colocados no status de aprovado para que sejam processados de forma correta"
+                  }
+                },
+                "Exemplo de erro quando o pedido está sendo processado": {
+                  "summary": "Status 'Processando'",
+                  "description": "Exemplo de erro quando o pedido está sendo processado",
+                  "value": {
+                    "error": "Este pedido ainda está sendo processado, não é possível atualizá-lo neste momento."
+                  }
+                },
+                "Exemplo de erro quando tenta enviar um pedido fullfillment para separação": {
+                  "summary": "Fulfillment para separação",
+                  "description": "Exemplo de erro quando tenta enviar um pedido fullfillment para separação",
+                  "value": {
+                    "error": "Não é possível enviar um pedido fulfillment para separação."
+                  }
+                },
+                "Exemplo de erro quando o status enviado é inválido": {
+                  "summary": "Status Inválido",
+                  "description": "Exemplo de erro quando o status enviado é inválido",
+                  "value": {
+                    "error": "Status do pedido inválido."
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
+                "default": "##default"
+              },
+              "examples": {
+                "Exemplo de erro quando o json informado é inválido": {
+                  "summary": "Json inválido",
+                  "description": "Exemplo de erro quando o json informado é inválido",
+                  "value": "Unrecognized field ..."
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Sem autorização",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o token não é fornecido no Header da requisição": {
+                  "summary": "Token requerido",
+                  "description": "Exemplo de erro quando o token não é fornecido no Header da requisição",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is required"
+                  }
+                },
+                "Exemplo de erro quando o token fornecido é inválido": {
+                  "summary": "Token inválido",
+                  "description": "Exemplo de erro quando o token fornecido é inválido",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is invalid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Pedido não encontrado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o pedido informado não é encontrado": {
+                  "summary": "Pedido não encontrado",
+                  "description": "Exemplo de erro quando o pedido informado não é encontrado",
+                  "value": {
+                    "error": "Register not found"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "502": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "put-callbacks-stocks",
+      "method": "PUT",
+      "path": "/v1/callbacks/stocks",
+      "group": "Callback",
+      "tags": [
+        "Callback"
+      ],
+      "summary": "Callback de estoque",
+      "description": "Callback de estoque",
+      "operationId": "putCallbackStockByCustomer",
+      "requestBody": {
+        "description": "Objeto callback",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RequestCallback"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Sucesso",
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Requisição inválida, verifique o JSON",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
+                "default": "##default"
+              },
+              "examples": {
+                "Exemplo de erro quando o json informado é inválido": {
+                  "summary": "Json inválido",
+                  "description": "Exemplo de erro quando o json informado é inválido",
+                  "value": "Unrecognized field ..."
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Sem autorização",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o token não é fornecido no Header da requisição": {
+                  "summary": "Token requerido",
+                  "description": "Exemplo de erro quando o token não é fornecido no Header da requisição",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is required"
+                  }
+                },
+                "Exemplo de erro quando o token fornecido é inválido": {
+                  "summary": "Token inválido",
+                  "description": "Exemplo de erro quando o token fornecido é inválido",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is invalid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "502": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    {
+      "id": "post-products",
+      "method": "POST",
+      "path": "/v1/products",
+      "group": "Product",
+      "tags": [
+        "Product"
+      ],
+      "summary": "Criar um produto",
+      "description": "Crie um produto",
+      "operationId": "postProduct",
+      "requestBody": {
+        "description": "Objeto para criação de um produto",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RequestInsertProduct"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "201": {
+          "description": "Produto Criado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseProductApi"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Requisição inválida, verifique o JSON",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o sku informado contém uma barra": {
+                  "summary": "Sku inválido",
+                  "description": "Exemplo de erro quando o sku informado contém uma barra",
+                  "value": {
+                    "error": "O SKU não pode conter o  barra em seu nome (/)"
+                  }
+                },
+                "Exemplo de erro quando o sku informado já existe": {
+                  "summary": "Sku existente",
+                  "description": "Exemplo de erro quando o sku informado já existe",
+                  "value": {
+                    "error": "O SKU cadastrado já existe"
+                  }
+                },
+                "Exemplo de erro quando o sku informado já é um KIT": {
+                  "summary": "Kit dentro de outro kit",
+                  "description": "Exemplo de erro quando o sku informado já é um KIT",
+                  "value": {
+                    "error": "Não é possível adicionar um produto que já é KIT dentro de outro KIT."
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "additionalProperties": {
+                  "default": "##default"
+                },
+                "default": "##default"
+              },
+              "examples": {
+                "Exemplo de erro quando o json informado é inválido": {
+                  "summary": "Json inválido",
+                  "description": "Exemplo de erro quando o json informado é inválido",
+                  "value": "Unrecognized field ..."
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Sem autorização",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o token não é fornecido no Header da requisição": {
+                  "summary": "Token requerido",
+                  "description": "Exemplo de erro quando o token não é fornecido no Header da requisição",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is required"
+                  }
+                },
+                "Exemplo de erro quando o token fornecido é inválido": {
+                  "summary": "Token inválido",
+                  "description": "Exemplo de erro quando o token fornecido é inválido",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is invalid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "502": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    {
+      "id": "get-orders",
+      "method": "GET",
+      "path": "/v1/orders",
+      "group": "Order",
+      "tags": [
+        "Order"
+      ],
+      "summary": "Obter lista de pedidos",
+      "description": "Obtenha lista de pedidos",
+      "operationId": "getAllOrders",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "description": "Número total de registros por página",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "description": "Página a ser exibida",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "structureType",
+          "in": "query",
+          "description": "Estrutura retornada, opções: complete, simple",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "enableLink",
+          "in": "query",
+          "description": "Retorna links",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "description": "Status do pedido, opções: all, awaiting_send,\rawaiting_stock,\rcanceled,\rdelivered,\rnot_delivered,\rout_of_stock,\rready_to_print,\rsent,\rawaiting_invoice,\rawaiting_approval,\rapproved,\rawaiting_logistic,\rbilled,\rnot_delivered_resolved,\rcanceled_resolved,\rreturned_logistic,\rintegration_error,\rdelivered_resolved,\rprocessing,\rawaiting_payment",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "dateSearchType",
+          "in": "query",
+          "description": "Campo data de pesquisa e ordenação, opções: created, lastUpdated",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "timestampFrom",
+          "in": "query",
+          "description": "Data ínicio (formato UNIX_TIMESTAMP - Seconds)",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "timestampTo",
+          "in": "query",
+          "description": "Data final (formato UNIX_TIMESTAMP - Seconds)",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "storeId",
+          "in": "query",
+          "description": "Id da loja",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "queueStatus",
+          "in": "query",
+          "description": "Campo de status para controlar a busca de pedidos (formato queue), opções: all, blank,\r--customized--",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Sucesso",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "default": "##default"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ResponsePaginationCompleteOrderApi"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ResponsePaginationSimpleOrderApi"
+                  }
+                ],
+                "default": "##default"
+              },
+              "examples": {
+                "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'": {
+                  "summary": "Schema -> StructureType = complete",
+                  "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'complete'",
+                  "value": {
+                    "next": "exemplo",
+                    "orders": [
+                      {
+                        "id": "ID_EXEMPLO",
+                        "buyer": {
+                          "nickname": "cliente_exemplo",
+                          "last_name": "exemplo",
+                          "id": 1001,
+                          "first_name": "exemplo",
+                          "email": "usuario@example.com",
+                          "full_name": "Cliente Exemplo",
+                          "billing_info": {
+                            "doc_number": "00000000000",
+                            "doc_type": "string",
+                            "ie": "0000000000000"
+                          },
+                          "phone": {
+                            "number": "exemplo",
+                            "extension": "exemplo",
+                            "area_code": "exemplo"
+                          },
+                          "alternative_phone": {
+                            "number": "exemplo",
+                            "extension": "exemplo",
+                            "area_code": "exemplo"
+                          }
+                        },
+                        "intermediary": {
+                          "salesDocument": "00000000000000",
+                          "salesName": "Canal exemplo",
+                          "paymentDocument": "exemplo",
+                          "paymentName": "exemplo",
+                          "fillIntermediarySales": true,
+                          "fillIntermediaryPayment": true
+                        },
+                        "shipping": {
+                          "local_pick_up": true,
+                          "free_shipping": true,
+                          "receiver_address": {
+                            "address_line": "Rua Exemplo, 100",
+                            "latitude": 0,
+                            "longitude": 0,
+                            "street_number": "100",
+                            "id": 1001,
+                            "zip_code": "00000000",
+                            "street_name": "Rua Exemplo",
+                            "comment": "Complemento exemplo",
+                            "neighborhood": {
+                              "name": "Exemplo",
+                              "id": "ID_EXEMPLO"
+                            },
+                            "country": {
+                              "name": "Exemplo",
+                              "id": "ID_EXEMPLO"
+                            },
+                            "city": {
+                              "name": "Exemplo",
+                              "id": "ID_EXEMPLO",
+                              "codeIbge": 0
+                            },
+                            "state": {
+                              "name": "Exemplo",
+                              "id": "ID_EXEMPLO"
+                            },
+                            "name": "Exemplo"
+                          },
+                          "sender_address": {
+                            "address_line": "Rua Exemplo, 100",
+                            "latitude": 0,
+                            "longitude": 0,
+                            "street_number": "100",
+                            "id": 1001,
+                            "zip_code": "00000000",
+                            "street_name": "Rua Exemplo",
+                            "comment": "Complemento exemplo",
+                            "neighborhood": {
+                              "name": "Exemplo",
+                              "id": "ID_EXEMPLO"
+                            },
+                            "country": {
+                              "name": "Exemplo",
+                              "id": "ID_EXEMPLO"
+                            },
+                            "city": {
+                              "name": "Exemplo",
+                              "id": "ID_EXEMPLO",
+                              "codeIbge": 0
+                            },
+                            "state": {
+                              "name": "Exemplo",
+                              "id": "ID_EXEMPLO"
+                            },
+                            "name": "Exemplo"
+                          },
+                          "cost": 0,
+                          "substatus": "exemplo",
+                          "date_created": "string",
+                          "date_first_printed": "string",
+                          "sender_id": 0,
+                          "shipping_mode": "string",
+                          "service_id": 0,
+                          "id": "ID_EXEMPLO",
+                          "picking_type": "exemplo",
+                          "currency_id": "string",
+                          "status": "string",
+                          "shipment_type": "string",
+                          "shipping_number": "exemplo",
+                          "logistic_type": "string",
+                          "mode": "exemplo",
+                          "logistic": {
+                            "id": 1001,
+                            "logisticId": "exemplo",
+                            "name": "Exemplo",
+                            "freightType": "exemplo",
+                            "vehiclePlate": "exemplo",
+                            "vehicleState": "exemplo",
+                            "rntc": "exemplo",
+                            "document": "0000000000000",
+                            "ie": "0000000000000",
+                            "address": "exemplo",
+                            "city": "exemplo",
+                            "state": "exemplo",
+                            "trackingUrl": "exemplo",
+                            "trackingKey": "exemplo",
+                            "trackingMethod": "exemplo",
+                            "emailInvoice": "usuario@example.com",
+                            "number": "exemplo",
+                            "complement": "exemplo",
+                            "neighborhood": "exemplo",
+                            "zipCode": "00000000",
+                            "logisticType": "string",
+                            "phone": "exemplo",
+                            "email": "usuario@example.com",
+                            "urlLogo": "exemplo",
+                            "urlZebra": "exemplo"
+                          },
+                          "shipping_option": {
+                            "list_cost": 0,
+                            "cost": 0,
+                            "comission": 0
+                          },
+                          "customerLogoZpl": "exemplo",
+                          "deposit_type": "exemplo",
+                          "statusHistory": {
+                            "date_cancelled": "string",
+                            "date_delivered": "string",
+                            "date_first_visit": "string",
+                            "date_handling": "string",
+                            "date_not_delivered": "string",
+                            "date_ready_to_ship": "string",
+                            "date_shipped": "string",
+                            "date_returned": "string"
+                          },
+                          "additionalServiceCode": [
+                            "exemplo"
+                          ],
+                          "insurancePrice": 0,
+                          "tags": [
+                            "exemplo"
+                          ],
+                          "costs": [
+                            {
+                              "description": "Descrição de exemplo",
+                              "cost": "exemplo"
+                            }
+                          ],
+                          "deliveryMethodId": 0,
+                          "deliveryMethodName": "exemplo",
+                          "carrierImageZpl": "exemplo",
+                          "receiver_id": 0
+                        },
+                        "quantityPackage": 0,
+                        "order_items": [
+                          {
+                            "quantity": 0,
+                            "quantity_multiple": 0,
+                            "externalQuantity": 0,
+                            "sale_fee": 0,
+                            "unit_price": 0,
+                            "currency_id": "string",
+                            "cost": 0,
+                            "discount": 0,
+                            "item": {
+                              "seller_custom_field": "SKU_EXEMPLO",
+                              "category_id": "exemplo",
+                              "variation_id": "exemplo",
+                              "id": "ID_EXEMPLO",
+                              "title": "Produto de exemplo",
+                              "origin": "string",
+                              "uniTOfMeasurement": "exemplo",
+                              "kitQuantity": 0,
+                              "tempId": "exemplo",
+                              "weight": 0,
+                              "ean": "0000000000000",
+                              "eanInvoice": "0000000000000",
+                              "eanChild": "exemplo",
+                              "defaultPicture": "exemplo",
+                              "location": "A1",
+                              "externalId": "ID_EXEMPLO",
+                              "cfop": "exemplo",
+                              "ncm": "string",
+                              "cest": "string"
+                            },
+                            "orderSpecifications": [
+                              {
+                                "name": "Exemplo",
+                                "value": "exemplo"
+                              }
+                            ],
+                            "quantityBarCodeValidated": 0,
+                            "unitMeasurement": "string",
+                            "cfop": "exemplo"
+                          }
+                        ],
+                        "payments": [
+                          {
+                            "id": "ID_EXEMPLO",
+                            "status": "string",
+                            "payment_type": "exemplo",
+                            "payment_type_channel": "exemplo",
+                            "installments": 0,
+                            "installment_id": "exemplo",
+                            "payment_method_id": "exemplo",
+                            "payment_method_id_channel": "exemplo",
+                            "installment_amount": 0,
+                            "shipping_cost": 0,
+                            "total_paid_amount": 0,
+                            "transaction_amount": 0,
+                            "installment_transaction_amount": 0,
+                            "channel": "exemplo",
+                            "digitable_line": "exemplo",
+                            "url_slip": "exemplo",
+                            "url_slip_pdf": "exemplo",
+                            "dueDate": "2023-02-07T20:49:33.945Z",
+                            "authorization_code": "exemplo"
+                          }
+                        ],
+                        "invoices": [
+                          {
+                            "id": "ID_EXEMPLO",
+                            "key": "00000000000000000000000000000000000000000000",
+                            "number": "exemplo",
+                            "line": "exemplo",
+                            "issue_date": "string",
+                            "status": "string",
+                            "reason": "exemplo",
+                            "totalValue": 0,
+                            "externalId": "ID_EXEMPLO",
+                            "logistic": {
+                              "id": 1001,
+                              "logisticId": "exemplo",
+                              "name": "Exemplo",
+                              "freightType": "exemplo",
+                              "vehiclePlate": "exemplo",
+                              "vehicleState": "exemplo",
+                              "rntc": "exemplo",
+                              "document": "0000000000000",
+                              "ie": "0000000000000",
+                              "address": "exemplo",
+                              "city": "exemplo",
+                              "state": "exemplo",
+                              "trackingUrl": "exemplo",
+                              "trackingKey": "exemplo",
+                              "trackingMethod": "exemplo",
+                              "emailInvoice": "usuario@example.com",
+                              "number": "exemplo",
+                              "complement": "exemplo",
+                              "neighborhood": "exemplo",
+                              "zipCode": "00000000",
+                              "logisticType": "string",
+                              "phone": "exemplo",
+                              "email": "usuario@example.com",
+                              "urlLogo": "exemplo",
+                              "urlZebra": "exemplo"
+                            },
+                            "urlXml": "exemplo",
+                            "urlPdf": "exemplo",
+                            "buyer": {
+                              "nickname": "cliente_exemplo",
+                              "last_name": "exemplo",
+                              "id": 1001,
+                              "first_name": "exemplo",
+                              "email": "usuario@example.com",
+                              "full_name": "Cliente Exemplo",
+                              "billing_info": {
+                                "doc_number": "00000000000",
+                                "doc_type": "string",
+                                "ie": "0000000000000"
+                              },
+                              "phone": {
+                                "number": "exemplo",
+                                "extension": "exemplo",
+                                "area_code": "exemplo"
+                              },
+                              "alternative_phone": {
+                                "number": "exemplo",
+                                "extension": "exemplo",
+                                "area_code": "exemplo"
+                              }
+                            },
+                            "company": {
+                              "name": "Exemplo",
+                              "nameFantasy": "exemplo",
+                              "document": "0000000000000",
+                              "ie": "0000000000000",
+                              "senderAddress": {
+                                "address_line": "Rua Exemplo, 100",
+                                "latitude": 0,
+                                "longitude": 0,
+                                "street_number": "100",
+                                "id": 1001,
+                                "zip_code": "00000000",
+                                "street_name": "Rua Exemplo",
+                                "comment": "Complemento exemplo",
+                                "neighborhood": {
+                                  "name": "Exemplo",
+                                  "id": "ID_EXEMPLO"
+                                },
+                                "country": {
+                                  "name": "Exemplo",
+                                  "id": "ID_EXEMPLO"
+                                },
+                                "city": {
+                                  "name": "Exemplo",
+                                  "id": "ID_EXEMPLO",
+                                  "codeIbge": 0
+                                },
+                                "state": {
+                                  "name": "Exemplo",
+                                  "id": "ID_EXEMPLO"
+                                },
+                                "name": "Exemplo"
+                              },
+                              "statusErp": "exemplo",
+                              "id": "ID_EXEMPLO",
+                              "responsiblePartner": "exemplo",
+                              "businessPhone": "exemplo",
+                              "taxRegime": "exemplo",
+                              "calculateInssTaxBasedOn": "exemplo",
+                              "revenueFromThePreviousYear": "exemplo",
+                              "monthlyAveragePayroll": "exemplo",
+                              "declarationForLegalPurposes": true,
+                              "infoAuthorization": true,
+                              "kindOfPerson": "exemplo",
+                              "mainActivity": "exemplo",
+                              "describeYourActivity": "exemplo",
+                              "commerce": true,
+                              "geteCommerce": true,
+                              "industry": true,
+                              "services": true,
+                              "free": true,
+                              "municipalRegistration": "exemplo",
+                              "cnae": "exemplo",
+                              "companySize": "exemplo",
+                              "numberOfEmployees": "exemplo",
+                              "contactPersons": "exemplo",
+                              "cellphone": "exemplo",
+                              "email": "usuario@example.com",
+                              "billingEmail": "usuario@example.com",
+                              "website": "exemplo"
+                            },
+                            "items": [
+                              {
+                                "quantity": 0,
+                                "quantity_multiple": 0,
+                                "externalQuantity": 0,
+                                "sale_fee": 0,
+                                "unit_price": 0,
+                                "currency_id": "string",
+                                "cost": 0,
+                                "discount": 0,
+                                "item": {
+                                  "seller_custom_field": "SKU_EXEMPLO",
+                                  "category_id": "exemplo",
+                                  "variation_id": "exemplo",
+                                  "id": "ID_EXEMPLO",
+                                  "title": "Produto de exemplo",
+                                  "origin": "string",
+                                  "uniTOfMeasurement": "exemplo",
+                                  "kitQuantity": 0,
+                                  "tempId": "exemplo",
+                                  "weight": 0,
+                                  "ean": "0000000000000",
+                                  "eanInvoice": "0000000000000",
+                                  "eanChild": "exemplo",
+                                  "defaultPicture": "exemplo",
+                                  "location": "A1",
+                                  "externalId": "ID_EXEMPLO",
+                                  "cfop": "exemplo",
+                                  "ncm": "string",
+                                  "cest": "string"
+                                },
+                                "orderSpecifications": [
+                                  {
+                                    "name": "Exemplo",
+                                    "value": "exemplo"
+                                  }
+                                ],
+                                "quantityBarCodeValidated": 0,
+                                "unitMeasurement": "string",
+                                "cfop": "exemplo"
+                              }
+                            ],
+                            "keyReferenced": "exemplo",
+                            "typeReferenced": "exemplo",
+                            "totalValueFreigth": 0,
+                            "volume": 0
+                          }
+                        ],
+                        "status": "string",
+                        "subStatus": "exemplo",
+                        "subStatusExpedition": "exemplo",
+                        "storeId": "exemplo",
+                        "externalId": "ID_EXEMPLO",
+                        "externalIdInvoice": "exemplo",
+                        "externalIdInvoiceDevolution": "exemplo",
+                        "externalIdErp": "exemplo",
+                        "integrationType": "string",
+                        "totalValue": 0,
+                        "channel": "exemplo",
+                        "channelName": "Loja exemplo",
+                        "customerId": 0,
+                        "packId": 0,
+                        "advertisement": "exemplo",
+                        "discount": 0,
+                        "discountMarketplace": 0,
+                        "fulfilled": true,
+                        "totalWeight": 0,
+                        "queueId": 0,
+                        "totalMetricCubic": 0,
+                        "expeditionBlock": "exemplo",
+                        "erpId": "ID_EXEMPLO",
+                        "totalTax": 0,
+                        "isMainErp": true,
+                        "expeditionLevel": "exemplo",
+                        "hasStock": true,
+                        "hasAccount": true,
+                        "totalHeight": 0,
+                        "totalWidth": 0,
+                        "totallength": 0,
+                        "dateCreated": "string",
+                        "dateDelivered": "string",
+                        "dateExpedition": "string",
+                        "dateApproved": "string",
+                        "datePackingList": "string",
+                        "dateClosed": "string",
+                        "additionalNoteInvoice": "Observação de exemplo",
+                        "statusHistory": {
+                          "date_cancelled": "string",
+                          "date_delivered": "string",
+                          "date_first_visit": "string",
+                          "date_handling": "string",
+                          "date_not_delivered": "string",
+                          "date_ready_to_ship": "string",
+                          "date_shipped": "string",
+                          "date_returned": "string"
+                        },
+                        "dateLastUpdated": "string",
+                        "invoiceVolume": 0,
+                        "saleFee": 0,
+                        "escrowAmount": 0,
+                        "tags": [
+                          {
+                            "url": "exemplo"
+                          }
+                        ],
+                        "orderConciliation": {
+                          "freight": 0,
+                          "freightToPay": 0,
+                          "totalTax": 0,
+                          "discount": 0,
+                          "totalValueWithFreight": 0,
+                          "totalValueWithoutFreight": 0,
+                          "totalCost": 0,
+                          "unitCost": 0,
+                          "unitValueItem": 0,
+                          "totalValueItem": 0,
+                          "percentageComission": 0,
+                          "comissionValue": 0,
+                          "totalNetWithoutCostProduct": 0,
+                          "totalNet": 0,
+                          "percentageNetWithoutProduct": 0,
+                          "percentageNet": 0
+                        },
+                        "queueStatus": "string",
+                        "sellerCommissionId": "exemplo",
+                        "warehouseId": "exemplo",
+                        "isOrderLocked": true,
+                        "logisticQuoteId": 0,
+                        "logisticOrderId": "exemplo",
+                        "links": [
+                          {
+                            "rel": "exemplo",
+                            "type": "string",
+                            "href": "exemplo"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'simple'": {
+                  "summary": "Schema -> StructureType = simple",
+                  "description": "Schema quando o paramêtro 'StructureType' tem como valor a palavra 'simple'",
+                  "value": {
+                    "next": "exemplo",
+                    "orders": [
+                      {
+                        "completeOrderNumber": "exemplo",
+                        "links": [
+                          {
+                            "rel": "exemplo",
+                            "type": "string",
+                            "href": "exemplo"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Sem autorização",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o token não é fornecido no Header da requisição": {
+                  "summary": "Token requerido",
+                  "description": "Exemplo de erro quando o token não é fornecido no Header da requisição",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is required"
+                  }
+                },
+                "Exemplo de erro quando o token fornecido é inválido": {
+                  "summary": "Token inválido",
+                  "description": "Exemplo de erro quando o token fornecido é inválido",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is invalid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "502": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "post-invoices-completeordernumber",
+      "method": "POST",
+      "path": "/v1/invoices/{completeOrderNumber}",
+      "group": "Invoice",
+      "tags": [
+        "Invoice"
+      ],
+      "summary": "Enviar XML da nota fiscal pelo código do pedido",
+      "description": "Enviar XML da NF pelo código do pedido",
+      "operationId": "sendOrderXml",
+      "parameters": [
+        {
+          "name": "completeOrderNumber",
+          "in": "path",
+          "description": "Código do pedido para envio do XML",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "releaseOrder",
+          "in": "query",
+          "description": "Ordem de liberação",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        },
+        {
+          "name": "userId",
+          "in": "query",
+          "description": "E-mail do usuário",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "##default"
+          }
+        }
+      ],
+      "requestBody": {
+        "description": "Objeto XML da nota fiscal",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Sucesso",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Requisição inválida, verifique o XML",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o XML informado é inválido": {
+                  "summary": "XML inválido",
+                  "description": "Exemplo de erro quando o XML informado é inválido",
+                  "value": {
+                    "error": "Invalid RequestBody"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Sem autorização",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o token não é fornecido no Header da requisição": {
+                  "summary": "Token requerido",
+                  "description": "Exemplo de erro quando o token não é fornecido no Header da requisição",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is required"
+                  }
+                },
+                "Exemplo de erro quando o token fornecido é inválido": {
+                  "summary": "Token inválido",
+                  "description": "Exemplo de erro quando o token fornecido é inválido",
+                  "value": {
+                    "error": "X-MAGIS5-APIKEY is invalid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Pedido não encontrado",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              },
+              "examples": {
+                "Exemplo de erro quando o pedido informado não é encontrado": {
+                  "summary": "Pedido não encontrado",
+                  "description": "Exemplo de erro quando o pedido informado não é encontrado",
+                  "value": {
+                    "error": "Register not found"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "502": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "Erro interno no servidor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseErrorApi"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "components": {
+    "schemas": {
+      "RequestEditProduct": {
+        "type": "object",
+        "properties": {
+          "skuAlternative": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stockMinimum": {
+            "type": "integer",
+            "description": "Quantidade mínima de estoque configurada para o produto",
+            "format": "int32",
+            "example": 5
+          },
+          "cost": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technicalSpecification": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "warranty": {
+            "type": "string"
+          },
+          "business": {
+            "type": "string"
+          },
+          "ean": {
+            "type": "string"
+          },
+          "eanInvoice": {
+            "type": "string"
+          },
+          "height": {
+            "type": "number",
+            "format": "double"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "weightGross": {
+            "type": "number",
+            "format": "double"
+          },
+          "depth": {
+            "type": "number",
+            "format": "double"
+          },
+          "width": {
+            "type": "number",
+            "format": "double"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "ncm": {
+            "type": "string"
+          },
+          "anp": {
+            "type": "string"
+          },
+          "cest": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deadlineCrossdocking": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "youtubeId": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "isVariation": {
+            "type": "boolean"
+          },
+          "warrantyProvider": {
+            "type": "string"
+          },
+          "quantityItemsSamePackaging": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "erpId": {
+            "type": "string"
+          },
+          "stockFixed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "operationalCost": {
+            "type": "number"
+          },
+          "percentageProfit": {
+            "type": "number"
+          },
+          "productsCategory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestProductCategory"
+            }
+          },
+          "productsVariation": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestProductVariation"
+            }
+          },
+          "productsCode": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestProductCode"
+            }
+          },
+          "productsRootCharacteristic": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestProductRootCharacteristic"
+            }
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestCategory"
+            }
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestPicture"
+            }
+          },
+          "plainTextDescription": {
+            "type": "string"
+          },
+          "products_composition": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestProductComposition"
+            }
+          }
+        }
+      },
+      "RequestProductCategory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "categoryDescription": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestProductVariation": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestAttribute"
+            }
+          },
+          "categoryId": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestAttribute": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "value_name": {
+            "type": "string"
+          },
+          "value_id": {
+            "type": "string"
+          },
+          "allowed_units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestAllowedUnit"
+            }
+          },
+          "descriptionUnit": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestAllowedUnit": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestProductCode": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestProductRootCharacteristic": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "key": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestCategory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestPicture": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestProductComposition": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitValue": {
+            "type": "number"
+          },
+          "percentagePriceValue": {
+            "type": "number"
+          }
+        }
+      },
+      "ResponseProductApi": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "alternativeId": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technicalSpecification": {
+            "type": "string"
+          },
+          "additionalInformation": {
+            "type": "string"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Picture"
+            }
+          },
+          "price": {
+            "type": "number"
+          },
+          "warranty": {
+            "type": "string"
+          },
+          "business": {
+            "type": "string"
+          },
+          "ean": {
+            "type": "string"
+          },
+          "eanInvoice": {
+            "type": "string"
+          },
+          "height": {
+            "type": "number",
+            "format": "double"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "weightGross": {
+            "type": "number",
+            "format": "double"
+          },
+          "depth": {
+            "type": "number",
+            "format": "double"
+          },
+          "width": {
+            "type": "number",
+            "format": "double"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "ncm": {
+            "type": "string"
+          },
+          "cest": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "updateStock": {
+            "type": "boolean"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "integrationType": {
+            "type": "string"
+          },
+          "deadlineCrossdocking": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productsBusinessUnit": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductWarehouse"
+            }
+          },
+          "isImportProduct": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string"
+          },
+          "youtubeId": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "productType": {
+            "type": "string"
+          },
+          "isVariation": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string"
+          },
+          "productsComposition": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductComposition"
+            }
+          },
+          "warrantyProvider": {
+            "type": "string"
+          },
+          "quantityItemsSamePackaging": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "erpId": {
+            "type": "string"
+          },
+          "stockFixed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stockMinimum": {
+            "type": "integer",
+            "description": "Quantidade mínima de estoque configurada para o produto",
+            "format": "int32",
+            "example": 5
+          },
+          "stockProvider": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "operationalCost": {
+            "type": "number"
+          },
+          "percentageProfit": {
+            "type": "number"
+          },
+          "usePicturesFromFatherVariation": {
+            "type": "boolean"
+          },
+          "productsCategory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductCategory"
+            }
+          },
+          "variations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Variation"
+            }
+          },
+          "productsCode": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductCode"
+            }
+          },
+          "productsRootCharacteristic": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RootProductCharacteristic"
+            }
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          },
+          "dateCreated": {
+            "type": "string"
+          },
+          "dateLastUpdated": {
+            "type": "string"
+          },
+          "restrictions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Restriction"
+            }
+          },
+          "productsWarehouse": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductWarehouse"
+            }
+          },
+          "anp": {
+            "type": "string"
+          },
+          "subUserId": {
+            "type": "string"
+          },
+          "alternativeUnitMeasurement": {
+            "type": "string"
+          },
+          "integrationEnabled": {
+            "type": "boolean"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            }
+          },
+          "plainTextDescription": {
+            "type": "string"
+          }
+        }
+      },
+      "Picture": {
+        "type": "object",
+        "properties": {
+          "size": {
+            "type": "string"
+          },
+          "secure_url": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "max_size": {
+            "type": "string"
+          },
+          "quality": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "principal": {
+            "type": "boolean"
+          },
+          "posicao": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ProductWarehouse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stockWithReservation": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reserved": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "unconsidered": {
+            "type": "string"
+          },
+          "caller": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "companyId": {
+            "type": "string"
+          },
+          "lot": {
+            "type": "string"
+          }
+        }
+      },
+      "ProductComposition": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "productOnChannelId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Picture"
+            }
+          },
+          "brand": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitValue": {
+            "type": "number"
+          },
+          "stock": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "percentagePriceValue": {
+            "type": "number"
+          },
+          "permalink": {
+            "type": "string"
+          },
+          "channel_id": {
+            "type": "string"
+          },
+          "variation_id": {
+            "type": "string"
+          },
+          "is_main_product": {
+            "type": "boolean"
+          },
+          "price_to_sell": {
+            "type": "number"
+          }
+        }
+      },
+      "ProductCategory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "parentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "getpId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "categoryDescription": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isNew": {
+            "type": "boolean"
+          },
+          "isEdited": {
+            "type": "boolean"
+          },
+          "categoryId": {
+            "type": "string"
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "productDescription": {
+            "type": "string"
+          }
+        }
+      },
+      "Variation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "attribute_combinations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attribute"
+            }
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attribute"
+            }
+          },
+          "available_quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "available_quantity_flex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "changeAvailableQuantity": {
+            "type": "boolean"
+          },
+          "price": {
+            "type": "number"
+          },
+          "sold_quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seller_custom_field": {
+            "type": "string"
+          },
+          "catalog_product_id": {
+            "type": "string"
+          },
+          "picture_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "promotionalPrice": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "categoryId": {
+            "type": "string"
+          },
+          "inventory_id": {
+            "type": "string"
+          },
+          "user_product_id": {
+            "type": "string"
+          }
+        }
+      },
+      "Attribute": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "attribute_group_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "attribute_group_name": {
+            "type": "string"
+          },
+          "value_name": {
+            "type": "string"
+          },
+          "value_id": {
+            "type": "string"
+          },
+          "value_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "$ref": "#/components/schemas/Tags"
+          },
+          "attribute_send": {
+            "type": "boolean"
+          },
+          "hierarchy": {
+            "type": "string"
+          },
+          "relevance": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value_type": {
+            "type": "string"
+          },
+          "value_max_length": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Value"
+            }
+          },
+          "valueList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowed_units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AllowedUnit"
+            }
+          },
+          "descriptionUnit": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "translate_value_name": {
+            "type": "string"
+          },
+          "field": {
+            "$ref": "#/components/schemas/Field"
+          },
+          "min": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "max": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttributeFile"
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allow_custom_value": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Tags": {
+        "type": "object",
+        "properties": {
+          "allow_variations": {
+            "type": "boolean"
+          },
+          "defines_picture": {
+            "type": "boolean"
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "variation_attribute": {
+            "type": "boolean"
+          },
+          "read_only": {
+            "type": "boolean"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "grid_filter": {
+            "type": "boolean"
+          },
+          "grid_template_required": {
+            "type": "boolean"
+          },
+          "editable": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Value": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttributeValue"
+            }
+          },
+          "brandList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BrandValue"
+            }
+          }
+        }
+      },
+      "AttributeValue": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "BrandValue": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "AllowedUnit": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Field": {
+        "type": "object",
+        "properties": {
+          "text_type": {
+            "type": "string"
+          }
+        }
+      },
+      "AttributeFile": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "ProductCode": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "created": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "alternativeId": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technicalSpecification": {
+            "type": "string"
+          },
+          "additionalInformation": {
+            "type": "string"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Picture"
+            }
+          },
+          "price": {
+            "type": "number"
+          },
+          "warranty": {
+            "type": "string"
+          },
+          "business": {
+            "type": "string"
+          },
+          "ean": {
+            "type": "string"
+          },
+          "eanInvoice": {
+            "type": "string"
+          },
+          "height": {
+            "type": "number",
+            "format": "double"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "weightGross": {
+            "type": "number",
+            "format": "double"
+          },
+          "depth": {
+            "type": "number",
+            "format": "double"
+          },
+          "width": {
+            "type": "number",
+            "format": "double"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "ncm": {
+            "type": "string"
+          },
+          "cest": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "updateStock": {
+            "type": "boolean"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "integrationType": {
+            "type": "string"
+          },
+          "deadlineCrossdocking": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productsBusinessUnit": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductWarehouse"
+            }
+          },
+          "isImportProduct": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string"
+          },
+          "youtubeId": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "productType": {
+            "type": "string"
+          },
+          "isVariation": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string"
+          },
+          "productsComposition": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductComposition"
+            }
+          },
+          "warrantyProvider": {
+            "type": "string"
+          },
+          "quantityItemsSamePackaging": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "erpId": {
+            "type": "string"
+          },
+          "stockFixed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stockMinimum": {
+            "type": "integer",
+            "description": "Quantidade mínima de estoque configurada para o produto",
+            "format": "int32",
+            "example": 5
+          },
+          "stockProvider": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "operationalCost": {
+            "type": "number"
+          },
+          "percentageProfit": {
+            "type": "number"
+          },
+          "usePicturesFromFatherVariation": {
+            "type": "boolean"
+          },
+          "productsCategory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductCategory"
+            }
+          },
+          "variations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Variation"
+            }
+          },
+          "productsRootCharacteristic": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RootProductCharacteristic"
+            }
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          },
+          "dateCreated": {
+            "type": "string"
+          },
+          "dateLastUpdated": {
+            "type": "string"
+          },
+          "restrictions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Restriction"
+            }
+          },
+          "productsWarehouse": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductWarehouse"
+            }
+          },
+          "anp": {
+            "type": "string"
+          },
+          "subUserId": {
+            "type": "string"
+          },
+          "alternativeUnitMeasurement": {
+            "type": "string"
+          },
+          "integrationEnabled": {
+            "type": "boolean"
+          },
+          "plainTextDescription": {
+            "type": "string"
+          }
+        }
+      },
+      "RootProductCharacteristic": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "showInExpedition": {
+            "type": "boolean"
+          },
+          "addInvoiceNote": {
+            "type": "boolean"
+          },
+          "specifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RootProductCharacteristicSpecification"
+            }
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "RootProductCharacteristicSpecification": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string"
+          },
+          "parId": {
+            "type": "string"
+          },
+          "getpId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lastLevel": {
+            "type": "boolean"
+          },
+          "isNew": {
+            "type": "boolean"
+          },
+          "isEdited": {
+            "type": "boolean"
+          },
+          "commission": {
+            "type": "number"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attribute"
+            }
+          },
+          "settings": {
+            "$ref": "#/components/schemas/CategorySetting"
+          },
+          "domainId": {
+            "type": "string"
+          }
+        }
+      },
+      "CategorySetting": {
+        "type": "object",
+        "properties": {
+          "max_pictures_per_item": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "max_pictures_per_item_var": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "catalog_domain": {
+            "type": "string"
+          },
+          "max_variations_allowed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minimum_price": {
+            "type": "number"
+          }
+        }
+      },
+      "Restriction": {
+        "type": "object",
+        "properties": {
+          "attribute_id": {
+            "type": "string"
+          },
+          "attribute_values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RestrictionObject"
+            }
+          },
+          "combined_values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RestrictionObject"
+            }
+          }
+        }
+      },
+      "RestrictionObject": {
+        "type": "object",
+        "properties": {
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RestrictionObjectValue"
+            }
+          }
+        }
+      },
+      "RestrictionObjectValue": {
+        "type": "object",
+        "properties": {
+          "value_id": {
+            "type": "string"
+          },
+          "value_name": {
+            "type": "string"
+          },
+          "opposite_values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "rel": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          }
+        }
+      },
+      "ResponseErrorApi": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "ResponseOrderDetailApi": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "buyer": {
+            "$ref": "#/components/schemas/Buyer"
+          },
+          "intermediary": {
+            "$ref": "#/components/schemas/Intermediary"
+          },
+          "shipping": {
+            "$ref": "#/components/schemas/Shipping"
+          },
+          "quantityPackage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "order_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItems"
+            }
+          },
+          "payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Payment"
+            }
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Invoice"
+            }
+          },
+          "status": {
+            "type": "string"
+          },
+          "subStatus": {
+            "type": "string"
+          },
+          "subStatusExpedition": {
+            "type": "string"
+          },
+          "storeId": {
+            "type": "string"
+          },
+          "negotiationType": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "externalIdAlternative": {
+            "type": "string"
+          },
+          "externalIdInvoice": {
+            "type": "string"
+          },
+          "externalIdInvoiceDevolution": {
+            "type": "string"
+          },
+          "externalIdErp": {
+            "type": "string"
+          },
+          "integrationType": {
+            "type": "string"
+          },
+          "totalValue": {
+            "type": "number"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "channelName": {
+            "type": "string"
+          },
+          "channelStatus": {
+            "type": "string"
+          },
+          "statusChannel": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "packId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "usePackIdOrderNumber": {
+            "type": "boolean"
+          },
+          "advertisement": {
+            "type": "string"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "discountMarketplace": {
+            "type": "number"
+          },
+          "fulfilled": {
+            "type": "boolean"
+          },
+          "totalWeight": {
+            "type": "number"
+          },
+          "queueId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalMetricCubic": {
+            "type": "number"
+          },
+          "expeditionBlock": {
+            "type": "string"
+          },
+          "erpId": {
+            "type": "string"
+          },
+          "totalTax": {
+            "type": "number"
+          },
+          "isMainErp": {
+            "type": "boolean"
+          },
+          "expeditionLevel": {
+            "type": "string"
+          },
+          "hasStock": {
+            "type": "boolean"
+          },
+          "hasAccount": {
+            "type": "boolean"
+          },
+          "totalHeight": {
+            "type": "number"
+          },
+          "totalWidth": {
+            "type": "number"
+          },
+          "totallength": {
+            "type": "number"
+          },
+          "dateCreated": {
+            "type": "string"
+          },
+          "dateDelivered": {
+            "type": "string"
+          },
+          "dateExpedition": {
+            "type": "string"
+          },
+          "dateApproved": {
+            "type": "string"
+          },
+          "datePackingList": {
+            "type": "string"
+          },
+          "dateClosed": {
+            "type": "string"
+          },
+          "additionalNoteInvoice": {
+            "type": "string"
+          },
+          "statusHistory": {
+            "$ref": "#/components/schemas/StatusHistory"
+          },
+          "dateLastUpdated": {
+            "type": "string"
+          },
+          "invoiceVolume": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "saleFee": {
+            "type": "number"
+          },
+          "escrowAmount": {
+            "type": "number"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "orderConciliation": {
+            "$ref": "#/components/schemas/OrderConciliation"
+          },
+          "queueStatus": {
+            "type": "string"
+          },
+          "sellerCommissionId": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string"
+          },
+          "logisticQuoteId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "logisticOrderId": {
+            "type": "string"
+          },
+          "bonusValue": {
+            "type": "number"
+          },
+          "packageOrders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "generateInvoiceAutomatically": {
+            "type": "boolean"
+          },
+          "orderChannelType": {
+            "type": "string"
+          },
+          "deadlineDate": {
+            "type": "string"
+          },
+          "isOrderLocked": {
+            "type": "boolean"
+          },
+          "erpName": {
+            "type": "string"
+          },
+          "warehouse": {
+            "type": "string"
+          },
+          "parentBundleItemId": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Errors"
+            }
+          },
+          "additionalTags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderTag"
+            }
+          },
+          "recommendedPackages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecommendedPackage"
+            }
+          },
+          "shipmentRequirements": {
+            "$ref": "#/components/schemas/ShipmentRequirements"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            }
+          },
+          "lockReasons": {
+            "type": "array",
+            "description": "Motivos ativos de trava, sem códigos repetidos. Conhecidos na ordem poc_locked, pharma, detail_required; desconhecidos depois, em ordem lexicográfica. [] indica ausência de motivos disponíveis e não determina o estado de trava: use isOrderLocked.",
+            "items": {
+              "$ref": "#/components/schemas/OrderLockReasonApi"
+            },
+            "default": "##default"
+          }
+        }
+      },
+      "Buyer": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "full_name": {
+            "type": "string"
+          },
+          "billing_info": {
+            "$ref": "#/components/schemas/Billing"
+          },
+          "phone": {
+            "$ref": "#/components/schemas/Phone"
+          },
+          "alternative_phone": {
+            "$ref": "#/components/schemas/AlternativePhone"
+          }
+        }
+      },
+      "Billing": {
+        "type": "object",
+        "properties": {
+          "doc_number": {
+            "type": "string"
+          },
+          "doc_type": {
+            "type": "string"
+          },
+          "ie": {
+            "type": "string"
+          }
+        }
+      },
+      "Phone": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string"
+          },
+          "extension": {
+            "type": "string"
+          },
+          "area_code": {
+            "type": "string"
+          }
+        }
+      },
+      "AlternativePhone": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string"
+          },
+          "extension": {
+            "type": "string"
+          },
+          "area_code": {
+            "type": "string"
+          }
+        }
+      },
+      "Intermediary": {
+        "type": "object",
+        "properties": {
+          "salesDocument": {
+            "type": "string"
+          },
+          "salesName": {
+            "type": "string"
+          },
+          "paymentDocument": {
+            "type": "string"
+          },
+          "paymentName": {
+            "type": "string"
+          },
+          "fillIntermediarySales": {
+            "type": "boolean"
+          },
+          "fillIntermediaryPayment": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Shipping": {
+        "type": "object",
+        "properties": {
+          "local_pick_up": {
+            "type": "boolean"
+          },
+          "free_shipping": {
+            "type": "boolean"
+          },
+          "receiver_address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "sender_address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "substatus": {
+            "type": "string"
+          },
+          "date_created": {
+            "type": "string"
+          },
+          "date_first_printed": {
+            "type": "string"
+          },
+          "sender_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "shipping_mode": {
+            "type": "string"
+          },
+          "shipping_mode_channel": {
+            "type": "string"
+          },
+          "service_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "id": {
+            "type": "string"
+          },
+          "picking_type": {
+            "type": "string"
+          },
+          "currency_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "shipment_type": {
+            "type": "string"
+          },
+          "shipment_type_channel": {
+            "type": "string"
+          },
+          "shipping_number": {
+            "type": "string"
+          },
+          "shipping_url": {
+            "type": "string"
+          },
+          "logistic_type": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "logistic": {
+            "$ref": "#/components/schemas/Logistic"
+          },
+          "shipping_option": {
+            "$ref": "#/components/schemas/ShippingOption"
+          },
+          "customerLogoZpl": {
+            "type": "string"
+          },
+          "deposit_type": {
+            "type": "string"
+          },
+          "statusHistory": {
+            "$ref": "#/components/schemas/StatusHistory"
+          },
+          "additionalServiceCode": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "insurancePrice": {
+            "type": "number"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "costs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Cost"
+            }
+          },
+          "deliveryMethodId": {
+            "type": "string"
+          },
+          "deliveryMethodName": {
+            "type": "string"
+          },
+          "carrierImageZpl": {
+            "type": "string"
+          },
+          "receiver_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orderId": {
+            "type": "string"
+          },
+          "sla": {
+            "$ref": "#/components/schemas/Sla"
+          },
+          "warehouseId": {
+            "type": "string"
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "address_line": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "street_number": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "zip_code": {
+            "type": "string"
+          },
+          "street_name": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "neighborhood": {
+            "$ref": "#/components/schemas/Neighborhood"
+          },
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          },
+          "city": {
+            "$ref": "#/components/schemas/City"
+          },
+          "state": {
+            "$ref": "#/components/schemas/State"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Neighborhood": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "Country": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "City": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "codeIbge": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "State": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "Logistic": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "logisticId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "freightType": {
+            "type": "string"
+          },
+          "vehiclePlate": {
+            "type": "string"
+          },
+          "vehicleState": {
+            "type": "string"
+          },
+          "rntc": {
+            "type": "string"
+          },
+          "document": {
+            "type": "string"
+          },
+          "ie": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "trackingUrl": {
+            "type": "string"
+          },
+          "trackingKey": {
+            "type": "string"
+          },
+          "trackingMethod": {
+            "type": "string"
+          },
+          "emailInvoice": {
+            "type": "string"
+          },
+          "number": {
+            "type": "string"
+          },
+          "complement": {
+            "type": "string"
+          },
+          "neighborhood": {
+            "type": "string"
+          },
+          "zipCode": {
+            "type": "string"
+          },
+          "logisticType": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "urlLogo": {
+            "type": "string"
+          },
+          "urlZebra": {
+            "type": "string"
+          },
+          "logisticERPId": {
+            "type": "string"
+          },
+          "agencyId": {
+            "type": "string"
+          },
+          "integrationLogistic": {
+            "type": "string"
+          },
+          "logisticIdOld": {
+            "type": "string"
+          }
+        }
+      },
+      "ShippingOption": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list_cost": {
+            "type": "number"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "comission": {
+            "type": "number"
+          },
+          "deduction_list_cost": {
+            "type": "number"
+          },
+          "compensation_flex_value": {
+            "type": "number"
+          },
+          "scheduling": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "StatusHistory": {
+        "type": "object",
+        "properties": {
+          "date_cancelled": {
+            "type": "string"
+          },
+          "date_delivered": {
+            "type": "string"
+          },
+          "date_first_visit": {
+            "type": "string"
+          },
+          "date_handling": {
+            "type": "string"
+          },
+          "date_not_delivered": {
+            "type": "string"
+          },
+          "date_ready_to_ship": {
+            "type": "string"
+          },
+          "date_shipped": {
+            "type": "string"
+          },
+          "date_returned": {
+            "type": "string"
+          }
+        }
+      },
+      "Cost": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "string"
+          }
+        }
+      },
+      "Sla": {
+        "type": "object",
+        "properties": {
+          "deadline": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "initialDeadline": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DELAYED",
+              "EARLY"
+            ]
+          },
+          "service": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderItems": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantity_multiple": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "externalQuantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sale_fee": {
+            "type": "number"
+          },
+          "unit_price": {
+            "type": "number"
+          },
+          "currency_id": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "item": {
+            "$ref": "#/components/schemas/Item"
+          },
+          "orderSpecifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderSpecification"
+            }
+          },
+          "quantityBarCodeValidated": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitMeasurement": {
+            "type": "string"
+          },
+          "kit_quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "childId": {
+            "type": "string"
+          },
+          "cfop": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "storeId": {
+            "type": "string"
+          },
+          "channelIds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelId"
+            }
+          }
+        }
+      },
+      "Item": {
+        "type": "object",
+        "properties": {
+          "seller_custom_field": {
+            "type": "string"
+          },
+          "category_id": {
+            "type": "string"
+          },
+          "variation_id": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "titleMarketplace": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "kitQuantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tempId": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "depth": {
+            "type": "number"
+          },
+          "uniTOfMeasurement": {
+            "type": "string"
+          },
+          "ean": {
+            "type": "string"
+          },
+          "eanInvoice": {
+            "type": "string"
+          },
+          "eanChild": {
+            "type": "string"
+          },
+          "skuChild": {
+            "type": "string"
+          },
+          "seller_custom_field_alternative": {
+            "type": "string"
+          },
+          "defaultPicture": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "cfop": {
+            "type": "string"
+          },
+          "ncm": {
+            "type": "string"
+          },
+          "cest": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string"
+          },
+          "anp": {
+            "type": "string"
+          },
+          "alternativeUnitOfMeasure": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderSpecification": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "ChannelId": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "completeOrderNumber": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string"
+          },
+          "quantityMarketplace": {
+            "type": "string"
+          }
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "payment_type": {
+            "type": "string"
+          },
+          "payment_type_channel": {
+            "type": "string"
+          },
+          "installments": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "installment_id": {
+            "type": "string"
+          },
+          "payment_method_id": {
+            "type": "string"
+          },
+          "payment_method_id_channel": {
+            "type": "string"
+          },
+          "payment_gateway": {
+            "type": "string"
+          },
+          "installment_amount": {
+            "type": "number"
+          },
+          "shipping_cost": {
+            "type": "number"
+          },
+          "total_paid_amount": {
+            "type": "number"
+          },
+          "transaction_amount": {
+            "type": "number"
+          },
+          "installment_transaction_amount": {
+            "type": "number"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "digitable_line": {
+            "type": "string"
+          },
+          "url_slip": {
+            "type": "string"
+          },
+          "url_slip_pdf": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "authorization_code": {
+            "type": "string"
+          },
+          "coupon_amount": {
+            "type": "number"
+          }
+        }
+      },
+      "Invoice": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "number": {
+            "type": "string"
+          },
+          "line": {
+            "type": "string"
+          },
+          "issue_date": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "totalValue": {
+            "type": "number"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "urlXml": {
+            "type": "string"
+          },
+          "operationType": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "orderDetailRequiredData": {
+            "$ref": "#/components/schemas/OrderDetailRequiredDataDto"
+          },
+          "xmlType": {
+            "type": "string"
+          },
+          "natureOperation": {
+            "type": "string"
+          },
+          "natureOperationExtra": {
+            "type": "string"
+          },
+          "storeId": {
+            "type": "string"
+          },
+          "shippingId": {
+            "type": "string"
+          },
+          "relatedOrders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "modFreight": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "finality": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subType": {
+            "type": "string"
+          },
+          "nprot": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderDetailRequiredDataDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDetailRequiredItemDto"
+            }
+          }
+        }
+      },
+      "OrderDetailRequiredItemDto": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDetailRequiredUnitDto"
+            }
+          }
+        }
+      },
+      "OrderDetailRequiredUnitDto": {
+        "type": "object",
+        "properties": {
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDetailRequiredAttributeDto"
+            }
+          }
+        }
+      },
+      "OrderDetailRequiredAttributeDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderConciliation": {
+        "type": "object",
+        "properties": {
+          "freight": {
+            "type": "number"
+          },
+          "freightToPay": {
+            "type": "number"
+          },
+          "freightCompensation": {
+            "type": "number"
+          },
+          "totalTax": {
+            "type": "number"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "totalValueWithFreight": {
+            "type": "number"
+          },
+          "totalValueWithoutFreight": {
+            "type": "number"
+          },
+          "totalCost": {
+            "type": "number"
+          },
+          "unitCost": {
+            "type": "number"
+          },
+          "unitValueItem": {
+            "type": "number"
+          },
+          "totalValueItem": {
+            "type": "number"
+          },
+          "percentageComission": {
+            "type": "number"
+          },
+          "comissionValue": {
+            "type": "number"
+          },
+          "totalNetWithoutCostProduct": {
+            "type": "number"
+          },
+          "totalNet": {
+            "type": "number"
+          },
+          "percentageNetWithoutProduct": {
+            "type": "number"
+          },
+          "percentageNet": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "Errors": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "proposalFix": {
+            "type": "string"
+          },
+          "packageNo": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderTag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      "RecommendedPackage": {
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/PackageDimensions"
+          },
+          "weight": {
+            "$ref": "#/components/schemas/Weight"
+          },
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecommendedPackageLineItem"
+            }
+          }
+        }
+      },
+      "PackageDimensions": {
+        "type": "object",
+        "properties": {
+          "length": {
+            "$ref": "#/components/schemas/Dimension"
+          },
+          "width": {
+            "$ref": "#/components/schemas/Dimension"
+          },
+          "height": {
+            "$ref": "#/components/schemas/Dimension"
+          }
+        }
+      },
+      "Dimension": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "dimensionUnit": {
+            "type": "string"
+          }
+        }
+      },
+      "Weight": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "weightUnit": {
+            "type": "string"
+          }
+        }
+      },
+      "RecommendedPackageLineItem": {
+        "type": "object",
+        "properties": {
+          "lineItemId": {
+            "type": "string"
+          }
+        }
+      },
+      "ShipmentRequirements": {
+        "type": "object",
+        "properties": {
+          "invoice": {
+            "$ref": "#/components/schemas/DocumentRequirement"
+          },
+          "pslip": {
+            "$ref": "#/components/schemas/DocumentRequirement"
+          },
+          "pSlip": {
+            "$ref": "#/components/schemas/DocumentRequirement"
+          }
+        }
+      },
+      "DocumentRequirement": {
+        "type": "object",
+        "properties": {
+          "requirement": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderLockReasonApi": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Código estável do motivo. Conhecidos: poc_locked, pharma, detail_required. Aceite códigos futuros; use este campo para decisões.",
+            "example": "pharma",
+            "default": "##default"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição pública: Anúncio travado, Receita médica pendente ou Dados fiscais pendentes. Para código desconhecido, contém o próprio código.",
+            "example": "Receita médica pendente",
+            "default": "##default"
+          }
+        },
+        "description": "Motivos ativos de trava, sem códigos repetidos. Conhecidos na ordem poc_locked, pharma, detail_required; desconhecidos depois, em ordem lexicográfica. [] indica ausência de motivos disponíveis e não determina o estado de trava: use isOrderLocked.",
+        "default": "##default"
+      },
+      "RequestEditOrder": {
+        "type": "object",
+        "properties": {
+          "shipping": {
+            "$ref": "#/components/schemas/RequestShipping"
+          },
+          "status": {
+            "type": "string"
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestInvoice"
+            }
+          },
+          "cause": {
+            "type": "string"
+          },
+          "queueStatus": {
+            "type": "string"
+          },
+          "sellerCommissionId": {
+            "type": "string"
+          },
+          "externalIdErp": {
+            "type": "string"
+          },
+          "payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestEditPayment"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestEditTag"
+            }
+          }
+        }
+      },
+      "RequestShipping": {
+        "type": "object",
+        "properties": {
+          "receiver_address": {
+            "$ref": "#/components/schemas/RequestAddressOfShipping"
+          },
+          "shipping_number": {
+            "type": "string",
+            "description": "Código de rastreio; pode ser atualizado sem informar status",
+            "default": "##default"
+          },
+          "shipping_url": {
+            "type": "string",
+            "description": "URL de rastreio; pode ser atualizada sem informar status",
+            "default": "##default"
+          },
+          "logistic": {
+            "$ref": "#/components/schemas/RequestLogisticOfShipping"
+          }
+        }
+      },
+      "RequestAddressOfShipping": {
+        "type": "object",
+        "properties": {
+          "street_number": {
+            "type": "string"
+          },
+          "zip_code": {
+            "type": "string"
+          },
+          "street_name": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "neighborhood": {
+            "$ref": "#/components/schemas/RequestNeighborhood"
+          },
+          "city": {
+            "$ref": "#/components/schemas/RequestCity"
+          },
+          "state": {
+            "$ref": "#/components/schemas/RequestState"
+          }
+        }
+      },
+      "RequestNeighborhood": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestCity": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestState": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestLogisticOfShipping": {
+        "type": "object",
+        "properties": {
+          "logisticId": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestInvoice": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestEditPayment": {
+        "type": "object",
+        "properties": {
+          "installment_id": {
+            "type": "string",
+            "description": "Identificador da parcela no meio de pagamento",
+            "example": "string",
+            "default": "##default"
+          },
+          "authorization_code": {
+            "type": "string",
+            "description": "Código de autorização da transação do pagamento",
+            "example": "string",
+            "default": "##default"
+          },
+          "payment_gateway": {
+            "type": "string",
+            "description": "Gateway responsável pelo processamento do pagamento",
+            "example": "string",
+            "default": "##default"
+          }
+        }
+      },
+      "RequestEditTag": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL HTTP ou HTTPS do arquivo de etiqueta que será associado ao pedido",
+            "example": "https://example.com/shipping-label.zpl",
+            "default": "##default"
+          },
+          "type": {
+            "type": "string",
+            "description": "Formato de fallback usado somente quando não for possível identificar o arquivo pelo conteúdo",
+            "example": "pdf",
+            "enum": [
+              "pdf",
+              "zpl",
+              "txt"
+            ],
+            "default": "##default"
+          }
+        }
+      },
+      "ResponseOrderApi": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "buyer": {
+            "$ref": "#/components/schemas/Buyer"
+          },
+          "intermediary": {
+            "$ref": "#/components/schemas/Intermediary"
+          },
+          "shipping": {
+            "$ref": "#/components/schemas/Shipping"
+          },
+          "quantityPackage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "order_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItems"
+            }
+          },
+          "payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Payment"
+            }
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Invoice"
+            }
+          },
+          "status": {
+            "type": "string"
+          },
+          "subStatus": {
+            "type": "string"
+          },
+          "subStatusExpedition": {
+            "type": "string"
+          },
+          "storeId": {
+            "type": "string"
+          },
+          "negotiationType": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "externalIdAlternative": {
+            "type": "string"
+          },
+          "externalIdInvoice": {
+            "type": "string"
+          },
+          "externalIdInvoiceDevolution": {
+            "type": "string"
+          },
+          "externalIdErp": {
+            "type": "string"
+          },
+          "integrationType": {
+            "type": "string"
+          },
+          "totalValue": {
+            "type": "number"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "channelName": {
+            "type": "string"
+          },
+          "channelStatus": {
+            "type": "string"
+          },
+          "statusChannel": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "packId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "usePackIdOrderNumber": {
+            "type": "boolean"
+          },
+          "advertisement": {
+            "type": "string"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "discountMarketplace": {
+            "type": "number"
+          },
+          "fulfilled": {
+            "type": "boolean"
+          },
+          "totalWeight": {
+            "type": "number"
+          },
+          "queueId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalMetricCubic": {
+            "type": "number"
+          },
+          "expeditionBlock": {
+            "type": "string"
+          },
+          "erpId": {
+            "type": "string"
+          },
+          "totalTax": {
+            "type": "number"
+          },
+          "isMainErp": {
+            "type": "boolean"
+          },
+          "expeditionLevel": {
+            "type": "string"
+          },
+          "hasStock": {
+            "type": "boolean"
+          },
+          "hasAccount": {
+            "type": "boolean"
+          },
+          "totalHeight": {
+            "type": "number"
+          },
+          "totalWidth": {
+            "type": "number"
+          },
+          "totallength": {
+            "type": "number"
+          },
+          "dateCreated": {
+            "type": "string"
+          },
+          "dateDelivered": {
+            "type": "string"
+          },
+          "dateExpedition": {
+            "type": "string"
+          },
+          "dateApproved": {
+            "type": "string"
+          },
+          "datePackingList": {
+            "type": "string"
+          },
+          "dateClosed": {
+            "type": "string"
+          },
+          "additionalNoteInvoice": {
+            "type": "string"
+          },
+          "statusHistory": {
+            "$ref": "#/components/schemas/StatusHistory"
+          },
+          "dateLastUpdated": {
+            "type": "string"
+          },
+          "invoiceVolume": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "saleFee": {
+            "type": "number"
+          },
+          "escrowAmount": {
+            "type": "number"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "orderConciliation": {
+            "$ref": "#/components/schemas/OrderConciliation"
+          },
+          "queueStatus": {
+            "type": "string"
+          },
+          "sellerCommissionId": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string"
+          },
+          "logisticQuoteId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "logisticOrderId": {
+            "type": "string"
+          },
+          "bonusValue": {
+            "type": "number"
+          },
+          "packageOrders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "generateInvoiceAutomatically": {
+            "type": "boolean"
+          },
+          "orderChannelType": {
+            "type": "string"
+          },
+          "deadlineDate": {
+            "type": "string"
+          },
+          "isOrderLocked": {
+            "type": "boolean"
+          },
+          "erpName": {
+            "type": "string"
+          },
+          "warehouse": {
+            "type": "string"
+          },
+          "parentBundleItemId": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Errors"
+            }
+          },
+          "additionalTags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderTag"
+            }
+          },
+          "recommendedPackages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecommendedPackage"
+            }
+          },
+          "shipmentRequirements": {
+            "$ref": "#/components/schemas/ShipmentRequirements"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            }
+          }
+        }
+      },
+      "RequestCallback": {
+        "type": "object",
+        "properties": {
+          "stocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestStock"
+            }
+          }
+        }
+      },
+      "RequestStock": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "totalStock": {
+            "type": "number"
+          },
+          "warehouses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestWarehouse"
+            }
+          }
+        }
+      },
+      "RequestWarehouse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "number"
+          },
+          "consider": {
+            "type": "boolean"
+          },
+          "stockVirtual": {
+            "type": "number"
+          }
+        }
+      },
+      "RequestInsertProduct": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "skuAlternative": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stockMinimum": {
+            "type": "integer",
+            "description": "Quantidade mínima de estoque configurada para o produto",
+            "format": "int32",
+            "example": 5
+          },
+          "cost": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technicalSpecification": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "warranty": {
+            "type": "string"
+          },
+          "business": {
+            "type": "string"
+          },
+          "ean": {
+            "type": "string"
+          },
+          "eanInvoice": {
+            "type": "string"
+          },
+          "height": {
+            "type": "number",
+            "format": "double"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "weightGross": {
+            "type": "number",
+            "format": "double"
+          },
+          "depth": {
+            "type": "number",
+            "format": "double"
+          },
+          "width": {
+            "type": "number",
+            "format": "double"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "ncm": {
+            "type": "string"
+          },
+          "anp": {
+            "type": "string"
+          },
+          "cest": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deadlineCrossdocking": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "youtubeId": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "isVariation": {
+            "type": "boolean"
+          },
+          "warrantyProvider": {
+            "type": "string"
+          },
+          "quantityItemsSamePackaging": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "erpId": {
+            "type": "string"
+          },
+          "stockFixed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "operationalCost": {
+            "type": "number"
+          },
+          "percentageProfit": {
+            "type": "number"
+          },
+          "productsCategory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestProductCategory"
+            }
+          },
+          "productsVariation": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestProductVariation"
+            }
+          },
+          "productsCode": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestProductCode"
+            }
+          },
+          "productsRootCharacteristic": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestProductRootCharacteristic"
+            }
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestCategory"
+            }
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestPicture"
+            }
+          },
+          "plainTextDescription": {
+            "type": "string"
+          },
+          "products_composition": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestProductComposition"
+            }
+          }
+        }
+      },
+      "ResponsePaginationCompleteOrderApi": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "type": "string"
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseOrderApi"
+            }
+          }
+        }
+      },
+      "ResponsePaginationSimpleOrderApi": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "type": "string"
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponsePaginationOrderApi"
+            }
+          }
+        }
+      },
+      "ResponsePaginationOrderApi": {
+        "type": "object",
+        "properties": {
+          "completeOrderNumber": {
+            "type": "string"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "name": "X-MAGIS5-APIKEY",
+        "in": "header"
+      }
+    }
+  }
+}
