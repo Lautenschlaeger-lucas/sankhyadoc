@@ -1,0 +1,40 @@
+image: python:3.12
+
+pipelines:
+  schedules:
+    - cron: '0 */6 * * *'
+      handler:
+        - step:
+            name: Baixar OpenAPI
+            script:
+              - python scripts/sync-swagger.py "$SWAGGER_URL"
+              - |
+                if git diff --quiet public/api-data/openapi.json; then
+                  echo "Nenhuma mudanca detectada."
+                else
+                  git config user.name 'pipeline'
+                  git config user.email 'pipeline@localhost'
+                  git add public/api-data/openapi.json
+                  git commit -m 'Atualiza openapi.json a partir do Swagger'
+                  git push
+                fi
+  custom:
+    - step:
+        name: Sync Swagger manual
+        trigger: manual
+        script:
+          - python scripts/sync-swagger.py "$SWAGGER_URL"
+          - |
+            if git diff --quiet public/api-data/openapi.json; then
+              echo "Nenhuma mudanca detectada."
+            else
+              git config user.name 'pipeline'
+              git config user.email 'pipeline@localhost'
+              git add public/api-data/openapi.json
+              git commit -m 'Atualiza openapi.json a partir do Swagger'
+              git push
+                fi
+
+definitions:
+  caches:
+    python: $HOME/.cache/pip
