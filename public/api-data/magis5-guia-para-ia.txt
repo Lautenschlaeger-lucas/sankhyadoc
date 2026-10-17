@@ -49,7 +49,7 @@ Implemente incrementalmente e execute os testes possíveis. Diferencie testes co
 O guia explica o processo; os contratos JSON descrevem requisições/respostas e schemas. Se houver divergência, destaque-a e confirme antes de programar o trecho afetado. Trechos comentados do guia são explicativos, não payloads válidos. Imagens e links relativos não acompanham o TXT: solicite o diagrama quando necessário. A cópia tem a data de geração indicada abaixo e não se atualiza depois de baixada. Confirme a versão vigente antes de finalizar a implementação.
 Swagger oficial: https://app.magis5.com.br/v1/v3/api-docs
 
-Gerado em: 2026-10-17T20:56:38.850Z
+Gerado em: 2026-10-17T20:59:47.151Z
 
 ===== Desenvolvimento Sugerido =====
 ## Integração com Magis5 - Hub Marketplace
